@@ -517,6 +517,7 @@ h3 {
     cursor: default;
 }
 
+
 .edit-skills .remove-skill {
     position: absolute;
     right: 10px;
@@ -531,6 +532,12 @@ h3 {
 
 .edit-skills .remove-skill:hover {
     color: #333;
+}
+
+.remove-lang{
+    margin-left: 5px;
+    margin-right:5px ;
+    cursor: pointer;
 }
 
 .add-skill-group {
@@ -606,7 +613,14 @@ h3 {
 
 
 
-
+.box {
+      background: white;
+      padding: 30px;
+      border-radius: 10px;
+      box-shadow: 0 0 15px rgba(0, 0, 0, 0.1);
+      text-align: center;
+    }
+    
 
 
 

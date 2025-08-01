@@ -37,8 +37,8 @@
                 <img src="https://placehold.co/150x150/png?text=P" alt="Profile Picture" class="profile-picture" id="mainProfilePicture" onclick="changeProfilePhoto()">
                 <input type="file" id="profilePhotoInput" accept="image/*" style="display: none;">
 
-                <h2 id="profileName">Someone Somebody</h2>
-                <p class="position-name" id="profilePosition">Position Name</p>
+                <h2 id="profileName"></h2>
+                <p class="position-name" id="profilePosition"></p>
                 <button class="status-button">open to work</button>
             </div>
             <div class="bio-section">
@@ -49,13 +49,13 @@
                 <h3>Skills <button id="skill-btn" onclick="openAddSkillModal()" style="cursor: pointer; float: right;  border: 2px solid black; height: 30px; width: 30px; border-radius: 100px; align-items: center; text-align: center; justify-content: center; justify-items: center; font-size: 15px; font-weight: 700;">+</button></h3> 
                 
                 <div class="skill-tags" id="skillTagsContainer">
-                    <!-- Skills will be dynamically populated here -->
+                   
                 </div>
             </div>
             <div class="languages-section">
-                <h3>Languages</h3>
+                <h3>Languages <button  id="lang-btn" onclick="openAddlangModal()" style="cursor: pointer; float: right;  border: 2px solid black; height: 30px; width: 30px; border-radius: 100px; align-items: center; text-align: center; justify-content: center; justify-items: center; font-size: 15px; font-weight: 700;">+</button></h3>
                 <ul id="languagesList">
-                    <!-- Languages will be dynamically populated here -->
+                   
                 </ul>
             </div>
         </aside>
@@ -66,50 +66,40 @@
                 <div class="info-grid">
                     <div class="info-item">
                         <span class="label">AGE</span>
-                        <span class="value" id="profileAge">25 years</span>
+                        <span class="value" id="profileAge"></span>
                     </div>
                     <div class="info-item">
-                        <span class="label">YEARS OF EXPERIENCE</span>
-                        <span class="value" id="profileExperience">3 years</span>
+                        <span class="label">GENDER</span>
+                        <span class="value" id="profilegender"></span>
                     </div>
                     <div class="info-item">
                         <span class="label">LOCATION</span>
-                        <span class="value" id="profileLocation">Address, thane (w)</span>
+                        <span class="value" id="profileLocation"></span>
                     </div>
                     <div class="info-item">
                         <span class="label">EMAIL</span>
-                        <span class="value" id="profileEmail">somebodysomeone@gamil.com</span>
+                        <span class="value" id="profileEmail"></span>
                     </div>
                 </div>
             </div>
 
             <div class="experience-card card " >
-                <h3>Experience <button id="exp-btn" onclick="openAddexpModal()" style="cursor: pointer; float: right;  border: 2px solid black; height: 30px; width: 30px; border-radius: 100px; align-items: center; text-align: center; justify-content: center; justify-items: center; font-size: 15px; font-weight: 700;">+</button></h3>
-                <div class="experience-item">
-                    <i class="fas fa-briefcase icon"></i>
-                    <div class="details" >
-                        <p class="position" id="profileWorkExperience">Position</p>
-                        <p class="company">Company name</p>
-                        <p class="duration">YOU — YOL</p>
-                    </div>
+                <h3>Experience <button id="exp-btn" style="cursor: pointer; float: right;  border: 2px solid black; height: 30px; width: 30px; border-radius: 100px; align-items: center; text-align: center; justify-content: center; justify-items: center; font-size: 15px; font-weight: 700;">+</button></h3>
+                <div id="experienceContainer" class="experience-container">
+                   
                 </div>
             </div>
 
             <div class="education-card card">
-                <h3>Education</h3>
-                <div class="education-item">
-                    <i class="fas fa-graduation-cap icon"></i>
-                    <div class="details">
-                        <p class="degree" id="profileEducation">Education in</p>
-                        <p class="college">College name</p>
-                        <p class="duration">YOU — YOL</p>
-                    </div>
+                <h3>Education <button id="edu-btn" style="cursor: pointer; float: right;  border: 2px solid black; height: 30px; width: 30px; border-radius: 100px; align-items: center; text-align: center; justify-content: center; justify-items: center; font-size: 15px; font-weight: 700;">+</button></h3>
+                <div id="educationContainer" class="education-container">
+                  
                 </div>
             </div>
         </section>
     </main>
 
-    <!-- Modal for editing profile information -->
+ 
     <div id="editProfileModal" class="modal">
         <div class="modal-content">
             <span class="close-button" onclick="closeEditProfileModal()">&times;</span>
@@ -130,20 +120,24 @@
                 </div>
                 <div class="form-group">
                     <label for="job_field">Job Field</label>
-                    <input type="text" id="job_field" name="job_field" value="">
+                    <input type="text" id="job_field" name="job_field"  disabled>
                 </div>
+                 <div class="form-group">
+                    <label>Gender:</label>
+                    <div class="radio-group">
+                        <input type="radio" id="gender-male" name="gender" value="Male" title="Select Male">
+                        Male
+                        <input type="radio" id="gender-female" name="gender" value="Female" title="Select Female">
+                        Female
+                    </div>
+                   
+                </div>
+                
                 <div class="form-group">
                     <label for="bio">Bio / Experience</label>
                     <textarea id="bio" name="bio" rows="4"></textarea>
                 </div>
-                <div class="form-group">
-                    <label for="education">Education</label>
-                    <input type="text" id="education" name="education" value="">
-                </div>
-                <div class="form-group">
-                    <label for="work_experience">Work Experience</label>
-                    <input type="text" id="work_experience" name="work_experience" value="">
-                </div>
+                
                 <div class="form-group">
                     <label for="address">Address</label>
                     <input type="text" id="address" name="address" value="">
@@ -156,34 +150,54 @@
                     <label for="email">Email</label>
                     <input type="email" id="email" name="email"  disabled>
                 </div>
-                <div class="form-group">
-                    <label for="employment_type">Employment Type</label>
-                    <input type="text" id="employment_type" name="employment_type" value="">
-                </div>
-                 <div class="form-group">
-                    <label for="shift_type">Shift Type</label>
-                    <input type="text" id="shift_type" name="shift_type" value="">
-                </div>
-                 <div class="form-group">
-                    <label for="part_time_hours">Part Time Hours</label>
-                    <input type="text" id="part_time_hours" name="part_time_hours" value="">
-                </div>
+               <div class="form-group">
+  <label for="employment_type">Employment Type</label><br>
+  <input type="radio" id="employment_type" name="employment_type" value="Full Time"> Full Time
+  <input type="radio" id="employment_type" name="employment_type" value="Part Time"> Part Time
+</div>
+
+<div class="form-group" id="shift_type" style="display: none;">
+  <label for="shift_type">Shift Type</label><br>
+  <input type="radio" id="shift_type" name="shift_type" value="Night"> Night
+  <input type="radio" id="shift_type" name="shift_type" value="Day"> Day
+</div>
+
+<div class="form-group" id="part_time" style="display: none;">
+  <label for="part_time_hours">Part Time Hours</label>
+  <input type="text" id="part_time_hours" name="part_time_hours" value="">
+</div>
+
+<script>
+  const typeRadios = document.querySelectorAll('input[name="employment_type"]');
+
+  typeRadios.forEach(radio => {
+    radio.addEventListener("change", function () {
+      if (this.value === "Full Time") {
+        document.getElementById('shift_type').style.display = 'block';
+        document.getElementById('part_time').style.display = 'none';
+      } else if (this.value === "Part Time") {
+        document.getElementById('shift_type').style.display = 'none';
+        document.getElementById('part_time').style.display = 'block';
+      }
+    });
+  });
+</script>
+
                 <div class="form-actions">
                     <button type="submit">Save Changes</button>
                     <button type="button" class="cancel-button" onclick="closeEditProfileModal()">Cancel</button>
                 </div>
+
             </form>
         </div>
     </div>
     
-    <!-- Modal for adding/editing skills -->
     <div id="addSkillModal" class="modal">
         <div class="modal-content">
             <span class="close-button" onclick="closeAddSkillModal()">&times;</span>
             <h2>Manage Skills</h2>
             <div id="currentSkills" class="skill-tags edit-skills">
-                <!-- Skills will be dynamically populated here -->
-            </div>
+                </div>
             <h3>Add New Skill</h3>
             <form id="addSkillForm">
                 <div class="form-group add-skill-group">
@@ -197,75 +211,78 @@
         </div>
     </div>
 
-    <div id="addexp" class="modal"  style="line-height: 20px;">
+
+
+<div id="addlangModal" class="modal" >
         <div class="modal-content">
-            <span class="close-button" onclick="closeAddexpModal()">&times;</span>
-            
-           
-            <h3>Add Experience</h3>
-            <form id="addexpForm">
+            <span class="close-button" onclick="closeAddlangModal()">&times;</span>
+            <h2>Manage Language</h2>
+            <div id="currentlang" class="lang-tags  lang-skills"  >
                 
-                <div class="form-group add-exp-group ">
-                   <div class="padding">
-                        <input style="margin-bottom: 5px;" type="number" id="Yaddexp" name="Yaddexp" name="Yexp" placeholder="Year Of Experience" >
-                        <input style="margin-bottom: 10px;" type="text" id="Caddexp" name="Caddexp" name="Cexp" placeholder="Company Name" >
-                        <label>Enter Experience Years</label>
-        <style>.box {
-      background: white;
-      padding: 30px;
-      border-radius: 10px;
-      box-shadow: 0 0 15px rgba(0, 0, 0, 0.1);
-      text-align: center;
-    }</style> 
-    
-    
-    
-    <div class="box">
-    <label>Select Experience Duration</label>
-    <input type="month" id="startMonth" name="start"
-           min="1980-01" max="2025-12" value="" placeholder="5728">
-    <span>—</span>
-    <input type="month" id="endMonth" name="end"
-           min="1980-01" max="2025-12" value="" placeholder="5728">
-
-    <div class="output" id="expOutput"></div>
-  </div>
-
-
-    <div class="output" id="expOutput"></div>
-  </div>
-
-  <script>
-    const startInput = document.getElementById('startYear');
-    const endInput = document.getElementById('endYear');
-    const output = document.getElementById('expOutput');
-
-    function updateOutput() {
-      const start = startInput.value;
-      const end = endInput.value;
-      if (start && end) {
-        output.textContent = `Selected: ${start} — ${end}`;
-      } else {
-        output.textContent = "";
-      }
-    }
-
-    startInput.addEventListener("input", updateOutput);
-    endInput.addEventListener("input", updateOutput);
-  </script>
-                        
-                   </div>
-                </div>
-            </form>
-            <div class="form-actions">
-                <button type="button" class="cancel-button" onclick="closeAddexpModal()">Close</button>
             </div>
+            <h3>Add Language</h3>
+            <form id="addlangForm">
+                <div class="form-group add-lang-group">
+                    <input type="text" id="newlangInput" name="newlangInput" placeholder="e.g., English, Hindi , Marathi" required>
+                    
+                </div>
+            
+            <div class="form-actions">
+                <button type="submit">Save</button>
+                <button type="button" class="cancel-button" onclick="closeAddlangModal()">Close</button>
+            </div>
+            </form>
         </div>
     </div>
 
 
-   
-    
+
+
+
+
+
+    <div id="addexp" class="modal"  style="line-height: 20px;">
+        <div class="modal-content">
+            <span class="close-button" onclick="closeAddexpModal()">&times;</span>
+            <h3>Add Experience</h3>
+            <form id="addexpForm">
+                <div class="form-group add-exp-group ">
+                   <div class="padding">
+                        <input style="margin-bottom: 5px;" type="text" id="expPosition" name="postion" placeholder="Position" required>
+                        <input style="margin-bottom: 10px;" type="text" id="expCompany" name="company_name" placeholder="Company Name" required>
+                        <label>Enter Duration (e.g., 2020-2023 or Present)</label>
+                        <input style="margin-bottom: 10px;" type="text" id="expDate" name="date" placeholder="e.g., 2020-2023 or Present" required>
+                   </div>
+                </div>
+                <div class="form-actions">
+                    <button type="submit" >Save</button>
+                    <button type="button" class="cancel-button" onclick="closeAddexpModal()">Close</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <div id="addedu" class="modal"  style="line-height: 20px;">
+        <div class="modal-content">
+            <span class="close-button" onclick="closeAddeduModal()">&times;</span>
+            <h3>Add Education</h3>
+            <form id="addeduForm">
+                <div class="form-group add-edu-group ">
+                   <div class="padding">
+                        <input style="margin-bottom: 5px;" type="text" id="eduInstitute" name="instude_name" placeholder="Institute Name" required>
+                        <input style="margin-bottom: 10px;" type="text" id="eduClass" name="class" placeholder="Degree / Class" required>
+                        <input style="margin-bottom: 10px;" type="text" id="eduYears" name="years" placeholder="Years (e.g., 2022 - 2025)" required>
+                        <input style="margin-bottom: 10px;" type="text" id="eduPercentage" name="percentage" placeholder="Percentage / CGPA (leave blank if pursuing)">
+                   </div>
+                </div>
+                <div class="form-actions">
+                    <button type="submit" >Save</button>
+                    <button type="button" class="cancel-button" onclick="closeAddeduModal()">Close</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
     <div id="custom-modal-overlay" class="custom-modal-overlay">
         <div class="custom-modal-content">
             <h3 id="custom-modal-title"></h3>
@@ -274,298 +291,17 @@
         </div>
     </div>
     
-    <!-- Loading Screen -->
     <div id="loader-overlay" class="loader-overlay">
         <div class="loader"></div>
         <p class="loader-text">Loading...</p>
     </div>
 
-    <script>
-        // Custom alert function to replace window.alert
-        function showCustomAlert(title, message) {
-            const modalOverlay = document.getElementById('custom-modal-overlay');
-            const modalTitle = document.getElementById('custom-modal-title');
-            const modalMessage = document.getElementById('custom-modal-message');
-            const okBtn = document.getElementById('custom-modal-ok-btn');
-
-            modalTitle.textContent = title;
-            modalMessage.textContent = message;
-            modalOverlay.style.display = 'flex';
-
-            okBtn.onclick = function() {
-                modalOverlay.style.display = 'none';
-            };
-        }
-        
-        // Function to show and hide the loading screen
-        function showLoader(message = 'Loading...') {
-            const loaderOverlay = document.getElementById('loader-overlay');
-            const loaderText = document.querySelector('.loader-text');
-            loaderText.textContent = message;
-            loaderOverlay.style.display = 'flex';
-        }
-
-        function hideLoader() {
-            const loaderOverlay = document.getElementById('loader-overlay');
-            loaderOverlay.style.display = 'none';
-        }
-
-        document.addEventListener('DOMContentLoaded', fetchProfileData);
-        async function fetchProfileData() {
-            showLoader("Fetching profile data...");
-            try {
-                const response = await fetch('profile.php', { method: 'GET' });
-                const result = await response.json();
-
-                if (result.success) {
-                    const profileData = result.profile_data;
-                    updateProfileUI(profileData);
-                } else {
-                    showCustomAlert('Error', result.error || 'Failed to fetch profile data.');
-                }
-            } catch (error) {
-                console.error('Error fetching profile data:', error);
-                showCustomAlert('Network Error', 'Failed to connect to the server.');
-            } finally {
-                hideLoader();
-            }
-        }
-        
-        function updateProfileUI(data) {
-            document.getElementById('profileName').textContent = `${data.first_name} ${data.last_name}`;
-            document.getElementById('profilePosition').textContent = data.job_field;
-            document.getElementById('profileBio').textContent = data.bio;
-            document.getElementById('profileAge').textContent = `${data.age} years`;
-            document.getElementById('profileExperience').textContent = `${data.experience_years} years`;
-            document.getElementById('profileWorkExperience').textContent = data.work_experience;
-            document.getElementById('profileEducation').textContent = data.education;
-            document.getElementById('profileLocation').textContent = data.address;
-            document.getElementById('profileEmail').textContent = data.email;
-            document.getElementById('navbarLocation').textContent = data.address;
-            
-            
-            const profilePictureUrl = data.profile_url || 'https://placehold.co/150x150/png?text=P';
-            document.getElementById('mainProfilePicture').src = profilePictureUrl;
-            document.getElementById('navbarProfilePicture').src = profilePictureUrl;
-            
-            
-            document.getElementById('first_name').value = data.first_name;
-            document.getElementById('last_name').value = data.last_name;
-            document.getElementById('job_field').value = data.job_field;
-            document.getElementById('age').value = data.age;
-            document.getElementById('bio').value = data.bio;
-            document.getElementById('education').value = data.education;
-            document.getElementById('work_experience').value = data.work_experience;
-            document.getElementById('address').value = data.address;
-            document.getElementById('phone_number').value = data.phone_number;
-            document.getElementById('email').value = data.email;
-            document.getElementById('employment_type').value = data.employment_type;
-            document.getElementById('shift_type').value = data.shift_type;
-            document.getElementById('part_time_hours').value = data.part_time_hours;
-            
-            
-            const skillTagsContainer = document.getElementById('skillTagsContainer');
-            skillTagsContainer.innerHTML = '';
-            if (data.skills && Array.isArray(data.skills)) {
-                data.skills.forEach(skill => {
-                    const tag = document.createElement('span');
-                    tag.className = 'skill-tag';
-                    tag.textContent = skill;
-                    skillTagsContainer.appendChild(tag);
-                });
-            }
-
-            // Populate skills in the new modal
-            const currentSkillsDiv = document.getElementById('currentSkills');
-            currentSkillsDiv.innerHTML = '';
-            if (data.skills && Array.isArray(data.skills)) {
-                data.skills.forEach(skill => {
-                    const newSkillTag = document.createElement('span');
-                    newSkillTag.classList.add('skill-tag');
-                    newSkillTag.innerHTML = `${skill} <span class="remove-skill" onclick="removeSkill(this, '${skill}')">&times;</span>`;
-                    currentSkillsDiv.appendChild(newSkillTag);
-                });
-            }
-
-             // Populate languages (hardcoded for this version)
-            const languagesList = document.getElementById('languagesList');
-            languagesList.innerHTML = '';
-            if (data.languages && Array.isArray(data.languages)) {
-                data.languages.forEach(language => {
-                    const li = document.createElement('li');
-                    li.textContent = language;
-                    languagesList.appendChild(li);
-                });
-            }
-        }
-
-        // Handle profile photo change
-        function changeProfilePhoto() {
-            document.getElementById('profilePhotoInput').click();
-        }
-
-        document.getElementById('profilePhotoInput').addEventListener('change', handleProfilePhotoChange);
-
-        async function handleProfilePhotoChange(event) {
-            const file = event.target.files[0];
-            if (file) {
-                showLoader("Uploading photo...");
-
-                const formData = new FormData();
-                formData.append('profile_photo', file);
-
-                try {
-                    const response = await fetch('profile.php', {
-                        method: 'POST',
-                        body: formData
-                    });
-
-                    const result = await response.json();
-                    if (result.success) {
-                        
-                        document.getElementById('mainProfilePicture').src = result.photo_url;
-                        document.getElementById('navbarProfilePicture').src = result.photo_url;
-                        showCustomAlert('Success', 'Profile photo updated successfully!');
-                    } else {
-                        showCustomAlert('Upload Failed', result.error || 'An unknown error occurred during upload.');
-                    }
-                } catch (error) {
-                    console.error('Error uploading photo:', error);
-                    showCustomAlert('Network Error', 'Failed to upload photo. Please check your connection.');
-                } finally {
-                    hideLoader();
-                }
-            }
-        }
-
-       
-        document.getElementById('editProfileForm').addEventListener('submit', async function(event) {
-            event.preventDefault();
-            showLoader("Saving profile...");
-            
-            const formData = new FormData(this);
-
-            try {
-                const response = await fetch('profile.php', {
-                    method: 'POST',
-                    body: formData
-                });
-                const result = await response.json();
-
-                if (result.success) {
-                    showCustomAlert('Success', result.message);
-                    closeEditProfileModal();
-                    fetchProfileData(); 
-                } else {
-                    showCustomAlert('Error', result.error || 'Failed to update profile.');
-                }
-            } catch (error) {
-                console.error('Error saving profile:', error);
-                showCustomAlert('Network Error', 'Failed to save profile. Please check your connection.');
-            } finally {
-                hideLoader();
-            }
-        });
-
-        
-        function openEditProfileModal() {
-            document.getElementById('editProfileModal').style.display = 'block';
-        }
-
-        function closeEditProfileModal() {
-            document.getElementById('editProfileModal').style.display = 'none';
-        }
-
-        function openAddSkillModal() {
-            document.getElementById('addSkillModal').style.display = 'block';
-            fetchProfileData(); // Refresh skills in modal just in case
-        }
-        
-        function closeAddSkillModal() {
-            document.getElementById('addSkillModal').style.display = 'none';
-        }
-
-        function openAddexpModal() {
-            document.getElementById('addexp').style.display = 'block';
-            fetchProfileData(); 
-        }
-        
-        function closeAddexpModal() {
-            document.getElementById('addexp').style.display = 'none';
-        }
-        
-        // Function to remove a skill
-        async function removeSkill(element, skillName) {
-            if (confirm(`Are you sure you want to remove "${skillName}"?`)) {
-                element.parentNode.remove();
-                
-                // Here, you would call a backend script to remove the skill from the database.
-                // Since there is no explicit backend for this, we will simulate it.
-                // In a real application, this would be a separate PHP file like 'remove_skill.php'.
-                console.log(`Simulating removal of skill: ${skillName}`);
-                showCustomAlert('Simulated Removal', `The skill "${skillName}" has been removed from the UI. A backend call would be made here.`);
-                
-                // After successful removal from the backend, you would typically re-fetch data.
-                // fetchProfileData();
-            }
-        }
-
-        // New function to handle "Add Skill" button click from the modal
-        document.getElementById('addSkillForm').addEventListener('submit', async function(event) {
-            event.preventDefault();
-            
-            const skillName = document.getElementById('newSkillInput').value.trim();
-
-            if (skillName === "") {
-                showCustomAlert('Invalid Input', 'Skill name cannot be empty.');
-                return;
-            }
-            
-            closeAddSkillModal(); // Close the modal before showing the loader
-            showLoader(`Generating quiz for "${skillName}"...`);
-            
-            const formData = new FormData();
-            formData.append('field', skillName);
-
-            try {
-                const response = await fetch('generate_quiz.php', {
-                    method: 'POST',
-                    body: formData
-                });
-                
-                const result = await response.json();
-                
-                if (result.success) {
-                    // Save quiz data to session storage
-                    sessionStorage.setItem('userField', skillName);
-                    sessionStorage.setItem('generatedQuestions', JSON.stringify(result.questions));
-                    sessionStorage.setItem('userName', 'Demo User'); // Or fetch from profile data
-                    
-                    // Redirect to the quiz page
-                    window.location.href = 'quiz_page.html';
-                } else {
-                    showCustomAlert('Quiz Generation Failed', result.error || 'An unexpected error occurred while generating the quiz. Please try again.');
-                }
-            } catch (error) {
-                console.error('Error generating quiz:', error);
-                showCustomAlert('Network Error', 'Could not connect to the server. Please check your internet connection.');
-            } finally {
-                hideLoader();
-            }
-        });
-
-        // Close modals when clicking outside
-        window.onclick = function(event) {
-            const profileModal = document.getElementById('editProfileModal');
-            const addSkillModal = document.getElementById('addSkillModal');
-            if (event.target == profileModal) {
-                profileModal.style.display = "none";
-            }
-            if (event.target == addSkillModal) {
-                addSkillModal.style.display = "none";
-            }
-        };
+    <script src="profile.js">
+    
+  
 
     </script>
+
+
 </body>
 </html>

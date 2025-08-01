@@ -14,6 +14,72 @@ if (!isset($_SESSION['user_id']))
 
 $user_id = $_SESSION['user_id'];
 
+// Handle language-related actions
+if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['action'])) {
+    $action = $_POST['action'];
+
+    if ($action === 'add_language' && isset($_POST['newLanguage'])) {
+        $new_language = htmlspecialchars($_POST['newLanguage']);
+        
+        $stmt_select = $conn->prepare("SELECT language FROM users WHERE id = ?");
+        $stmt_select->bind_param("i", $user_id);
+        $stmt_select->execute();
+        $result = $stmt_select->get_result();
+        $user_data = $result->fetch_assoc();
+        $stmt_select->close();
+
+        $current_languages = !empty($user_data['language']) ? explode(',', $user_data['language']) : [];
+        if (!in_array($new_language, $current_languages)) {
+            $current_languages[] = $new_language;
+        }
+
+        $updated_languages = implode(',', $current_languages);
+
+        $stmt_update = $conn->prepare("UPDATE users SET language = ? WHERE id = ?");
+        $stmt_update->bind_param("si", $updated_languages, $user_id);
+
+        if ($stmt_update->execute()) {
+            echo json_encode(['success' => true, 'message' => 'Language added successfully.']);
+        } else {
+            http_response_code(500);
+            echo json_encode(['error' => 'Database update failed: ' . $stmt_update->error]);
+        }
+        $stmt_update->close();
+        $conn->close();
+        exit;
+    }
+
+    if ($action === 'delete_language' && isset($_POST['languageName'])) {
+        $language_to_delete = htmlspecialchars($_POST['languageName']);
+        
+        $stmt_select = $conn->prepare("SELECT language FROM users WHERE id = ?");
+        $stmt_select->bind_param("i", $user_id);
+        $stmt_select->execute();
+        $result = $stmt_select->get_result();
+        $user_data = $result->fetch_assoc();
+        $stmt_select->close();
+
+        $current_languages = !empty($user_data['language']) ? explode(',', $user_data['language']) : [];
+        $updated_languages = array_diff($current_languages, [$language_to_delete]);
+
+        $updated_languages_string = implode(',', $updated_languages);
+
+        $stmt_update = $conn->prepare("UPDATE users SET language = ? WHERE id = ?");
+        $stmt_update->bind_param("si", $updated_languages_string, $user_id);
+
+        if ($stmt_update->execute()) {
+            echo json_encode(['success' => true, 'message' => 'Language deleted successfully.']);
+        } else {
+            http_response_code(500);
+            echo json_encode(['error' => 'Database update failed: ' . $stmt_update->error]);
+        }
+        $stmt_update->close();
+        $conn->close();
+        exit;
+    }
+}
+
+
 const IMGBB_API_KEY = '8f23d9f5d1b5960647ba5942af8a1523'; 
 if (isset($_FILES['profile_photo'])) {
     $file = $_FILES['profile_photo'];
@@ -74,16 +140,17 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $address = isset($_POST['address']) ? htmlspecialchars($_POST['address']) : '';
     $education = isset($_POST['education']) ? htmlspecialchars($_POST['education']) : '';
     $work_experience = isset($_POST['work_experience']) ? htmlspecialchars($_POST['work_experience']) : '';
-    $job_field = isset($_POST['job_field']) ? htmlspecialchars($_POST['job_field']) : '';
+   
     $employment_type = isset($_POST['employment_type']) ? htmlspecialchars($_POST['employment_type']) : '';
     $shift_type = isset($_POST['shift_type']) ? htmlspecialchars($_POST['shift_type']) : '';
     $part_time_hours = isset($_POST['part_time_hours']) ? htmlspecialchars($_POST['part_time_hours']) : '';
+    $gender = isset($_POST['gender']) ? htmlspecialchars($_POST['gender']) : '' ;
     $bio = isset($_POST['bio']) ? htmlspecialchars($_POST['bio']) : '';
-    $age = isset($_POST['age']) ? intval($_POST['age']) : null; // Correctly get the age value as an integer
+    $age = isset($_POST['age']) ? intval($_POST['age']) : null;
     
-    // Update profile data in the database. Added bio and age columns.
-    $stmt = $conn->prepare("UPDATE users SET first_name = ?, last_name = ?, education = ?, work_experience = ?, address = ?, job_field = ?, employment_type = ?, shift_type = ?, part_time_hours = ?, bio = ?, age = ? WHERE id = ?");
-    $stmt->bind_param("sssssssssssi", $first_name, $last_name, $education, $work_experience, $address, $job_field, $employment_type, $shift_type, $part_time_hours, $bio, $age, $user_id);
+
+    $stmt = $conn->prepare("UPDATE users SET first_name = ?, last_name = ?, education = ?, work_experience = ?, address = ?, gender = ? ,employment_type = ?, shift_type = ?, part_time_hours = ?, bio = ?, age = ? WHERE id = ?");
+    $stmt->bind_param("sssssssssssi", $first_name, $last_name, $education, $work_experience, $address, $gender, $employment_type, $shift_type, $part_time_hours, $bio, $age, $user_id);
     
     if ($stmt->execute()) {
         echo json_encode(['success' => true, 'message' => 'Profile updated successfully.']);
@@ -124,6 +191,7 @@ $profile_data['skills'] = $profile_data['skills'] ?? "none";
 $profile_data['language'] = $profile_data['language'] ?? "none";
 $profile_data['bio'] = $profile_data['bio'] ?? "none";
 $profile_data['test_pass'] = $profile_data['test_pass'] ?? "none";
+$profile_data['gender'] = $profile_data['gender'] ?? "none";
 
 
     $profile_data['name'] = $profile_data['first_name'] . ' ' . $profile_data['last_name'];
