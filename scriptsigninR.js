@@ -1,0 +1,322 @@
+ document.addEventListener('DOMContentLoaded', () => {
+            // Get step containers
+            const mainLoginContainer = document.getElementById('main-login-container'); // The main .container wrapper
+            const loginSection = document.getElementById('login-section');
+            const recoverEmailSection = document.getElementById('recover-email-section');
+            const verifyOtpSection = document.getElementById('verify-otp-section');
+            const resetPasswordSection = document.getElementById('reset-password-section');
+
+            // Get forms
+            const loginForm = document.getElementById('login-form');
+            const recoverEmailForm = document.getElementById('recover-email-form');
+            const verifyOtpForm = document.getElementById('verify-otp-form');
+            const resetPasswordForm = document.getElementById('reset-password-form');
+
+            // Get links
+            const signupLink = document.getElementById('signup-link');
+            const forgotPasswordLink = document.getElementById('forgot-password-link');
+            const recoverBackToLoginLink = document.getElementById('recover-back-to-login');
+            const verifyBackToRecoverLink = document.getElementById('verify-back-to-recover');
+            const resetBackToLoginLink = document.getElementById('reset-back-to-login');
+
+            // Get loading overlay and message div
+            const loadingOverlay = document.getElementById('loading-overlay');
+            const messageDiv = document.getElementById('form-message');
+
+            // --- Helper Functions ---
+            function showLoading() {
+                if (loadingOverlay) {
+                    loadingOverlay.style.display = 'flex'; // Use flex to center spinner
+                    loadingOverlay.style.visibility = 'visible';
+                    loadingOverlay.style.opacity = '1';
+                }
+            }
+
+            function hideLoading() {
+                if (loadingOverlay) {
+                    loadingOverlay.style.visibility = 'hidden';
+                    loadingOverlay.style.opacity = '0';
+                    // Optional: Set display to 'none' after transition if needed, to truly remove from layout flow
+                    setTimeout(() => {
+                        loadingOverlay.style.display = 'none';
+                    }, 300); // Match CSS transition duration
+                }
+            }
+
+            function showMessage(msg, type) {
+                if (messageDiv) {
+                    messageDiv.textContent = msg;
+                    messageDiv.className = `message ${type}`; // Apply CSS classes for styling
+                    messageDiv.style.display = 'block';
+                    setTimeout(() => {
+                        hideMessage();
+                    }, 5000); // Hide after 5 seconds
+                }
+            }
+
+            function hideMessage() {
+                if (messageDiv) {
+                    messageDiv.style.display = 'none';
+                }
+            }
+
+            function showStep(stepElement) {
+                // Hide all right sections
+                [loginSection, recoverEmailSection, verifyOtpSection, resetPasswordSection].forEach(section => {
+                    if (section) {
+                        section.style.display = 'none';
+                        section.classList.remove('active-step'); // Remove active class if you use it for styling
+                    }
+                });
+                // Show the requested step section
+                if (stepElement) {
+                    stepElement.style.display = 'flex'; // Assuming .right uses display:flex or block
+                    stepElement.classList.add('active-step');
+                }
+                hideMessage(); // Clear any existing messages when changing steps
+            }
+
+            // --- Event Listeners for Navigation ---
+
+            // Initial load: ensure login form is active
+            showStep(loginSection);
+
+            // Click "Forget password?" link
+            if (forgotPasswordLink) {
+                forgotPasswordLink.addEventListener('click', (e) => {
+                    e.preventDefault();
+                    // Hide the main container (if it wraps the login form and left section)
+                    if (mainLoginContainer) {
+                         mainLoginContainer.style.display = 'flex'; // Ensure main container is still visible, as other steps are inside it
+                    }
+                    showStep(recoverEmailSection); // Show the email recovery step
+                    recoverEmailForm.reset(); // Clear form when navigating to it
+                    const recoverEmailInput = document.getElementById('recover-email');
+                    if (recoverEmailInput) {
+                        recoverEmailInput.focus();
+                    }
+                });
+            }
+
+            // Click "Back to Sign In" from Recover Email
+            if (recoverBackToLoginLink) {
+                recoverBackToLoginLink.addEventListener('click', (e) => {
+                    e.preventDefault();
+                    showStep(loginSection); // Show login form
+                    loginForm.reset(); // Clear login form
+                    const loginEmailInput = document.getElementById('login-email');
+                    if (loginEmailInput) {
+                        loginEmailInput.focus();
+                    }
+                });
+            }
+
+            // Click "Back" from Verify OTP
+            if (verifyBackToRecoverLink) {
+                verifyBackToRecoverLink.addEventListener('click', (e) => {
+                    e.preventDefault();
+                    showStep(recoverEmailSection); // Go back to email recovery step
+                    verifyOtpForm.reset(); // Clear OTP form
+                    const recoverEmailInput = document.getElementById('recover-email');
+                    if (recoverEmailInput) {
+                        recoverEmailInput.focus(); // Focus email input again
+                    }
+                });
+            }
+
+            // Click "Back to Sign In" from Reset Password
+            if (resetBackToLoginLink) {
+                resetBackToLoginLink.addEventListener('click', (e) => {
+                    e.preventDefault();
+                    showStep(loginSection); // Go back to login form
+                    resetPasswordForm.reset(); // Clear reset password form
+                    const loginEmailInput = document.getElementById('login-email');
+                    if (loginEmailInput) {
+                        loginEmailInput.focus();
+                    }
+                });
+            }
+
+            // Handle Sign Up link (assuming it goes to a different page)
+            if (signupLink) {
+                signupLink.addEventListener('click', (e) => {
+                    e.preventDefault();
+                    window.location.href = 'recruitersignup.html'; // Redirect to your actual signup page
+                });
+            }
+
+
+            // --- Form Submission Handlers ---
+
+            // Login Form Submission
+            if (loginForm) {
+                loginForm.addEventListener('submit', async (e) => {
+                    e.preventDefault();
+                    hideMessage();
+                    showLoading();
+
+                    const email = document.getElementById('login-email').value;
+                    const password = document.getElementById('login-password').value;
+
+                    try {
+                        const response = await fetch('login_reset_backend.php', { // FIX: Pointing to new backend file
+                            method: 'POST',
+                            headers: { 'Content-Type': 'application/json' },
+                            body: JSON.stringify({ email, password, action: 'login' })
+                        });
+
+                        const data = await response.json();
+
+                        if (response.ok) {
+                            showMessage(data.message || 'Login successful!', 'success');
+                            
+                            window.location.href = 'verify_company.php';
+                        } else {
+                            showMessage(data.message || 'Login failed. Please check your credentials.', 'error');
+                        }
+                    } catch (error) {
+                        console.error('Login request error:', error);
+                        showMessage('An error occurred during login. Please try again.', 'error');
+                    } finally {
+                        hideLoading();
+                    }
+                });
+            }
+
+            // Recover Email Form Submission (Send OTP for Password Reset)
+            if (recoverEmailForm) {
+                recoverEmailForm.addEventListener('submit', async (e) => {
+                    e.preventDefault();
+                    hideMessage();
+                    showLoading();
+
+                    const email = document.getElementById('recover-email').value;
+
+                    // Store email in sessionStorage to use in subsequent steps
+                    sessionStorage.setItem('reset_email_for_otp', email);
+
+                    try {
+                        const response = await fetch('login_reset_backend.php', { // FIX: Pointing to new backend file
+                            method: 'POST',
+                            headers: { 'Content-Type': 'application/json' },
+                            body: JSON.stringify({ email, action: 'send_reset_otp' })
+                        });
+
+                        const data = await response.json();
+
+                        if (response.ok) {
+                            showMessage(data.message || 'OTP sent to your email!', 'success');
+                            showStep(verifyOtpSection);
+                            verifyOtpForm.reset();
+                            const emailOtpInput = document.getElementById('email-otp');
+                            if (emailOtpInput) {
+                                emailOtpInput.focus();
+                            }
+                        } else {
+                            showMessage(data.message || 'Failed to send OTP. Email might not be registered.', 'error');
+                        }
+                    } catch (error) {
+                        console.error('Forgot password OTP request error:', error);
+                        showMessage('An error occurred. Please try again.', 'error');
+                    } finally {
+                        hideLoading();
+                    }
+                });
+            }
+
+            // Verify OTP Form Submission (for Password Reset)
+            if (verifyOtpForm) {
+                verifyOtpForm.addEventListener('submit', async (e) => {
+                    e.preventDefault();
+                    hideMessage();
+                    showLoading();
+
+                    const email = sessionStorage.getItem('reset_email_for_otp'); // Retrieve email
+                    const otpCode = document.getElementById('email-otp').value;
+
+                    if (!email) {
+                        showMessage('Email not found for verification. Please go back and re-enter your email.', 'error');
+                        hideLoading();
+                        showStep(recoverEmailSection);
+                        return;
+                    }
+
+                    try {
+                        const response = await fetch('login_reset_backend.php', { // FIX: Pointing to new backend file
+                            method: 'POST',
+                            headers: { 'Content-Type': 'application/json' },
+                            body: JSON.stringify({ email, otpCodeEmail: otpCode, action: 'verify_reset_otp' })
+                        });
+
+                        const data = await response.json();
+
+                        if (response.ok) {
+                            showMessage(data.message || 'OTP verified! Proceed to set new password.', 'success');
+                            showStep(resetPasswordSection);
+                            resetPasswordForm.reset();
+                            const newPasswordInput = document.getElementById('new-password');
+                            if (newPasswordInput) {
+                                newPasswordInput.focus();
+                            }
+                        } else {
+                            showMessage(data.message || 'Invalid OTP. Please try again.', 'error');
+                        }
+                    } catch (error) {
+                        console.error('OTP verification error:', error);
+                        showMessage('An error occurred during verification. Please try again.', 'error');
+                    } finally {
+                        hideLoading();
+                    }
+                });
+            }
+
+            // Reset Password Form Submission
+            if (resetPasswordForm) {
+                resetPasswordForm.addEventListener('submit', async (e) => {
+                    e.preventDefault();
+                    hideMessage();
+                    showLoading();
+
+                    const email = sessionStorage.getItem('reset_email_for_otp');
+                    const newPassword = document.getElementById('new-password').value;
+                    const confirmNewPassword = document.getElementById('confirm-new-password').value;
+
+                    if (newPassword !== confirmNewPassword) {
+                        showMessage('New passwords do not match.', 'error');
+                        hideLoading();
+                        return;
+                    }
+
+                    if (!email) {
+                        showMessage('Email not found. Please restart the password reset process.', 'error');
+                        hideLoading();
+                        showStep(recoverEmailSection);
+                        return;
+                    }
+
+                    try {
+                        const response = await fetch('login_reset_backend.php', { // FIX: Pointing to new backend file
+                            method: 'POST',
+                            headers: { 'Content-Type': 'application/json' },
+                            body: JSON.stringify({ email, newPassword, action: 'reset_password' })
+                        });
+
+                        const data = await response.json();
+
+                        if (response.ok) {
+                            showMessage(data.message || 'Password successfully reset! You can now sign in.', 'success');
+                            sessionStorage.removeItem('reset_email_for_otp'); // Clear stored email
+                            showStep(loginSection); // Go back to login
+                            loginForm.reset();
+                        } else {
+                            showMessage(data.message || 'Failed to reset password.', 'error');
+                        }
+                    } catch (error) {
+                        console.error('Password reset request error:', error);
+                        showMessage('An error occurred during password reset. Please try again.', 'error');
+                    } finally {
+                        hideLoading();
+                    }
+                });
+            }
+        });

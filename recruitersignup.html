@@ -1,0 +1,87 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Register Page</title>
+  <link rel="stylesheet" href="sign.css">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Jersey+15&family=Oswald:wght@200..700&family=Poppins:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,100;1,200;1,300;1,400;1,500;1,600;1,700;1,800;1,900&family=Roboto+Slab:wght@100..900&family=Winky+Rough:ital,wght@0,300..900;1,300..900&display=swap" rel="stylesheet">
+ 
+
+
+</head>
+<body style="background-image: url('wokersingup.jpg'); background-repeat: no-repeat; background-size: cover; ">
+  <div class="container" id="signup-container" style="display: flex;">
+        <div class="left">
+          
+        </div>
+        <div class="right">
+            <div class="form-box">
+                <h2>Create a new account</h2>
+                <form id="signup-form">
+                    <label for="company-name">Company Name</label>
+                    <input type="text" id="company-name" name="company_name" autocomplete="given-name" placeholder="company name" required>
+
+                    <label for="signup-email">Email</label>
+                    <input type="email" id="signup-email" name="email" autocomplete="email" placeholder="Email" required>
+
+                    <label for="signup-password">Password</label>
+                    <input type="password" id="signup-password" name="password" autocomplete="new-password" placeholder="Password" required>
+                    
+                    <label for="confirm-password">Confirm Password</label>
+                    <input type="password" id="confirm-password" name="confirm_password" autocomplete="new-password" placeholder="Confirm Password" required>
+
+                    <label for="phone-number">Phone number</label>
+                    <div class="phone-input-group">
+                        
+                        <input type="tel" id="phone-number" name="phone_number" placeholder="Enter 10-digit number" pattern="[0-9]{10}" title="Please enter a valid 10-digit phone number" required>
+                    </div>
+
+                    <button type="submit">Create</button>
+
+                    <p class="signin">Already have an account? <a href="recruitersignin.html">Sign In</a></p>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <div class="container" id="otp-container" style="display: none;">
+        <div class="left">
+            <h1>choose your profession. <br><strong>Placeholder.</strong></h1>
+        </div>
+        <div class="right">
+            <div class="form-box">
+                <h2>Verify your account</h2>
+                <form id="otp-form">
+                    <label for="email-otp">E-Mail OTP</label>
+                    <input type="number" id="email-otp" placeholder="E-Mail OTP" required>
+
+                    <label for="phone-otp">Phone-OTP</label>
+                    <input type="number" id="phone-otp" placeholder="Phone OTP" required>
+
+                    <button type="submit">Verify</button>
+
+                    <p class="signin">Already have an account? <a href="#">Sign In</a></p>
+                </form>
+            </div>
+        </div>
+    </div>
+     <img class="white" src="white.png" alt="" style="   ">
+    <div class="c1"></div>
+    <div class="c2"></div>
+    <div class="c4"></div>
+    <div class="c3"></div>
+    <img class="img" src="back.jpg" alt="">
+
+
+    <div id="loading-overlay">
+        <div class="spinner"></div>
+    </div>
+
+</body>
+<script src="scriptR.js">
+  
+</script>
+</html>

@@ -1,0 +1,571 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>JobConnect - Profile</title>
+    <link rel="stylesheet" href="profile.css">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+</head>
+<body>
+    <header class="navbar">
+        <div class="navbar-left">
+            <h1 class="logo">JOBconnect.</h1>
+        </div>
+        <nav class="navbar-center">
+            <ul>
+                <li><a href="#" class="active">Jobs</a></li>
+                <li><a href="#">Messages</a></li>
+                <li><a href="#">Notifications</a></li>
+            </ul>
+        </nav>
+        <div class="navbar-right">
+            <div class="location">
+                
+                <span id="navbarLocation">City, District </span> ㅤ<i class="fas fa-map-marker-alt"></i>
+            </div>
+            <div class="profile-avatar">
+                <img src="https://placehold.co/150x150/png?text=P" alt="Profile Picture" id="navbarProfilePicture">
+            </div>
+        </div>
+    </header>
+
+    <main class="profile-container">
+        <aside class="profile-sidebar">
+            <div class="profile-header">
+                <img src="https://placehold.co/150x150/png?text=P" alt="Profile Picture" class="profile-picture" id="mainProfilePicture" onclick="changeProfilePhoto()">
+                <input type="file" id="profilePhotoInput" accept="image/*" style="display: none;">
+
+                <h2 id="profileName">Someone Somebody</h2>
+                <p class="position-name" id="profilePosition">Position Name</p>
+                <button class="status-button">open to work</button>
+            </div>
+            <div class="bio-section">
+                <p id="profileBio">something about yourself or something you would write for your bio or experience.</p>
+                <button class="edit-profile-button" onclick="openEditProfileModal()">Edit Profile</button>
+            </div>
+            <div class="skills-section">
+                <h3>Skills <button id="skill-btn" onclick="openAddSkillModal()" style="cursor: pointer; float: right;  border: 2px solid black; height: 30px; width: 30px; border-radius: 100px; align-items: center; text-align: center; justify-content: center; justify-items: center; font-size: 15px; font-weight: 700;">+</button></h3> 
+                
+                <div class="skill-tags" id="skillTagsContainer">
+                    <!-- Skills will be dynamically populated here -->
+                </div>
+            </div>
+            <div class="languages-section">
+                <h3>Languages</h3>
+                <ul id="languagesList">
+                    <!-- Languages will be dynamically populated here -->
+                </ul>
+            </div>
+        </aside>
+
+        <section class="profile-content">
+            <div class="basic-information-card card">
+                <h3>Basic Information</h3>
+                <div class="info-grid">
+                    <div class="info-item">
+                        <span class="label">AGE</span>
+                        <span class="value" id="profileAge">25 years</span>
+                    </div>
+                    <div class="info-item">
+                        <span class="label">YEARS OF EXPERIENCE</span>
+                        <span class="value" id="profileExperience">3 years</span>
+                    </div>
+                    <div class="info-item">
+                        <span class="label">LOCATION</span>
+                        <span class="value" id="profileLocation">Address, thane (w)</span>
+                    </div>
+                    <div class="info-item">
+                        <span class="label">EMAIL</span>
+                        <span class="value" id="profileEmail">somebodysomeone@gamil.com</span>
+                    </div>
+                </div>
+            </div>
+
+            <div class="experience-card card " >
+                <h3>Experience <button id="exp-btn" onclick="openAddexpModal()" style="cursor: pointer; float: right;  border: 2px solid black; height: 30px; width: 30px; border-radius: 100px; align-items: center; text-align: center; justify-content: center; justify-items: center; font-size: 15px; font-weight: 700;">+</button></h3>
+                <div class="experience-item">
+                    <i class="fas fa-briefcase icon"></i>
+                    <div class="details" >
+                        <p class="position" id="profileWorkExperience">Position</p>
+                        <p class="company">Company name</p>
+                        <p class="duration">YOU — YOL</p>
+                    </div>
+                </div>
+            </div>
+
+            <div class="education-card card">
+                <h3>Education</h3>
+                <div class="education-item">
+                    <i class="fas fa-graduation-cap icon"></i>
+                    <div class="details">
+                        <p class="degree" id="profileEducation">Education in</p>
+                        <p class="college">College name</p>
+                        <p class="duration">YOU — YOL</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <!-- Modal for editing profile information -->
+    <div id="editProfileModal" class="modal">
+        <div class="modal-content">
+            <span class="close-button" onclick="closeEditProfileModal()">&times;</span>
+            <h2>Edit Profile</h2>
+            <form id="editProfileForm">
+                <div class="form-group">
+                    <label for="first_name">First Name</label>
+                    <input type="text" id="first_name" name="first_name" value="">
+                </div>
+                <div class="form-group">
+                    <label for="last_name">Last Name</label>
+                    <input type="text" id="last_name" name="last_name" value="">
+                </div>
+                <div class="form-group">
+                   <label for="age">Age:</label>
+                    <input type="number" id="age" name="age" min="18" max="60" >
+
+                </div>
+                <div class="form-group">
+                    <label for="job_field">Job Field</label>
+                    <input type="text" id="job_field" name="job_field" value="">
+                </div>
+                <div class="form-group">
+                    <label for="bio">Bio / Experience</label>
+                    <textarea id="bio" name="bio" rows="4"></textarea>
+                </div>
+                <div class="form-group">
+                    <label for="education">Education</label>
+                    <input type="text" id="education" name="education" value="">
+                </div>
+                <div class="form-group">
+                    <label for="work_experience">Work Experience</label>
+                    <input type="text" id="work_experience" name="work_experience" value="">
+                </div>
+                <div class="form-group">
+                    <label for="address">Address</label>
+                    <input type="text" id="address" name="address" value="">
+                </div>
+                <div class="form-group">
+                    <label for="phone_number">Phone Number</label>
+                    <input type="tel" id="phone_number" name="phone_number"  disabled>
+                </div>
+                <div class="form-group">
+                    <label for="email">Email</label>
+                    <input type="email" id="email" name="email"  disabled>
+                </div>
+                <div class="form-group">
+                    <label for="employment_type">Employment Type</label>
+                    <input type="text" id="employment_type" name="employment_type" value="">
+                </div>
+                 <div class="form-group">
+                    <label for="shift_type">Shift Type</label>
+                    <input type="text" id="shift_type" name="shift_type" value="">
+                </div>
+                 <div class="form-group">
+                    <label for="part_time_hours">Part Time Hours</label>
+                    <input type="text" id="part_time_hours" name="part_time_hours" value="">
+                </div>
+                <div class="form-actions">
+                    <button type="submit">Save Changes</button>
+                    <button type="button" class="cancel-button" onclick="closeEditProfileModal()">Cancel</button>
+                </div>
+            </form>
+        </div>
+    </div>
+    
+    <!-- Modal for adding/editing skills -->
+    <div id="addSkillModal" class="modal">
+        <div class="modal-content">
+            <span class="close-button" onclick="closeAddSkillModal()">&times;</span>
+            <h2>Manage Skills</h2>
+            <div id="currentSkills" class="skill-tags edit-skills">
+                <!-- Skills will be dynamically populated here -->
+            </div>
+            <h3>Add New Skill</h3>
+            <form id="addSkillForm">
+                <div class="form-group add-skill-group">
+                    <input type="text" id="newSkillInput" name="newSkillInput" placeholder="e.g., Python, Figma, React" required>
+                    <button type="submit">Start Quiz</button>
+                </div>
+            </form>
+            <div class="form-actions">
+                <button type="button" class="cancel-button" onclick="closeAddSkillModal()">Close</button>
+            </div>
+        </div>
+    </div>
+
+    <div id="addexp" class="modal"  style="line-height: 20px;">
+        <div class="modal-content">
+            <span class="close-button" onclick="closeAddexpModal()">&times;</span>
+            
+           
+            <h3>Add Experience</h3>
+            <form id="addexpForm">
+                
+                <div class="form-group add-exp-group ">
+                   <div class="padding">
+                        <input style="margin-bottom: 5px;" type="number" id="Yaddexp" name="Yaddexp" name="Yexp" placeholder="Year Of Experience" >
+                        <input style="margin-bottom: 10px;" type="text" id="Caddexp" name="Caddexp" name="Cexp" placeholder="Company Name" >
+                        <label>Enter Experience Years</label>
+        <style>.box {
+      background: white;
+      padding: 30px;
+      border-radius: 10px;
+      box-shadow: 0 0 15px rgba(0, 0, 0, 0.1);
+      text-align: center;
+    }</style> 
+    
+    
+    
+    <div class="box">
+    <label>Select Experience Duration</label>
+    <input type="month" id="startMonth" name="start"
+           min="1980-01" max="2025-12" value="" placeholder="5728">
+    <span>—</span>
+    <input type="month" id="endMonth" name="end"
+           min="1980-01" max="2025-12" value="" placeholder="5728">
+
+    <div class="output" id="expOutput"></div>
+  </div>
+
+
+    <div class="output" id="expOutput"></div>
+  </div>
+
+  <script>
+    const startInput = document.getElementById('startYear');
+    const endInput = document.getElementById('endYear');
+    const output = document.getElementById('expOutput');
+
+    function updateOutput() {
+      const start = startInput.value;
+      const end = endInput.value;
+      if (start && end) {
+        output.textContent = `Selected: ${start} — ${end}`;
+      } else {
+        output.textContent = "";
+      }
+    }
+
+    startInput.addEventListener("input", updateOutput);
+    endInput.addEventListener("input", updateOutput);
+  </script>
+                        
+                   </div>
+                </div>
+            </form>
+            <div class="form-actions">
+                <button type="button" class="cancel-button" onclick="closeAddexpModal()">Close</button>
+            </div>
+        </div>
+    </div>
+
+
+   
+    
+    <div id="custom-modal-overlay" class="custom-modal-overlay">
+        <div class="custom-modal-content">
+            <h3 id="custom-modal-title"></h3>
+            <p id="custom-modal-message"></p>
+            <button id="custom-modal-ok-btn">OK</button>
+        </div>
+    </div>
+    
+    <!-- Loading Screen -->
+    <div id="loader-overlay" class="loader-overlay">
+        <div class="loader"></div>
+        <p class="loader-text">Loading...</p>
+    </div>
+
+    <script>
+        // Custom alert function to replace window.alert
+        function showCustomAlert(title, message) {
+            const modalOverlay = document.getElementById('custom-modal-overlay');
+            const modalTitle = document.getElementById('custom-modal-title');
+            const modalMessage = document.getElementById('custom-modal-message');
+            const okBtn = document.getElementById('custom-modal-ok-btn');
+
+            modalTitle.textContent = title;
+            modalMessage.textContent = message;
+            modalOverlay.style.display = 'flex';
+
+            okBtn.onclick = function() {
+                modalOverlay.style.display = 'none';
+            };
+        }
+        
+        // Function to show and hide the loading screen
+        function showLoader(message = 'Loading...') {
+            const loaderOverlay = document.getElementById('loader-overlay');
+            const loaderText = document.querySelector('.loader-text');
+            loaderText.textContent = message;
+            loaderOverlay.style.display = 'flex';
+        }
+
+        function hideLoader() {
+            const loaderOverlay = document.getElementById('loader-overlay');
+            loaderOverlay.style.display = 'none';
+        }
+
+        document.addEventListener('DOMContentLoaded', fetchProfileData);
+        async function fetchProfileData() {
+            showLoader("Fetching profile data...");
+            try {
+                const response = await fetch('profile.php', { method: 'GET' });
+                const result = await response.json();
+
+                if (result.success) {
+                    const profileData = result.profile_data;
+                    updateProfileUI(profileData);
+                } else {
+                    showCustomAlert('Error', result.error || 'Failed to fetch profile data.');
+                }
+            } catch (error) {
+                console.error('Error fetching profile data:', error);
+                showCustomAlert('Network Error', 'Failed to connect to the server.');
+            } finally {
+                hideLoader();
+            }
+        }
+        
+        function updateProfileUI(data) {
+            document.getElementById('profileName').textContent = `${data.first_name} ${data.last_name}`;
+            document.getElementById('profilePosition').textContent = data.job_field;
+            document.getElementById('profileBio').textContent = data.bio;
+            document.getElementById('profileAge').textContent = `${data.age} years`;
+            document.getElementById('profileExperience').textContent = `${data.experience_years} years`;
+            document.getElementById('profileWorkExperience').textContent = data.work_experience;
+            document.getElementById('profileEducation').textContent = data.education;
+            document.getElementById('profileLocation').textContent = data.address;
+            document.getElementById('profileEmail').textContent = data.email;
+            document.getElementById('navbarLocation').textContent = data.address;
+            
+            
+            const profilePictureUrl = data.profile_url || 'https://placehold.co/150x150/png?text=P';
+            document.getElementById('mainProfilePicture').src = profilePictureUrl;
+            document.getElementById('navbarProfilePicture').src = profilePictureUrl;
+            
+            
+            document.getElementById('first_name').value = data.first_name;
+            document.getElementById('last_name').value = data.last_name;
+            document.getElementById('job_field').value = data.job_field;
+            document.getElementById('age').value = data.age;
+            document.getElementById('bio').value = data.bio;
+            document.getElementById('education').value = data.education;
+            document.getElementById('work_experience').value = data.work_experience;
+            document.getElementById('address').value = data.address;
+            document.getElementById('phone_number').value = data.phone_number;
+            document.getElementById('email').value = data.email;
+            document.getElementById('employment_type').value = data.employment_type;
+            document.getElementById('shift_type').value = data.shift_type;
+            document.getElementById('part_time_hours').value = data.part_time_hours;
+            
+            
+            const skillTagsContainer = document.getElementById('skillTagsContainer');
+            skillTagsContainer.innerHTML = '';
+            if (data.skills && Array.isArray(data.skills)) {
+                data.skills.forEach(skill => {
+                    const tag = document.createElement('span');
+                    tag.className = 'skill-tag';
+                    tag.textContent = skill;
+                    skillTagsContainer.appendChild(tag);
+                });
+            }
+
+            // Populate skills in the new modal
+            const currentSkillsDiv = document.getElementById('currentSkills');
+            currentSkillsDiv.innerHTML = '';
+            if (data.skills && Array.isArray(data.skills)) {
+                data.skills.forEach(skill => {
+                    const newSkillTag = document.createElement('span');
+                    newSkillTag.classList.add('skill-tag');
+                    newSkillTag.innerHTML = `${skill} <span class="remove-skill" onclick="removeSkill(this, '${skill}')">&times;</span>`;
+                    currentSkillsDiv.appendChild(newSkillTag);
+                });
+            }
+
+             // Populate languages (hardcoded for this version)
+            const languagesList = document.getElementById('languagesList');
+            languagesList.innerHTML = '';
+            if (data.languages && Array.isArray(data.languages)) {
+                data.languages.forEach(language => {
+                    const li = document.createElement('li');
+                    li.textContent = language;
+                    languagesList.appendChild(li);
+                });
+            }
+        }
+
+        // Handle profile photo change
+        function changeProfilePhoto() {
+            document.getElementById('profilePhotoInput').click();
+        }
+
+        document.getElementById('profilePhotoInput').addEventListener('change', handleProfilePhotoChange);
+
+        async function handleProfilePhotoChange(event) {
+            const file = event.target.files[0];
+            if (file) {
+                showLoader("Uploading photo...");
+
+                const formData = new FormData();
+                formData.append('profile_photo', file);
+
+                try {
+                    const response = await fetch('profile.php', {
+                        method: 'POST',
+                        body: formData
+                    });
+
+                    const result = await response.json();
+                    if (result.success) {
+                        
+                        document.getElementById('mainProfilePicture').src = result.photo_url;
+                        document.getElementById('navbarProfilePicture').src = result.photo_url;
+                        showCustomAlert('Success', 'Profile photo updated successfully!');
+                    } else {
+                        showCustomAlert('Upload Failed', result.error || 'An unknown error occurred during upload.');
+                    }
+                } catch (error) {
+                    console.error('Error uploading photo:', error);
+                    showCustomAlert('Network Error', 'Failed to upload photo. Please check your connection.');
+                } finally {
+                    hideLoader();
+                }
+            }
+        }
+
+       
+        document.getElementById('editProfileForm').addEventListener('submit', async function(event) {
+            event.preventDefault();
+            showLoader("Saving profile...");
+            
+            const formData = new FormData(this);
+
+            try {
+                const response = await fetch('profile.php', {
+                    method: 'POST',
+                    body: formData
+                });
+                const result = await response.json();
+
+                if (result.success) {
+                    showCustomAlert('Success', result.message);
+                    closeEditProfileModal();
+                    fetchProfileData(); 
+                } else {
+                    showCustomAlert('Error', result.error || 'Failed to update profile.');
+                }
+            } catch (error) {
+                console.error('Error saving profile:', error);
+                showCustomAlert('Network Error', 'Failed to save profile. Please check your connection.');
+            } finally {
+                hideLoader();
+            }
+        });
+
+        
+        function openEditProfileModal() {
+            document.getElementById('editProfileModal').style.display = 'block';
+        }
+
+        function closeEditProfileModal() {
+            document.getElementById('editProfileModal').style.display = 'none';
+        }
+
+        function openAddSkillModal() {
+            document.getElementById('addSkillModal').style.display = 'block';
+            fetchProfileData(); // Refresh skills in modal just in case
+        }
+        
+        function closeAddSkillModal() {
+            document.getElementById('addSkillModal').style.display = 'none';
+        }
+
+        function openAddexpModal() {
+            document.getElementById('addexp').style.display = 'block';
+            fetchProfileData(); 
+        }
+        
+        function closeAddexpModal() {
+            document.getElementById('addexp').style.display = 'none';
+        }
+        
+        // Function to remove a skill
+        async function removeSkill(element, skillName) {
+            if (confirm(`Are you sure you want to remove "${skillName}"?`)) {
+                element.parentNode.remove();
+                
+                // Here, you would call a backend script to remove the skill from the database.
+                // Since there is no explicit backend for this, we will simulate it.
+                // In a real application, this would be a separate PHP file like 'remove_skill.php'.
+                console.log(`Simulating removal of skill: ${skillName}`);
+                showCustomAlert('Simulated Removal', `The skill "${skillName}" has been removed from the UI. A backend call would be made here.`);
+                
+                // After successful removal from the backend, you would typically re-fetch data.
+                // fetchProfileData();
+            }
+        }
+
+        // New function to handle "Add Skill" button click from the modal
+        document.getElementById('addSkillForm').addEventListener('submit', async function(event) {
+            event.preventDefault();
+            
+            const skillName = document.getElementById('newSkillInput').value.trim();
+
+            if (skillName === "") {
+                showCustomAlert('Invalid Input', 'Skill name cannot be empty.');
+                return;
+            }
+            
+            closeAddSkillModal(); // Close the modal before showing the loader
+            showLoader(`Generating quiz for "${skillName}"...`);
+            
+            const formData = new FormData();
+            formData.append('field', skillName);
+
+            try {
+                const response = await fetch('generate_quiz.php', {
+                    method: 'POST',
+                    body: formData
+                });
+                
+                const result = await response.json();
+                
+                if (result.success) {
+                    // Save quiz data to session storage
+                    sessionStorage.setItem('userField', skillName);
+                    sessionStorage.setItem('generatedQuestions', JSON.stringify(result.questions));
+                    sessionStorage.setItem('userName', 'Demo User'); // Or fetch from profile data
+                    
+                    // Redirect to the quiz page
+                    window.location.href = 'quiz_page.html';
+                } else {
+                    showCustomAlert('Quiz Generation Failed', result.error || 'An unexpected error occurred while generating the quiz. Please try again.');
+                }
+            } catch (error) {
+                console.error('Error generating quiz:', error);
+                showCustomAlert('Network Error', 'Could not connect to the server. Please check your internet connection.');
+            } finally {
+                hideLoader();
+            }
+        });
+
+        // Close modals when clicking outside
+        window.onclick = function(event) {
+            const profileModal = document.getElementById('editProfileModal');
+            const addSkillModal = document.getElementById('addSkillModal');
+            if (event.target == profileModal) {
+                profileModal.style.display = "none";
+            }
+            if (event.target == addSkillModal) {
+                addSkillModal.style.display = "none";
+            }
+        };
+
+    </script>
+</body>
+</html>

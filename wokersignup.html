@@ -1,0 +1,104 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Register Page</title>
+  <link rel="stylesheet" href="sign.css">
+ <style>
+  
+   body {
+      font-family: 'Montserrat', sans-serif;
+      background: #f7f7f7;
+      padding: 30px;
+      overflow: hidden;
+      
+    }
+ </style>
+</head>
+<body >
+
+  <div style="font-size: 30px; font-weight: 700; margin: -20px; position: relative; z-index: 100;">JOBconnect</div>
+    <div style="font-size: 30px; font-weight: 600; margin: -20px; float: right; position: relative; z-index: 10; "><span >Sign up</span></div>
+  
+
+        
+  <div class="container" id="signup-container" style="display: flex;">
+        <div class="left">
+           
+        </div>
+        <div class="right">
+            <div class="form-box">
+                
+                <form id="signup-form">
+                   
+                    <input type="text" id="first-name" name="first_name" autocomplete="given-name" placeholder="First name" required>
+
+                  
+                    <input type="text" id="last-name" name="last_name" autocomplete="family-name" placeholder="Last name" required>
+
+                    
+                    <input type="email" id="signup-email" name="email" autocomplete="email" placeholder="Email" required>
+
+                    
+                    <input type="password" id="signup-password" name="password" autocomplete="new-password" placeholder="Password" required>
+                    
+                   
+                    <input type="password" id="confirm-password" name="confirm_password" autocomplete="new-password" placeholder="Confirm Password" required>
+
+                    
+                    <div class="phone-input-group">
+                        
+                        <input type="tel" id="phone-number" name="phone_number" placeholder="Enter 10-digit number" pattern="[0-9]{10}" title="Please enter a valid 10-digit phone number" required>
+                    </div>
+
+                    <button type="submit">Create</button>
+
+                    <p class="signin">Already have an account? <a href="wokersignin.html">Sign In</a></p>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <div class="container" id="otp-container" style="display: none;">
+        <div class="left">
+           
+        </div>
+        <div class="right">
+            <div class="form-box">
+          
+                <form id="otp-form">
+                    
+                    <input type="number" id="email-otp" placeholder="E-Mail OTP" required>
+
+                   
+                    <input type="number" id="phone-otp" placeholder="Phone OTP" required>
+
+                    <button type="submit">Verify</button>
+
+                    <p class="signin">Already have an account? <a href="#">Sign In</a></p>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <div class="right-text" >Let’s get you started on your job hunt journey.<br> <span style="font-size: 30px;">Ready to create an account?</span>
+
+    </div>
+
+    <div id="loading-overlay">
+        <div class="spinner"></div>
+    </div>
+<div style="z-index: -19;">
+     <img src="white.png" alt="" style="width: 110%; height: 110%;  object-fit: cover;  margin-top: -1000px; margin-left: -40px;">
+    <div class="c1"></div>
+    <div class="c2"></div>
+    <div class="c4"></div>
+    <div class="c3"></div>
+    <img class="img" src="back.jpg" alt="">
+</div>
+</body>
+<script src="script.js">
+  
+</script>
+</html>

@@ -1,0 +1,1024 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Job Portal Quiz</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <style>
+        :root {
+            --primary-blue: #007bff;
+            --light-blue: #e0f2ff;
+            --dark-blue: #0056b3;
+            --text-dark: #333;
+            --text-light-gray: #666;
+            --border-gray: #ccc;
+            --bg-light: #f8f9fa;
+            --success-green: #28a745;
+            --error-red: #dc3545;
+            --progress-bar-bg: #e6e6e6;
+            --question-nav-bg: #f0f0f0;
+            --primary-blue-start: #3b82f6;
+            --primary-blue-end: #2563eb;
+            --secondary-purple-start: #8b5cf6;
+            --secondary-purple-end: #7c3aed;
+            --primary-gradient: linear-gradient(135deg, var(--primary-blue-start), var(--primary-blue-end));
+            --secondary-gradient: linear-gradient(135deg, var(--secondary-purple-start), var(--secondary-purple-end));
+        }
+
+        body {
+            font-family: 'Inter', sans-serif;
+            margin: 0;
+            padding: 20px;
+            background: linear-gradient(to right bottom, #e0f2fe, #f0f8ff);
+            display: flex;
+            justify-content: center;
+            align-items: flex-start;
+            min-height: 100vh;
+        }
+
+        .container {
+            background-color: #fff;
+            padding: 40px;
+            border-radius: 10px;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+            width: 100%;
+            max-width: 95vw;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .quiz-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+            padding-bottom: 15px;
+            border-bottom: 1px solid var(--border-gray);
+        }
+
+        .quiz-header .logo-section {
+            display: flex;
+            align-items: center;
+            font-size: 1.5em;
+            font-weight: 600;
+            background: var(--primary-gradient);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .quiz-header .logo-section i {
+            margin-right: 10px;
+            color: var(--primary-blue-end);
+            -webkit-text-fill-color: initial;
+        }
+
+        .quiz-header .timer-display {
+            font-size: 1.1em;
+            font-weight: bold;
+            color: var(--error-red);
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .quiz-header .timer-display i {
+            font-size: 1.2em;
+        }
+
+        .quiz-content-wrapper {
+            display: flex;
+            gap: 30px;
+            flex-grow: 1;
+        }
+
+        .quiz-main-content {
+            flex: 3;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .quiz-sidebar {
+            flex: 1;
+            background-color: var(--question-nav-bg);
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: inset 0 0 5px rgba(0, 0, 0, 0.05);
+            min-width: 180px;
+        }
+
+        .quiz-progress-bar {
+            width: 100%;
+            height: 8px;
+            background-color: var(--progress-bar-bg);
+            border-radius: 4px;
+            margin-bottom: 20px;
+            overflow: hidden;
+        }
+
+        .quiz-progress-fill {
+            height: 100%;
+            width: 0%;
+            background: var(--primary-gradient);
+            border-radius: 4px;
+            transition: width 0.3s ease-in-out;
+        }
+
+        .quiz-question-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+        }
+
+        .quiz-question-header .question-info {
+            font-size: 1.1em;
+            font-weight: 600;
+            color: var(--text-dark);
+        }
+
+        .quiz-question-header .question-category {
+            background: var(--primary-gradient);
+            color: #fff;
+            padding: 5px 12px;
+            border-radius: 20px;
+            font-size: 0.85em;
+            font-weight: 500;
+        }
+
+        .question-item {
+            background-color: #fff;
+            border: 1px solid var(--border-gray);
+            border-radius: 8px;
+            padding: 20px;
+            margin-bottom: 20px;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.05);
+        }
+
+        .question-text {
+            font-size: 1.2em;
+            margin-bottom: 20px;
+            color: var(--text-dark);
+            font-weight: 600;
+        }
+
+        .options-list {
+            list-style: none;
+            padding: 0;
+        }
+
+        .options-list li {
+            margin-bottom: 12px;
+        }
+
+        .options-list label {
+            display: flex;
+            align-items: center;
+            cursor: pointer;
+            padding: 15px 20px;
+            border: 1px solid var(--border-gray);
+            border-radius: 8px;
+            transition: background-color 0.2s ease, border-color 0.2s ease, color 0.2s ease, box-shadow 0.2s ease;
+            font-size: 1em;
+            font-weight: 500;
+        }
+
+        .options-list label:hover {
+            background-color: var(--light-blue);
+            border-color: var(--primary-blue);
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+        }
+
+        .options-list input[type="radio"] {
+            appearance: none;
+            -webkit-appearance: none;
+            -moz-appearance: none;
+            position: absolute;
+            opacity: 0;
+            width: 0;
+            height: 0;
+            margin: 0;
+            padding: 0;
+            cursor: pointer;
+        }
+
+        .options-list input[type="radio"]:checked + label {
+            background: var(--primary-gradient);
+            color: #fff;
+            border-color: var(--primary-blue-end);
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
+        }
+
+        .options-list input[type="radio"]:checked + label:hover {
+            background: var(--primary-gradient);
+            color: #fff;
+            border-color: var(--primary-blue-end);
+        }
+
+        .quiz-navigation-buttons {
+            display: flex;
+            justify-content: space-between;
+            margin-top: 30px;
+            padding-top: 20px;
+            border-top: 1px solid var(--border-gray);
+        }
+
+        .quiz-navigation-buttons button {
+            width: auto;
+            padding: 10px 25px;
+            font-size: 1em;
+            border-radius: 6px;
+            margin-top: 0;
+            color: #fff;
+            border: none;
+            cursor: pointer;
+            transition: background-color 0.3s ease, transform 0.2s ease;
+        }
+
+        .quiz-navigation-buttons .prev-btn {
+            background-color: #6c757d;
+        }
+
+        .quiz-navigation-buttons .next-btn {
+            background: var(--primary-gradient);
+            background-size: 200% 200%;
+        }
+        .quiz-navigation-buttons .next-btn:hover {
+            background-position: 100% 0;
+            transform: translateY(-2px);
+        }
+
+        .quiz-navigation-buttons .prev-btn:hover {
+            background-color: #5a6268;
+            transform: translateY(-2px);
+        }
+        .quiz-navigation-buttons button:disabled {
+            opacity: 0.6;
+            cursor: not-allowed;
+            transform: translateY(0);
+        }
+
+
+        .quiz-sidebar h4 {
+            font-size: 1.1em;
+            color: var(--text-dark);
+            margin-bottom: 15px;
+            border-bottom: 1px solid var(--border-gray);
+            padding-bottom: 8px;
+        }
+
+        .question-overview-grid {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 10px;
+        }
+
+        .question-overview-item {
+            width: 40px;
+            height: 40px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            background-color: #fff;
+            border: 1px solid var(--border-gray);
+            border-radius: 6px;
+            cursor: pointer;
+            font-weight: 500;
+            transition: background-color 0.2s ease, border-color 0.2s ease;
+        }
+
+        .question-overview-item.active {
+            background: var(--primary-gradient);
+            color: #fff;
+            border-color: var(--primary-blue-end);
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15);
+        }
+
+        .question-overview-item.answered {
+            background-color: #d4edda;
+            border-color: var(--success-green);
+            color: var(--success-green);
+        }
+
+        .question-overview-item:hover:not(.active) {
+            background-color: var(--light-blue);
+            border-color: var(--primary-blue);
+        }
+
+        .quiz-footer-actions {
+            display: flex;
+            justify-content: flex-end;
+            align-items: center;
+            padding-top: 20px;
+            border-top: 1px solid var(--border-gray);
+            margin-top: 30px;
+        }
+
+        .quiz-footer-actions .submit-assessment-btn {
+            width: auto;
+            padding: 12px 30px;
+            font-size: 1em;
+            background: var(--secondary-gradient);
+            color: #fff;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: background-color 0.3s ease, transform 0.2s ease;
+            border: none;
+            background-size: 200% 200%;
+        }
+        .quiz-footer-actions .submit-assessment-btn:hover {
+            background-position: 100% 0;
+            transform: translateY(-2px);
+        }
+        .quiz-footer-actions .submit-assessment-btn:disabled {
+            opacity: 0.6;
+            cursor: not-allowed;
+            transform: translateY(0);
+        }
+
+
+        .quiz-footer-actions .warning-message {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            color: var(--error-red);
+            font-size: 0.9em;
+            margin-right: auto;
+        }
+
+        .quiz-footer-actions .warning-message i {
+            font-size: 1.1em;
+        }
+
+        .quiz-result-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(255, 255, 255, 0.95);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            z-index: 1000;
+            opacity: 0;
+            visibility: hidden;
+            transition: opacity 0.3s ease, visibility 0.3s ease;
+        }
+
+        .quiz-result-overlay.visible {
+            opacity: 1;
+            visibility: visible;
+        }
+
+        .quiz-result-message {
+            background-color: #fff;
+            padding: 40px;
+            border-radius: 10px;
+            box-shadow: 0 8px 25px rgba(0, 0, 0, 0.2);
+            text-align: center;
+            max-width: 500px;
+            width: 90%;
+            transform: translateY(-20px);
+            opacity: 0;
+            animation: fadeInSlideUp 0.5s forwards ease-out;
+        }
+
+        @keyframes fadeInSlideUp {
+            from {
+                opacity: 0;
+                transform: translateY(20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        /* Spinner for loading state */
+        .spinner {
+            border: 4px solid rgba(0, 0, 0, 0.1);
+            border-left-color: var(--primary-blue);
+            border-radius: 50%;
+            width: 50px;
+            height: 50px;
+            animation: spin 1s linear infinite;
+            margin: 0 auto 20px;
+        }
+
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
+        .loading-text {
+            font-size: 1.1em;
+            font-weight: 500;
+            color: var(--text-dark);
+        }
+
+
+        .quiz-result-message .icon {
+            font-size: 3em;
+            margin-bottom: 20px;
+        }
+
+        .success-message {
+            color: var(--success-green);
+        }
+
+        .fail-message {
+            color: var(--error-red);
+        }
+        .error-message {
+            color: #856404;
+            background-color: #fff3cd;
+            border: 1px solid #ffeeba;
+            padding: 15px;
+            border-radius: 8px;
+            margin-bottom: 20px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            justify-content: center;
+            font-size: 1em;
+            font-weight: 500;
+        }
+        .error-message i {
+            font-size: 1.2em;
+        }
+
+
+        .quiz-result-message h2 {
+            font-size: 1.8em;
+            margin-bottom: 15px;
+            font-weight: 700;
+        }
+
+        .quiz-result-message p {
+            font-size: 1.1em;
+            color: var(--text-dark);
+            margin-bottom: 25px;
+        }
+
+
+        .result-actions {
+            display: flex;
+            justify-content: center;
+            gap: 15px;
+            flex-wrap: wrap;
+        }
+        .try-again-button, .change-field-button, .proceed-button {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            padding: 12px 25px;
+            font-size: 1em;
+            border-radius: 6px;
+            border: none;
+            cursor: pointer;
+            transition: transform 0.2s ease, box-shadow 0.2s ease;
+            color: #fff;
+            font-weight: 600;
+            text-decoration: none;
+            justify-content: center;
+        }
+
+        .try-again-button {
+            background: var(--primary-gradient);
+            background-size: 200% 200%;
+        }
+        .try-again-button:hover {
+            background-position: 100% 0;
+            transform: translateY(-3px);
+            box-shadow: 0 5px 15px rgba(0, 123, 255, 0.3);
+        }
+
+        .change-field-button {
+            background-color: #6c757d;
+        }
+        .change-field-button:hover {
+            background-color: #5a6268;
+            transform: translateY(-3px);
+            box-shadow: 0 5px 15px rgba(108, 117, 125, 0.3);
+        }
+
+        .proceed-button {
+            background-color: var(--success-green);
+        }
+        .proceed-button:hover {
+            background-color: #218838;
+            transform: translateY(-3px);
+            box-shadow: 0 5px 15px rgba(40, 167, 69, 0.3);
+        }
+
+        .custom-modal-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.6);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            z-index: 1001;
+            opacity: 0;
+            visibility: hidden;
+            transition: opacity 0.3s ease, visibility 0.3s ease;
+        }
+
+        .custom-modal-overlay.visible {
+            opacity: 1;
+            visibility: visible;
+        }
+
+        .custom-modal-content {
+            background-color: #fff;
+            padding: 30px;
+            border-radius: 8px;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
+            text-align: center;
+            max-width: 400px;
+            width: 90%;
+            transform: scale(0.9);
+            transition: transform 0.3s ease;
+        }
+
+        .custom-modal-overlay.visible .custom-modal-content {
+            transform: scale(1);
+        }
+
+        .custom-modal-content h3 {
+            margin-top: 0;
+            font-size: 1.5em;
+            color: var(--text-dark);
+            margin-bottom: 15px;
+        }
+
+        .custom-modal-content p {
+            font-size: 1.1em;
+            color: var(--text-light-gray);
+            margin-bottom: 25px;
+        }
+
+        .custom-modal-content button {
+            padding: 10px 20px;
+            font-size: 1em;
+            border-radius: 5px;
+            border: none;
+            cursor: pointer;
+            background-color: var(--primary-blue);
+            color: #fff;
+            transition: background-color 0.2s ease;
+        }
+
+        .custom-modal-content button:hover {
+            background-color: var(--dark-blue);
+        }
+
+
+        @media (max-width: 768px) {
+            .container {
+                padding: 20px;
+            }
+            .quiz-content-wrapper {
+                flex-direction: column;
+            }
+            .quiz-sidebar {
+                min-width: unset;
+                width: 100%;
+                margin-top: 30px;
+            }
+            .quiz-navigation-buttons {
+                flex-direction: column;
+                gap: 15px;
+            }
+            .quiz-navigation-buttons button {
+                width: 100%;
+            }
+            .quiz-footer-actions {
+                flex-direction: column;
+                gap: 15px;
+                align-items: stretch;
+            }
+            .quiz-footer-actions .warning-message {
+                margin-right: 0;
+                margin-bottom: 10px;
+                text-align: center;
+                justify-content: center;
+            }
+            .quiz-result-message {
+                padding: 30px;
+                width: 95%;
+            }
+            .result-actions {
+                flex-direction: column;
+                gap: 10px;
+            }
+            .try-again-button, .change-field-button, .proceed-button {
+                width: 100%;
+            }
+            .custom-modal-content {
+                padding: 20px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="quiz-header">
+            <div class="logo-section">
+                <i class="fas fa-briefcase"></i> JobQuiz
+            </div>
+            <div class="timer-display" id="timer-display-quiz">
+                <i class="far fa-clock"></i> <span id="time-remaining"></span> minutes remaining
+            </div>
+        </div>
+
+        <div class="quiz-content-wrapper">
+            <div class="quiz-main-content">
+                <div class="quiz-progress-bar">
+                    <div class="quiz-progress-fill" id="quiz-progress-fill"></div>
+                </div>
+                <div class="quiz-question-header">
+                    <span class="question-info" id="current-question-info"></span>
+                    <span class="question-category" id="question-category"></span>
+                </div>
+
+                <form id="quiz-form">
+                </form>
+
+                <div class="quiz-navigation-buttons">
+                    <button type="button" id="prev-question-btn" class="prev-btn" disabled>
+                        <i class="fas fa-chevron-left"></i> Previous Question
+                    </button>
+                    <button type="button" id="next-question-btn" class="next-btn">
+                        Next Question <i class="fas fa-chevron-right"></i>
+                    </button>
+                </div>
+            </div>
+
+            <div class="quiz-sidebar">
+                <h4>Question Overview</h4>
+                <div class="question-overview-grid" id="question-overview-grid">
+                </div>
+            </div>
+        </div>
+
+        <div class="quiz-footer-actions">
+            <p id="quiz-warning-message" style="display:none;">
+                <i class="fas fa-exclamation-triangle"></i> Please answer all questions before submitting.
+            </p>
+            <button type="button" id="submit-quiz-btn" class="submit-assessment-btn">Submit Assessment</button>
+        </div>
+    </div>
+
+    <div class="quiz-result-overlay" id="quiz-result-overlay">
+        <div class="quiz-result-message">
+        </div>
+    </div>
+
+    <div class="custom-modal-overlay" id="custom-modal-overlay">
+        <div class="custom-modal-content">
+            <h3 id="custom-modal-title"></h3>
+            <p id="custom-modal-message"></p>
+            <button id="custom-modal-ok-btn">OK</button>
+        </div>
+    </div>
+    <script>
+        const timerDisplayQuizSpan = document.getElementById('time-remaining');
+        const currentQuestionInfoSpan = document.getElementById('current-question-info');
+        const quizProgressBarFillDiv = document.getElementById('quiz-progress-fill');
+        const prevQuestionBtn = document.getElementById('prev-question-btn');
+        const nextQuestionBtn = document.getElementById('next-question-btn');
+        const questionOverviewGridDiv = document.getElementById('question-overview-grid');
+        const quizForm = document.getElementById('quiz-form');
+        const submitQuizBtn = document.getElementById('submit-quiz-btn');
+        const quizWarningMessageP = document.getElementById('quiz-warning-message');
+        const questionCategorySpan = document.getElementById('question-category');
+        const quizResultOverlay = document.getElementById('quiz-result-overlay');
+        const quizResultMessageDiv = quizResultOverlay.querySelector('.quiz-result-message');
+
+        const customModalOverlay = document.getElementById('custom-modal-overlay');
+        const customModalTitle = document.getElementById('custom-modal-title');
+        const customModalMessage = document.getElementById('custom-modal-message');
+        const customModalOkBtn = document.getElementById('custom-modal-ok-btn');
+
+        let generatedQuestions = [];
+        let userName = '';
+        let userField = '';
+        let timerInterval;
+        const QUIZ_DURATION = 3 * 60; // 3 minutes
+        let timeLeft = QUIZ_DURATION;
+        let currentQuestionIndex = 0;
+        let tempApplicationData = {};
+
+    
+        function showCustomModal(title, message, callback) {
+            customModalTitle.textContent = title;
+            customModalMessage.textContent = message;
+            customModalOverlay.classList.add('visible');
+
+            const handleOkClick = () => {
+                customModalOverlay.classList.remove('visible');
+                customModalOkBtn.removeEventListener('click', handleOkClick);
+                if (callback && typeof callback === 'function') {
+                    callback();
+                }
+            };
+            customModalOkBtn.addEventListener('click', handleOkClick);
+        }
+
+        document.addEventListener('DOMContentLoaded', () => {
+            userName = sessionStorage.getItem('userName');
+            userField = sessionStorage.getItem('userField');
+            const storedQuestions = sessionStorage.getItem('generatedQuestions');
+
+            // --- Robust check for session data, redirect if missing ---
+            if (!userName || !userField || !storedQuestions) {
+                console.error("Session storage data is missing. Redirecting to profile page.");
+                showCustomModal('Error Loading Quiz', 'Quiz data was not found. Please add a skill to start a new quiz.', () => {
+                    sessionStorage.clear();
+                    window.location.href = 'profile.html'; // Redirect back to profile page
+                });
+                return;
+            } else {
+                try {
+                    generatedQuestions = JSON.parse(storedQuestions);
+                    if (!Array.isArray(generatedQuestions) || generatedQuestions.length !== 10) {
+                        throw new Error('Invalid quiz data: Expected 10 questions.');
+                    }
+                } catch (e) {
+                    console.error("Error parsing stored data:", e);
+                    showCustomModal('Error Loading Quiz', 'Error loading quiz data. Please try again.', () => {
+                        sessionStorage.clear(); // Clear storage to ensure clean start
+                        window.location.href = 'profile.html'; // Redirect to start page
+                    });
+                    return;
+                }
+            }
+
+            renderQuiz();
+            startTimer();
+        });
+
+
+        function renderQuiz() {
+            renderQuestion(currentQuestionIndex);
+            updateProgressBar();
+            updateQuestionOverview();
+            updateNavigationButtons();
+        }
+
+
+        function renderQuestion(index) {
+            const q = generatedQuestions[index];
+            quizForm.innerHTML = '';
+
+            const questionTextElement = document.createElement('p');
+            questionTextElement.className = 'question-text';
+            questionTextElement.innerHTML = `Q${index + 1}: ${q.question}`;
+            quizForm.appendChild(questionTextElement);
+
+            const optionsList = document.createElement('ul');
+            optionsList.className = 'options-list';
+
+            q.options.forEach((option, i) => {
+                const listItem = document.createElement('li');
+                const radioInput = document.createElement('input');
+                radioInput.type = 'radio';
+                radioInput.id = `q${index}-option${i}`;
+                radioInput.name = `question-${index}`;
+                radioInput.value = String.fromCharCode(65 + i);
+                radioInput.dataset.questionIndex = index;
+
+                if (generatedQuestions[index].selectedAnswer === radioInput.value) {
+                    radioInput.checked = true;
+                }
+
+                radioInput.addEventListener('change', (event) => {
+                    generatedQuestions[event.target.dataset.questionIndex].selectedAnswer = event.target.value;
+                    updateQuestionOverview();
+                });
+
+                const label = document.createElement('label');
+                label.htmlFor = `q${index}-option${i}`;
+                label.textContent = `${String.fromCharCode(65 + i)}) ${option}`;
+
+                listItem.appendChild(radioInput);
+                listItem.appendChild(label);
+                optionsList.appendChild(listItem);
+            });
+
+            quizForm.appendChild(optionsList);
+            currentQuestionInfoSpan.textContent = `Question ${index + 1} of ${generatedQuestions.length}`;
+            questionCategorySpan.textContent = userField;
+        }
+
+        function updateProgressBar() {
+            const progress = ((currentQuestionIndex + 1) / generatedQuestions.length) * 100;
+            quizProgressBarFillDiv.style.width = `${progress}%`;
+        }
+
+        function updateQuestionOverview() {
+            questionOverviewGridDiv.innerHTML = '';
+            generatedQuestions.forEach((q, index) => {
+                const item = document.createElement('div');
+                item.className = 'question-overview-item';
+                item.textContent = index + 1;
+                item.dataset.index = index;
+
+                if (index === currentQuestionIndex) {
+                    item.classList.add('active');
+                }
+                if (q.selectedAnswer) {
+                    item.classList.add('answered');
+                }
+
+                item.addEventListener('click', () => {
+                    currentQuestionIndex = parseInt(item.dataset.index);
+                    renderQuiz();
+                });
+                questionOverviewGridDiv.appendChild(item);
+            });
+        }
+
+        function updateNavigationButtons() {
+            prevQuestionBtn.disabled = currentQuestionIndex === 0;
+            nextQuestionBtn.disabled = currentQuestionIndex === generatedQuestions.length - 1;
+        }
+
+        prevQuestionBtn.addEventListener('click', () => {
+            if (currentQuestionIndex > 0) {
+                currentQuestionIndex--;
+                renderQuiz();
+            }
+        });
+
+        nextQuestionBtn.addEventListener('click', () => {
+            if (currentQuestionIndex < generatedQuestions.length - 1) {
+                currentQuestionIndex++;
+                renderQuiz();
+            }
+        });
+
+        function startTimer() {
+            timeLeft = QUIZ_DURATION; // Reset time if restarting quiz
+            timerDisplayQuizSpan.textContent = formatTime(timeLeft);
+            // Clear any existing timer to prevent multiple timers running
+            if (timerInterval) {
+                clearInterval(timerInterval);
+            }
+
+            timerInterval = setInterval(() => {
+                timeLeft--;
+                timerDisplayQuizSpan.textContent = formatTime(timeLeft);
+
+                if (timeLeft <= 30) {
+                    timerDisplayQuizSpan.style.color = 'orange';
+                }
+                if (timeLeft <= 10) {
+                    timerDisplayQuizSpan.style.color = 'red';
+                }
+
+                if (timeLeft <= 0) {
+                    clearInterval(timerInterval);
+                    evaluateQuiz(generatedQuestions, true); // True means it's a timer end submission
+                }
+            }, 1000);
+        }
+
+        function formatTime(seconds) {
+            const minutes = Math.floor(seconds / 60);
+            const remainingSeconds = seconds % 60;
+            return `${minutes}:${remainingSeconds < 10 ? '0' : ''}${remainingSeconds}`;
+        }
+
+        submitQuizBtn.addEventListener('click', () => {
+            evaluateQuiz(generatedQuestions, false); // False means it's a manual submission
+        });
+
+        async function evaluateQuiz(questions, isTimerEnd) {
+            clearInterval(timerInterval); // Stop the timer once quiz is evaluated
+
+            let correctAnswersCount = 0;
+            let unansweredCount = 0;
+
+            questions.forEach((q) => { // Use forEach directly on questions array
+                if (q.selectedAnswer) {
+                    if (q.selectedAnswer.toUpperCase() === q.correct_answer.toUpperCase()) {
+                        correctAnswersCount++;
+                    }
+                } else {
+                    unansweredCount++;
+                }
+            });
+
+            const totalQuestions = questions.length;
+            const scorePercentage = (correctAnswersCount / totalQuestions) * 100;
+
+            if (unansweredCount > 0 && !isTimerEnd) {
+                quizWarningMessageP.style.display = 'flex';
+                quizWarningMessageP.innerHTML = `<i class="fas fa-exclamation-triangle"></i> You left ${unansweredCount} questions unanswered. Please answer all questions before submitting.`;
+                startTimer(); // Restart timer if user needs to answer more
+                return;
+            }
+
+            quizWarningMessageP.style.display = 'none'; // Hide warning if all answered or timer ended
+
+            // Show loading state while submitting
+            quizResultMessageDiv.innerHTML = `
+                <div class="spinner"></div>
+                <p>Calculating results and preparing submission...</p>
+            `;
+            quizResultOverlay.classList.add('visible');
+
+            let passedQuiz = correctAnswersCount >= 7; // Assuming 7 is the passing score
+
+            // Delay showing result message slightly for better UX, then proceed to submission if passed
+            setTimeout(async () => {
+                if (passedQuiz) {
+                    quizResultMessageDiv.innerHTML = `
+                        <div class="icon fas fa-check-circle success-message"></div>
+                        <h2>Congratulations!</h2>
+                        <p>You scored <span class="success-message">${correctAnswersCount} out of ${totalQuestions}</span> (${scorePercentage.toFixed(2)}%).</p>
+                        <div class="result-actions">
+                            <button class="proceed-button" id="proceed-to-submit">
+                                <i class="fas fa-arrow-right"></i> Add Skill to Profile
+                            </button>
+                        </div>
+                    `;
+                    document.getElementById('proceed-to-submit').addEventListener('click', async () => {
+                        const skillToAdd = userField;
+                        const score = correctAnswersCount;
+                        await submitSkillsToServer(score, skillToAdd);
+                    });
+                } else {
+                    quizResultMessageDiv.innerHTML = `
+                        <div class="icon fas fa-times-circle fail-message"></div>
+                        <h2>Sorry.</h2>
+                        <p>You scored <span class="fail-message">${correctAnswersCount} out of ${totalQuestions}</span> (${scorePercentage.toFixed(2)}%).<br>You need at least 7 correct answers to proceed.</p>
+                        <div class="result-actions">
+                            <button class="try-again-button" id="try-again-btn">
+                                <i class="fas fa-redo-alt"></i> Try Again (Same Topic)
+                            </button>
+                            <button class="change-field-button" id="change-field-btn">
+                                <i class="fas fa-sync-alt"></i> Back to Profile
+                            </button>
+                        </div>
+                    `;
+                    document.getElementById('try-again-btn').addEventListener('click', () => {
+                        currentQuestionIndex = 0;
+                        generatedQuestions.forEach(q => q.selectedAnswer = undefined); // Reset answers
+                        quizResultOverlay.classList.remove('visible');
+                        renderQuiz();
+                        startTimer();
+                    });
+                    document.getElementById('change-field-btn').addEventListener('click', () => {
+                        sessionStorage.clear(); // Clear all session data
+                        window.location.href = 'profile.html'; // Redirect back to profile
+                    });
+                }
+            }, 500); // Small delay before showing results
+        }
+
+        async function submitSkillsToServer(quizScore, skillName) {
+            quizResultMessageDiv.innerHTML = `
+                <div class="spinner"></div>
+                <p>Adding your new skill...</p>
+            `;
+            
+            const formData = new FormData();
+            formData.append('score', quizScore);
+            formData.append('skill_name', skillName);
+
+            try {
+                const response = await fetch('add_skills.php', {
+                    method: 'POST',
+                    body: formData
+                });
+                const result = await response.json();
+
+                if (response.ok) {
+                    showCustomModal('Skill Added!', result.message || 'Skill was added successfully.', () => {
+                        sessionStorage.clear();
+                        window.location.href = 'profile.html';
+                    });
+                } else {
+                    showCustomModal('Submission Failed', result.message || 'An unexpected error occurred.', () => {
+                        quizResultOverlay.classList.remove('visible');
+                    });
+                }
+
+            } catch (error) {
+                console.error('Network error during skill submission:', error);
+                showCustomModal('Network Error', 'Could not connect to the server to add the skill.', () => {
+                    quizResultOverlay.classList.remove('visible');
+                });
+            }
+        }
+    </script>
+</body>
+</html>

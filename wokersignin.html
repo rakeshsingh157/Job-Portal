@@ -1,0 +1,109 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Register Page</title>
+  <link rel="stylesheet" href="sign.css">
+  <style>
+    body{
+        overflow: hidden;
+    }
+  </style>
+</head>
+<body style="padding: 30px; font-family: 'Montserrat', sans-serif; overflow: hidden;" >
+    <div style="font-size: 30px; font-weight: 700; margin: -20px; position: relative; z-index: 100;">JOBconnect</div>
+    <div style="font-size: 30px; font-weight: 600; margin: -20px; float: right; position: relative; z-index: 10; "><span >Sign in</span></div>
+  
+
+    <div class="container" id="main-login-container">
+        <div class="left">
+          
+        </div>
+
+        <!-- Login Form Section -->
+        <div class="right active-step" id="login-section">
+            <div class="form-box">
+                
+                <form id="login-form">
+                  
+                    <input type="email" id="login-email" name="email" autocomplete="email" placeholder="Email" required>
+
+                   
+                    <input type="password" id="login-password" name="password" autocomplete="current-password" placeholder="Password" required>
+
+                    <button type="submit">Sign In</button>
+
+                    <p class="signin">Don't have an account?<a href="wokersignup.html" id="signup-link">Sign Up</a> <br> <br> <a href="#" id="forgot-password-link">Forget password?</a></p>
+                </form>
+            </div>
+        </div>
+
+        <!-- Recover Account (Email Input) Section -->
+        <div class="right" id="recover-email-section">
+            <div class="form-box">
+               
+                <form id="recover-email-form">
+                   
+                    <input type="email" id="recover-email" name="email" autocomplete="email" placeholder="Email" required>
+
+                   
+                    <p class="signin"><a href="#" id="recover-back-to-login">Back to Sign In</a></p>
+                </form>
+            </div>
+        </div>
+
+        <!-- Verify OTP Section -->
+        <div class="right" id="verify-otp-section">
+            <div class="form-box">
+                
+                <form id="verify-otp-form">
+                   
+                    <input type="text" id="email-otp" name="otp" autocomplete="off" placeholder="Email OTP" required>
+
+                 
+                    <p class="signin"><a href="#" id="verify-back-to-recover">Back</a></p>
+                </form>
+            </div>
+        </div>
+
+        <!-- Reset Password Section -->
+        <div class="right" id="reset-password-section">
+            <div class="form-box">
+           
+                <form id="reset-password-form">
+                
+                    <input type="password" id="new-password" name="password" autocomplete="new-password" placeholder="New Password" required>
+
+                    
+                    <input type="password" id="confirm-new-password" name="confirm_password" autocomplete="new-password" placeholder="Confirm Password" required>
+
+                    <button type="submit">Reset Password</button>
+                    <p class="signin"><a href="#" id="reset-back-to-login">Back to Sign In</a></p>
+                </form>
+            </div>
+        </div>
+    </div>
+     <div class="right-text" >Let’s get you signed in to continue your journey.
+
+    </div>
+    
+    <img class="white" src="white.png" alt="" style="   ">
+    <div class="c1"></div>
+    <div class="c2"></div>
+    <div class="c4"></div>
+    <div class="c3"></div>
+    <img class="img" src="back.jpg" alt="">
+
+    <!-- Loading overlay and message container -->
+    <div id="loading-overlay">
+        <div class="spinner"></div>
+    </div>
+    <div id="form-message"></div>
+
+    
+</body>
+
+
+<script src="scriptsignin.js"></script>
+</html>

@@ -1,0 +1,780 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Job Portal Application</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <style>
+        /* CSS Variables for easy customization */
+        :root {
+            --primary-blue-start: #3b82f6; /* Lighter Blue */
+            --primary-blue-end: #2563eb;   /* Darker Blue */
+            --secondary-purple-start: #8b5cf6; /* New: Purple start */
+            --secondary-purple-end: #7c3aed;   /* New: Purple end */
+            --primary-gradient: linear-gradient(135deg, var(--primary-blue-start), var(--primary-blue-end));
+            --primary-gradient-hover: linear-gradient(135deg, var(--primary-blue-end), var(--primary-blue-start));
+            --secondary-gradient: linear-gradient(135deg, var(--secondary-purple-start), var(--secondary-purple-end));
+            --secondary-gradient-hover: linear-gradient(135deg, var(--secondary-purple-end), var(--secondary-purple-start));
+
+            --bg-light: #f9fbff;
+            --input-bg: #ffffff;
+            --input-border: #cbd5e1;
+            --input-focus-border: #2563eb;
+            --shadow-light: rgba(37, 99, 235, 0.1);
+            --shadow-medium: rgba(37, 99, 235, 0.15);
+            --text-dark: #1e293b;
+            --text-muted: #64748b;
+            --radius-lg: 14px;
+            --radius-md: 10px;
+            --spacing-base: 18px;
+            --font-family: 'Inter', sans-serif;
+            --success-green: #22c55e;
+            --error-red: #ef4444;
+        }
+
+        /* Base Styles & Layout */
+        body {
+            font-family: var(--font-family);
+            margin: 0;
+            padding: 30px 20px;
+            background: linear-gradient(to right bottom, #e0f2fe, #f0f8ff); /* Soft gradient background */
+            display: flex;
+            justify-content: center;
+            align-items: flex-start;
+            min-height: 100vh;
+            color: var(--text-dark); /* Default text color */
+        }
+
+        .container {
+            background: #fff;
+            padding: 48px 40px;
+            border-radius: var(--radius-lg);
+            box-shadow: 0 18px 45px var(--shadow-medium); /* Slightly stronger initial shadow */
+            width: 100%;
+            max-width: 850px;
+            transition: box-shadow 0.3s ease;
+            position: relative; /* For subtle background patterns */
+            overflow: hidden; /* Ensure background patterns stay within bounds */
+        }
+
+        .container::before {
+            content: '';
+            position: absolute;
+            top: -50px; left: -50px;
+            width: 200px;
+            height: 200px;
+            background: radial-gradient(circle at top left, rgba(37, 99, 235, 0.05), transparent);
+            border-radius: 50%;
+            z-index: 0;
+            pointer-events: none;
+        }
+
+        .container::after {
+            content: '';
+            position: absolute;
+            bottom: -50px; right: -50px;
+            width: 150px;
+            height: 150px;
+            background: radial-gradient(circle at bottom right, rgba(124, 58, 237, 0.05), transparent);
+            border-radius: 50%;
+            z-index: 0;
+            pointer-events: none;
+        }
+
+        .container:hover {
+            box-shadow: 0 25px 60px rgba(37, 99, 235, 0.25); /* More prominent hover shadow */
+        }
+
+        /* Main Title */
+        h1 {
+            background: var(--primary-gradient); /* Gradient text */
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            text-align: center;
+            margin-bottom: 40px;
+            font-weight: 800;
+            font-size: 3rem;
+            letter-spacing: 1.5px;
+            text-transform: uppercase;
+            text-shadow: 0 2px 6px rgba(37, 99, 235, 0.2); /* Soft text shadow */
+            position: relative;
+            z-index: 1; /* Ensure title is above pseudo-elements */
+        }
+
+        /* Form Sections */
+        .form-section {
+            background: linear-gradient(180deg, #f0f7ff, #ffffff); /* Subtle gradient background */
+            border: 1.8px solid var(--input-border);
+            border-radius: var(--radius-md);
+            padding: 32px 36px;
+            margin-bottom: 40px;
+            box-shadow: 0 8px 20px var(--shadow-light); /* Slightly stronger shadow */
+            transition: border-color 0.3s ease, box-shadow 0.3s ease, background 0.3s ease;
+            position: relative;
+            z-index: 1;
+        }
+
+        .form-section:hover {
+            border-color: var(--primary-blue-start); /* Border highlights on hover */
+            box-shadow: 0 12px 35px var(--shadow-medium); /* More prominent hover shadow */
+            background: linear-gradient(180deg, #e6f0ff, #f9fcff); /* Slightly different gradient on hover */
+        }
+
+        /* Section Headers with Icons */
+        .form-section h3 {
+            font-size: 1.7rem;
+            color: var(--text-dark);
+            margin-bottom: 30px;
+            border-bottom: 2px solid var(--primary-blue-end);
+            padding-bottom: 10px;
+            font-weight: 700;
+            letter-spacing: 0.04em;
+            display: flex;
+            align-items: center;
+            gap: 12px; /* Space between icon and text */
+        }
+
+        .form-section h3 i {
+            color: var(--primary-blue-start); /* Icon color */
+            font-size: 1.4em; /* Icon size relative to text */
+            text-shadow: 0 1px 3px rgba(37, 99, 235, 0.1); /* Subtle icon shadow */
+        }
+
+        /* Form Groups */
+        .form-group {
+            margin-bottom: 26px;
+        }
+
+        /* Labels & Required Star */
+        .form-group label {
+            display: block;
+            font-weight: 600;
+            color: var(--text-dark);
+            font-size: 1.08rem;
+            margin-bottom: 10px;
+            transition: color 0.3s ease;
+        }
+
+        .form-group label span {
+            color: var(--error-red); /* Red for required star */
+            font-weight: 700;
+        }
+
+        /* Input Fields (Text, Email, Select, Textarea) */
+        .form-group input[type="text"],
+        .form-group input[type="email"],
+        .form-group select,
+        .form-group textarea {
+            width: 98%;
+            padding: 14px 0px 14px 14px;
+            font-size: 1.05rem;
+            border: 1.7px solid var(--input-border);
+            border-radius: var(--radius-md);
+            background-color: var(--input-bg);
+            color: var(--text-dark);
+            font-family: var(--font-family);
+            box-shadow: inset 0 2px 6px rgba(0,0,0,0.03); /* Softer inner shadow */
+            transition: border-color 0.3s ease, box-shadow 0.3s ease, background-color 0.3s ease;
+            resize: vertical;
+            min-height: 44px;
+        }
+
+        .form-group textarea {
+            min-height: 100px;
+        }
+
+        /* Hidden default file input */
+        .form-group input[type="file"] {
+            display: none;
+        }
+
+        /* Focus State for Inputs */
+        .form-group input[type="text"]:focus,
+        .form-group input[type="email"]:focus,
+        .form-group select:focus,
+        .form-group textarea:focus {
+            border-color: var(--primary-blue-end);
+            background-color: #faffff; /* Very light background on focus */
+            box-shadow: 0 0 10px 2px rgba(37, 99, 235, 0.2); /* More visible focus shadow */
+            outline: none;
+        }
+
+        /* Radio Button Styling */
+        .radio-group {
+            display: flex;
+            gap: 25px;
+            flex-wrap: wrap;
+        }
+
+        .radio-group input[type="radio"] {
+            cursor: pointer;
+            width: 18px;
+            height: 18px;
+            accent-color: var(--primary-blue-end); /* Native accent color for radio */
+            transition: accent-color 0.3s ease;
+        }
+
+        .radio-group label {
+            display: flex;
+            align-items: center;
+            font-weight: 500;
+            color: var(--text-muted);
+            cursor: pointer;
+            font-size: 1.04rem;
+            user-select: none;
+            transition: color 0.3s ease;
+            margin-bottom: 0; /* Override default label margin for inline radios */
+        }
+
+        /* Highlight on checked radio labels */
+        .radio-group input[type="radio"]:checked + label,
+        .radio-group input[type="radio"]:focus + label {
+            color: var(--primary-blue-end);
+            font-weight: 700; /* Bolder on checked */
+        }
+
+        /* File Upload Box (Drag & Drop Area) */
+        .file-upload-box {
+            border: 2.5px dashed var(--primary-blue-start); /* Slightly thicker dashed border */
+            border-radius: var(--radius-md);
+            padding: 36px 28px;
+            text-align: center;
+            background: linear-gradient(180deg, rgba(37, 99, 235, 0.08), rgba(0, 198, 251, 0.08)); /* More visible background */
+            cursor: pointer;
+            color: var(--text-muted);
+            font-weight: 500;
+            font-size: 1.05rem;
+            transition:
+                border-color 0.4s ease,
+                box-shadow 0.3s ease,
+                background-color 0.3s ease,
+                color 0.3s ease,
+                transform 0.2s ease; /* Add transform for bounce */
+            user-select: none;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            position: relative; /* Needed for pseudo-element gradient border */
+            overflow: hidden; /* Hide overflow from gradient */
+        }
+
+        /* Gradient border effect for file upload box */
+        .file-upload-box::before {
+            content: '';
+            position: absolute;
+            top: -2px; left: -2px;
+            right: -2px; bottom: -2px;
+            background: var(--primary-gradient); /* Initial gradient border */
+            z-index: -1;
+            border-radius: var(--radius-md);
+            opacity: 0; /* Hidden by default */
+            transition: opacity 0.4s ease;
+        }
+
+        .file-upload-box.drag-over::before,
+        .file-upload-box:hover::before {
+            opacity: 1; /* Show gradient border on hover/drag-over */
+        }
+
+        .file-upload-box.drag-over {
+            border-color: transparent; /* Hide dashed border when gradient border is active */
+            background-color: #e0f2ff; /* Lighter background on drag-over */
+            box-shadow: 0 0 20px 6px rgba(37, 99, 235, 0.25);
+            transform: translateY(-2px) scale(1.02); /* Slight lift and scale */
+        }
+
+        .file-upload-box i {
+            font-size: 3.5rem; /* Larger icon */
+            margin-bottom: 16px;
+            color: var(--primary-blue-end);
+            transition: color 0.3s ease;
+        }
+
+        .file-upload-box p {
+            margin: 2px 0;
+            color: var(--text-muted);
+            font-weight: 500; /* Slightly bolder text */
+        }
+        .file-upload-box p:last-child { /* Specific for the format text */
+            font-weight: 400;
+            font-size: 0.8em;
+        }
+
+        .file-upload-box:hover {
+            border-color: transparent; /* Hide dashed border on hover when gradient is active */
+            box-shadow: 0 8px 30px var(--shadow-medium);
+            background-color: #e6f5ff; /* Slightly different background on hover */
+            color: var(--primary-blue-end);
+            transform: translateY(-2px) scale(1.01);
+        }
+
+        .file-upload-box:hover i {
+            color: var(--primary-blue-start);
+        }
+
+        /* Display for selected file name */
+        .file-name-display {
+            font-weight: 600;
+            color: var(--primary-blue-end);
+            font-size: 0.98rem;
+            margin-top: 8px;
+            min-height: 1.3em; /* Ensure space even when empty */
+            text-align: center;
+        }
+
+        /* Time Inputs for Part-Time Hours */
+        .time-inputs {
+            display: flex;
+            gap: 18px;
+            align-items: center;
+        }
+
+        .time-inputs input {
+            width: 120px;
+            padding: 12px 16px;
+            border-radius: var(--radius-md);
+            border: 1.7px solid var(--input-border);
+            font-size: 1rem;
+            font-family: var(--font-family);
+            color: var(--text-dark);
+            box-shadow: inset 0 2px 5px rgba(0,0,0,0.05);
+            transition: border-color 0.3s ease, box-shadow 0.3s ease;
+        }
+
+        .time-inputs input:focus {
+            border-color: var(--primary-blue-end);
+            background-color: #faffff;
+            box-shadow: 0 0 8px 1.5px rgba(37, 99, 235, 0.15);
+            outline: none;
+        }
+
+        /* Submit Button */
+        button {
+            width: 100%;
+            padding: 20px 0;
+            font-size: 1.4rem;
+            font-weight: 700;
+            border-radius: var(--radius-md);
+            border: none;
+            background-image: var(--secondary-gradient); /* Use a new gradient for the button */
+            background-size: 200% 200%; /* For hover animation */
+            color: #fff;
+            cursor: pointer;
+            box-shadow: 0 12px 30px rgba(124, 58, 237, 0.3); /* Shadow matching new gradient */
+            text-shadow: 0 2px 8px rgba(0, 0, 0, 0.15);
+            transition: background-position 0.5s ease, box-shadow 0.3s ease, transform 0.25s ease;
+            letter-spacing: 0.07em;
+            text-transform: uppercase;
+        }
+
+        button:hover:not(:disabled),
+        button:focus:not(:disabled) {
+            background-position: 100% 0; /* Shifts background for gradient hover effect */
+            box-shadow: 0 16px 45px rgba(124, 58, 237, 0.4); /* Stronger hover shadow */
+            transform: translateY(-5px) scale(1.03); /* More pronounced lift */
+            outline: none;
+        }
+
+        button:disabled {
+            background: #a0aec0;
+            box-shadow: none;
+            cursor: not-allowed;
+            transform: translateY(0) scale(1); /* Reset transform for disabled state */
+            opacity: 0.7;
+        }
+
+        /* Loading Overlay */
+        .loading-overlay {
+            background-color: rgba(255, 255, 255, 0.98); /* Slightly more opaque */
+            display: none;
+            position: fixed;
+            top: 0; left: 0;
+            width: 100vw; height: 100vh;
+            z-index: 9999;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .spinner {
+            border: 10px solid #e2e8f0;
+            border-top: 10px solid var(--primary-blue-end); /* Blue spinner */
+            border-radius: 50%;
+            width: 70px;
+            height: 70px;
+            animation: spin 1.3s linear infinite;
+            margin-bottom: 24px;
+        }
+
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
+        .loading-text {
+            font-weight: 700;
+            font-size: 1.5rem;
+            color: var(--text-dark);
+            text-align: center;
+        }
+
+        /* Responsive Adjustments */
+        @media (max-width: 900px) {
+            .container {
+                padding: 36px 28px;
+            }
+            h1 {
+                font-size: 2.5rem;
+            }
+            .form-section h3 {
+                font-size: 1.5rem;
+                gap: 8px;
+            }
+        }
+
+        @media (max-width: 480px) {
+            body {
+                padding: 15px;
+            }
+            .container {
+                padding: 25px 18px;
+                margin: 0; /* Ensure full width on very small screens */
+            }
+            h1 {
+                font-size: 2rem;
+                margin-bottom: 30px;
+            }
+            .form-section {
+                padding: 20px 18px;
+                margin-bottom: 30px;
+            }
+            .form-section h3 {
+                font-size: 1.3rem;
+            }
+            .file-upload-box {
+                padding: 25px 18px;
+            }
+            .file-upload-box i {
+                font-size: 3rem;
+                margin-bottom: 12px;
+            }
+            .file-upload-box p {
+                font-size: 0.9em;
+            }
+            button {
+                padding: 18px 0;
+                font-size: 1.3rem;
+            }
+            .time-inputs {
+                flex-direction: column;
+                gap: 10px;
+            }
+            .time-inputs input {
+                width: 100%;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="loading-overlay" id="loading-overlay">
+        <div class="spinner"></div>
+        <p class="loading-text" id="loading-text"></p>
+    </div>
+
+    <div class="container">
+        <h1>Job Application</h1>
+        <form id="job-application-form">
+            <div class="form-section">
+                <h3><i class="fas fa-user"></i>Personal Information</h3>
+                <div class="form-group">
+                    <label for="fullName">Full Name <span>*</span></label>
+                    <input type="text" id="fullName" name="fullName" placeholder="Enter your full name" required>
+                </div>
+                
+
+            <div class="form-section">
+                <h3><i class="fas fa-graduation-cap"></i>Education & Experience</h3>
+                <div class="form-group">
+                    <label for="education">Education <span>*</span></label>
+                    <input type="text" id="education" name="education" placeholder="Enter your highest education" required>
+                </div>
+                
+                <div class="form-group">
+                    <label for="workExperience">Work Experience (Optional)</label>
+                    <textarea id="workExperience" name="workExperience" rows="4" placeholder="Describe your relevant work experience"></textarea>
+                </div>
+            </div>
+
+            <div class="form-section">
+                <h3><i class="fas fa-briefcase"></i>Job Preferences</h3>
+                <div class="form-group">
+                    <label for="jobField">Job Field <span>*</span></label>
+                    <select id="jobField" name="jobField" required>
+                        <option value="" disabled selected>Select your preferred field</option>
+                        <option value="Software Development">Software Development</option>
+                        <option value="Data Science">Data Science</option>
+                        <option value="Web Design">Web Design</option>
+                        <option value="Digital Marketing">Digital Marketing</option>
+                        <option value="Human Resources">Human Resources</option>
+                        <option value="Finance">Finance</option>
+                        <option value="Healthcare">Healthcare</option>
+                        <option value="Project Management">Project Management</option>
+                        <option value="Customer Service">Customer Service</option>
+                        <option value="HTML">HTML</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label>Employment Type <span>*</span></label>
+                    <div class="radio-group">
+                        <input type="radio" id="fullTime" name="employmentType" value="Full Time" required>
+                        <label for="fullTime">Full Time</label>
+                        <input type="radio" id="partTime" name="employmentType" value="Part Time">
+                        <label for="partTime">Part Time</label>
+                    </div>
+                </div>
+                <div class="form-group" id="shift-details" style="display: none;">
+                    <div class="radio-group">
+                        <input type="radio" id="dayShift" name="shiftType" value="Day Shift">
+                        <label for="dayShift">Day Shift</label>
+                        <input type="radio" id="nightShift" name="shiftType" value="Night Shift">
+                        <label for="nightShift">Night Shift</label>
+                    </div>
+                </div>
+                <div class="form-group" id="part-time-hours" style="display: none;">
+                    <label>Hours per week (Optional)</label>
+                    <div class="time-inputs">
+                        <input type="number" id="minHours" name="minHours" placeholder="Min" min="1" max="40">
+                        <span>to</span>
+                        <input type="number" id="maxHours" name="maxHours" placeholder="Max" min="1" max="40">
+                    </div>
+                </div>
+            </div>
+
+            <button type="submit" id="submit-application-btn">Start Quiz</button>
+        </form>
+    </div>
+
+    <script>
+        const jobApplicationForm = document.getElementById('job-application-form');
+        const fullNameInput = document.getElementById('fullName');
+        const jobFieldSelect = document.getElementById('jobField');
+        const educationInput = document.getElementById('education');
+        const workExperienceInput = document.getElementById('workExperience');
+        const employmentTypeRadios = document.querySelectorAll('input[name="employmentType"]');
+        const shiftTypeRadios = document.querySelectorAll('input[name="shiftType"]');
+        const minHoursInput = document.getElementById('minHours');
+        const maxHoursInput = document.getElementById('maxHours');
+
+        // File input elements
+        const profilePhotoInput = document.getElementById('profilePhotoInput');
+        const profilePhotoName = document.getElementById('profilePhotoName');
+        const profilePhotoDropArea = document.getElementById('profilePhotoDropArea');
+
+        const resumeInput = document.getElementById('resumeInput');
+        const resumeName = document.getElementById('resumeName');
+        const resumeDropArea = document.getElementById('resumeDropArea');
+
+        // Employment type visibility
+        const shiftDetailsDiv = document.getElementById('shift-details');
+        const partTimeHoursDiv = document.getElementById('part-time-hours');
+
+        // Loading overlay elements
+        const loadingOverlay = document.getElementById('loading-overlay');
+        const loadingText = document.getElementById('loading-text');
+
+        /**
+         * Updates the display element with the selected file's name.
+         * @param {HTMLInputElement} inputElement The file input element.
+         * @param {HTMLElement} nameDisplayElement The paragraph element to display the file name.
+         */
+        function handleFileChange(inputElement, nameDisplayElement) {
+            if (inputElement.files.length > 0) {
+                nameDisplayElement.textContent = `Selected: ${inputElement.files[0].name}`;
+            } else {
+                nameDisplayElement.textContent = '';
+            }
+        }
+
+        // Attach event listeners for direct file input changes (e.g., when clicked)
+        profilePhotoInput.addEventListener('change', () => handleFileChange(profilePhotoInput, profilePhotoName));
+        resumeInput.addEventListener('change', () => handleFileChange(resumeInput, resumeName));
+
+        /**
+         * Sets up drag and drop functionality for a given file upload area.
+         * @param {HTMLElement} dropArea The DOM element that acts as the drop zone.
+         * @param {HTMLInputElement} fileInput The hidden file input associated with the drop zone.
+         * @param {HTMLElement} nameDisplayElement The element to display the selected file name.
+         * @param {Array<string>} allowedTypes An array of allowed MIME types (e.g., 'image/jpeg') or file extensions (e.g., '.pdf').
+         * @param {number} maxSizeMB Maximum allowed file size in Megabytes.
+         */
+        function setupDragAndDrop(dropArea, fileInput, nameDisplayElement, allowedTypes, maxSizeMB) {
+            // Prevent default drag behaviors
+            ['dragenter', 'dragover', 'dragleave', 'drop'].forEach(eventName => {
+                dropArea.addEventListener(eventName, preventDefaults, false);
+                document.body.addEventListener(eventName, preventDefaults, false); // Prevent drop outside
+            });
+
+            // Highlight drop area when dragging over
+            ['dragenter', 'dragover'].forEach(eventName => {
+                dropArea.addEventListener(eventName, () => dropArea.classList.add('drag-over'), false);
+            });
+
+            // Remove highlight when dragging leaves
+            ['dragleave', 'drop'].forEach(eventName => {
+                dropArea.addEventListener(eventName, () => dropArea.classList.remove('drag-over'), false);
+            });
+
+            // Handle dropped files
+            dropArea.addEventListener('drop', (e) => {
+                const files = e.dataTransfer.files;
+                if (files.length > 0) {
+                    const file = files[0]; // Only handle single file drop
+                    const fileType = file.type;
+                    const fileSize = file.size; // in bytes
+
+                    // Validate file type
+                    const typeMatch = allowedTypes.some(type => {
+                        if (type.includes('/')) { // MIME type (e.g., 'image/jpeg')
+                            return fileType.startsWith(type.split('/')[0]) && fileType.includes(type.split('/')[1]);
+                        } else { // Extension (e.g., '.pdf')
+                            return file.name.toLowerCase().endsWith(type);
+                        }
+                    });
+
+                    if (!typeMatch) {
+                        alert(`Invalid file type. Please upload ${allowedTypes.map(t => t.startsWith('.') ? t.toUpperCase() : t.split('/')[1].toUpperCase()).join(', ')} files.`);
+                        return;
+                    }
+
+                    // Validate file size
+                    const maxSizeBytes = maxSizeMB * 1024 * 1024;
+                    if (fileSize > maxSizeBytes) {
+                        alert(`File is too large. Max size is ${maxSizeMB}MB.`);
+                        return;
+                    }
+
+                    // Assign the dropped file to the hidden input
+                    const dataTransfer = new DataTransfer();
+                    dataTransfer.items.add(file);
+                    fileInput.files = dataTransfer.files;
+
+                    // Update the displayed file name
+                    handleFileChange(fileInput, nameDisplayElement);
+                }
+            }, false);
+
+            // Make the entire drop area clickable for file selection
+            dropArea.addEventListener('click', () => {
+                fileInput.click();
+            });
+        }
+
+        function preventDefaults(e) {
+            e.preventDefault();
+            e.stopPropagation();
+        }
+
+        // Initialize drag and drop for profile photo and resume fields
+        setupDragAndDrop(profilePhotoDropArea, profilePhotoInput, profilePhotoName, ['image/jpeg', 'image/png'], 5);
+        setupDragAndDrop(resumeDropArea, resumeInput, resumeName, ['.pdf', '.doc', '.docx'], 10);
+
+        // --- Employment Type Logic ---
+        employmentTypeRadios.forEach(radio => {
+            radio.addEventListener('change', () => {
+                if (document.getElementById('fullTime').checked) {
+                    shiftDetailsDiv.style.display = 'block';
+                    partTimeHoursDiv.style.display = 'none';
+                } else if (document.getElementById('partTime').checked) {
+                    shiftDetailsDiv.style.display = 'none';
+                    partTimeHoursDiv.style.display = 'flex'; // Use flex for horizontal layout
+                }
+            });
+        });
+
+        // --- Form Submission Logic (to generate quiz) ---
+        jobApplicationForm.addEventListener('submit', async (event) => {
+            event.preventDefault(); // Prevent default form submission
+
+            const userName = fullNameInput.value.trim();
+            const userField = jobFieldSelect.value.trim();
+            const education = educationInput.value.trim();
+            const workExperience = workExperienceInput.value.trim();
+            const selectedEmploymentType = document.querySelector('input[name="employmentType"]:checked')?.value || '';
+
+            let shiftType = '';
+            if (document.getElementById('fullTime').checked) {
+                shiftType = document.querySelector('input[name="shiftType"]:checked')?.value || '';
+            }
+
+            let minHours = '';
+            let maxHours = '';
+            if (document.getElementById('partTime').checked) {
+                minHours = minHoursInput.value.trim();
+                maxHours = maxHoursInput.value.trim();
+            }
+
+            if (!userName || !userField || !education || !selectedEmploymentType) {
+                alert('Please fill in all required fields (Full Name, Education, Job Field, Employment Type).');
+                return;
+            }
+
+             sessionStorage.setItem('tempApplicationData', JSON.stringify({
+                fullName: userName,
+                education: education,
+                workExperience: workExperience,
+                jobField: userField,
+                employmentType: selectedEmploymentType,
+                shiftType: shiftType,
+                minHours: minHours,
+                maxHours: maxHours
+               }));
+
+
+            loadingText.textContent = 'Generating Quiz Questions... Please wait.';
+            loadingOverlay.style.display = 'flex'; // Show loading overlay
+            document.getElementById('submit-application-btn').disabled = true; // Disable button
+
+            const formData = new FormData();
+            formData.append('field', userField); // Only send job field for quiz generation
+
+            try {
+                // Send request to generate_quiz.php to get quiz questions
+                const response = await fetch('generate_quiz.php', {
+                    method: 'POST',
+                    body: formData
+                });
+
+                const result = await response.json();
+
+                if (!response.ok || !result.success) {
+                    throw new Error(result.error || 'Failed to generate questions.');
+                }
+
+                const generatedQuestions = result.questions;
+
+                // Basic validation for the received quiz questions
+                if (!Array.isArray(generatedQuestions) || generatedQuestions.length !== 10 || !generatedQuestions.every(q => q.question && q.options && q.options.length === 4 && q.correct_answer)) {
+                    throw new Error('Could not get 10 valid questions from the AI. Please try a different topic or ensure the backend is configured correctly.');
+                }
+
+                // Store user and quiz data in sessionStorage for the next page
+                sessionStorage.setItem('userName', userName); // Keep userName for quiz page display
+                sessionStorage.setItem('userField', userField); // Keep userField for quiz page display
+                sessionStorage.setItem('generatedQuestions', JSON.stringify(generatedQuestions));
+                
+                // Redirect to the quiz page
+                window.location.href = 'quiz_page.html';
+
+            } catch (error) {
+                alert(`Failed to generate quiz: ${error.message}. Please try again.`);
+            } finally {
+                loadingOverlay.style.display = 'none'; // Hide loading overlay
+                document.getElementById('submit-application-btn').disabled = false; // Re-enable button
+            }
+        });
+    </script>
+</body>
+</html>
