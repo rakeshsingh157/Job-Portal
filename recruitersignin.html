@@ -5,9 +5,16 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Register Page</title>
   <link rel="stylesheet" href="sign.css">
+  <style>
+    body{
+        padding: 40px;
+        overflow: hidden;
+        font-family: 'Montserrat', sans-serif;
+    }</style>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
 </head>
 <body style="background-image: url('wokersingup.jpg'); no-repeat; background-size: cover;">
-       <div style="font-size: 30px; font-weight: 700; margin: -20px; position: relative; z-index: 100;">JOBconnect</div>
+       <div style="font-size: 30px; font-weight: 700; margin: -20px; position: relative; z-index: 100; margin-left: 40px;">JOBconnect</div>
     <div style="font-size: 30px; font-weight: 600; margin: -20px; float: right; position: relative; z-index: 10; "><span >Sign in</span></div>
   
 
@@ -75,8 +82,68 @@
             </div>
         </div>
     </div>
+    <style>
+        
+ 
+.right-text {
+  font-family: 'Poppins', sans-serif;
+  font-size: 50px;
+  color: #333;
+}
 
-    <!-- Loading overlay and message container -->
+.animated-word {
+  display: inline-block;
+  opacity: 0;
+  transform: translateY(20px) scale(0.95);
+  filter: blur(5px);
+  /* Chaining two animations: the initial fade and the looping pulse */
+  animation: 
+    word-fade-up 0.8s ease-out forwards,
+    pulse-loop 2s ease-in-out infinite; 
+}
+
+/* Delay for the initial fade-up animation */
+.animated-word:nth-child(1) { animation-delay: 0s, 2.5s; }
+.animated-word:nth-child(2) { animation-delay: 0.1s, 2.5s; }
+.animated-word:nth-child(3) { animation-delay: 0.2s, 2.5s; }
+.animated-word:nth-child(4) { animation-delay: 0.3s, 2.5s; }
+.animated-word:nth-child(5) { animation-delay: 0.4s, 2.5s; }
+.animated-word:nth-child(6) { animation-delay: 0.5s, 2.5s; }
+.animated-word:nth-child(7) { animation-delay: 0.6s, 2.5s; }
+.animated-word:nth-child(8) { animation-delay: 0.7s, 2.5s; }
+.animated-word:nth-child(9) { animation-delay: 0.8s, 2.5s; }
+
+/* The initial word-fade-up animation */
+@keyframes word-fade-up {
+  to {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+    filter: blur(0);
+  }
+}
+
+/* The new looping animation */
+@keyframes pulse-loop {
+  0% { transform: scale(1); }
+  50% { transform: scale(1.03); }
+  100% { transform: scale(1); }
+}
+}
+
+    </style>
+
+    <div class="right-text" >
+  <span class="animated-word">Let’s</span>
+  <span class="animated-word">get</span>
+  <span class="animated-word">you</span>
+  <span class="animated-word">signed</span>
+  <span class="animated-word">in</span>
+  <span class="animated-word">to</span>
+  <span class="animated-word">continue</span>
+  <span class="animated-word">your</span>
+  <span class="animated-word">journey.</span>
+</div>
+
     <div id="loading-overlay">
         <div class="spinner"></div>
     </div>

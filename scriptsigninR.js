@@ -73,24 +73,19 @@
                     stepElement.style.display = 'flex'; // Assuming .right uses display:flex or block
                     stepElement.classList.add('active-step');
                 }
-                hideMessage(); // Clear any existing messages when changing steps
+                hideMessage(); 
             }
 
-            // --- Event Listeners for Navigation ---
-
-            // Initial load: ensure login form is active
             showStep(loginSection);
 
-            // Click "Forget password?" link
             if (forgotPasswordLink) {
                 forgotPasswordLink.addEventListener('click', (e) => {
                     e.preventDefault();
-                    // Hide the main container (if it wraps the login form and left section)
                     if (mainLoginContainer) {
-                         mainLoginContainer.style.display = 'flex'; // Ensure main container is still visible, as other steps are inside it
-                    }
-                    showStep(recoverEmailSection); // Show the email recovery step
-                    recoverEmailForm.reset(); // Clear form when navigating to it
+                         mainLoginContainer.style.display = 'flex'; 
+                             }
+                    showStep(recoverEmailSection);
+                    recoverEmailForm.reset(); 
                     const recoverEmailInput = document.getElementById('recover-email');
                     if (recoverEmailInput) {
                         recoverEmailInput.focus();
@@ -98,12 +93,12 @@
                 });
             }
 
-            // Click "Back to Sign In" from Recover Email
+         
             if (recoverBackToLoginLink) {
                 recoverBackToLoginLink.addEventListener('click', (e) => {
                     e.preventDefault();
-                    showStep(loginSection); // Show login form
-                    loginForm.reset(); // Clear login form
+                    showStep(loginSection); 
+                    loginForm.reset(); 
                     const loginEmailInput = document.getElementById('login-email');
                     if (loginEmailInput) {
                         loginEmailInput.focus();
@@ -111,25 +106,23 @@
                 });
             }
 
-            // Click "Back" from Verify OTP
             if (verifyBackToRecoverLink) {
                 verifyBackToRecoverLink.addEventListener('click', (e) => {
                     e.preventDefault();
-                    showStep(recoverEmailSection); // Go back to email recovery step
-                    verifyOtpForm.reset(); // Clear OTP form
+                    showStep(recoverEmailSection); 
+                    verifyOtpForm.reset();
                     const recoverEmailInput = document.getElementById('recover-email');
                     if (recoverEmailInput) {
-                        recoverEmailInput.focus(); // Focus email input again
+                        recoverEmailInput.focus(); 
                     }
                 });
             }
 
-            // Click "Back to Sign In" from Reset Password
             if (resetBackToLoginLink) {
                 resetBackToLoginLink.addEventListener('click', (e) => {
                     e.preventDefault();
-                    showStep(loginSection); // Go back to login form
-                    resetPasswordForm.reset(); // Clear reset password form
+                    showStep(loginSection); 
+                    resetPasswordForm.reset();
                     const loginEmailInput = document.getElementById('login-email');
                     if (loginEmailInput) {
                         loginEmailInput.focus();
@@ -137,18 +130,15 @@
                 });
             }
 
-            // Handle Sign Up link (assuming it goes to a different page)
             if (signupLink) {
                 signupLink.addEventListener('click', (e) => {
                     e.preventDefault();
-                    window.location.href = 'recruitersignup.html'; // Redirect to your actual signup page
+                    window.location.href = 'recruitersignup.html';
                 });
             }
 
 
-            // --- Form Submission Handlers ---
-
-            // Login Form Submission
+           
             if (loginForm) {
                 loginForm.addEventListener('submit', async (e) => {
                     e.preventDefault();
@@ -159,7 +149,7 @@
                     const password = document.getElementById('login-password').value;
 
                     try {
-                        const response = await fetch('login_reset_backend.php', { // FIX: Pointing to new backend file
+                        const response = await fetch('login_reset_backend.php', { 
                             method: 'POST',
                             headers: { 'Content-Type': 'application/json' },
                             body: JSON.stringify({ email, password, action: 'login' })
@@ -183,7 +173,6 @@
                 });
             }
 
-            // Recover Email Form Submission (Send OTP for Password Reset)
             if (recoverEmailForm) {
                 recoverEmailForm.addEventListener('submit', async (e) => {
                     e.preventDefault();
@@ -192,11 +181,10 @@
 
                     const email = document.getElementById('recover-email').value;
 
-                    // Store email in sessionStorage to use in subsequent steps
                     sessionStorage.setItem('reset_email_for_otp', email);
 
                     try {
-                        const response = await fetch('login_reset_backend.php', { // FIX: Pointing to new backend file
+                        const response = await fetch('login_reset_backend.php', { 
                             method: 'POST',
                             headers: { 'Content-Type': 'application/json' },
                             body: JSON.stringify({ email, action: 'send_reset_otp' })
@@ -224,14 +212,13 @@
                 });
             }
 
-            // Verify OTP Form Submission (for Password Reset)
             if (verifyOtpForm) {
                 verifyOtpForm.addEventListener('submit', async (e) => {
                     e.preventDefault();
                     hideMessage();
                     showLoading();
 
-                    const email = sessionStorage.getItem('reset_email_for_otp'); // Retrieve email
+                    const email = sessionStorage.getItem('reset_email_for_otp');
                     const otpCode = document.getElementById('email-otp').value;
 
                     if (!email) {
@@ -242,7 +229,7 @@
                     }
 
                     try {
-                        const response = await fetch('login_reset_backend.php', { // FIX: Pointing to new backend file
+                        const response = await fetch('login_reset_backend.php', {
                             method: 'POST',
                             headers: { 'Content-Type': 'application/json' },
                             body: JSON.stringify({ email, otpCodeEmail: otpCode, action: 'verify_reset_otp' })
@@ -295,7 +282,7 @@
                     }
 
                     try {
-                        const response = await fetch('login_reset_backend.php', { // FIX: Pointing to new backend file
+                        const response = await fetch('login_reset_backend.php', { 
                             method: 'POST',
                             headers: { 'Content-Type': 'application/json' },
                             body: JSON.stringify({ email, newPassword, action: 'reset_password' })
@@ -305,8 +292,8 @@
 
                         if (response.ok) {
                             showMessage(data.message || 'Password successfully reset! You can now sign in.', 'success');
-                            sessionStorage.removeItem('reset_email_for_otp'); // Clear stored email
-                            showStep(loginSection); // Go back to login
+                            sessionStorage.removeItem('reset_email_for_otp'); 
+                            showStep(loginSection); 
                             loginForm.reset();
                         } else {
                             showMessage(data.message || 'Failed to reset password.', 'error');

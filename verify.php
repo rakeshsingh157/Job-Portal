@@ -37,6 +37,25 @@ if (isset($_SESSION['user_id'])) {
         header('Location: test-folder/index.html'); 
         exit();
     }
+} 
+else if (isset($_SESSION['cuser_id'])) {
+    $userId = $_SESSION['cuser_id'];
+    $conn = getDbConnection();
+    $stmt = $conn->prepare("SELECT is_verified FROM cuser WHERE id = ?");
+    $stmt->bind_param("i", $userId);
+    $stmt->execute();
+    $stmt->bind_result($testPassStatus);
+    $stmt->fetch();
+    $stmt->close();
+    $conn->close();
+
+    if ($testPassStatus === True) {
+        header('Location: profile.html'); 
+        exit();
+    } else {
+        header('Location: company-test/index.html'); 
+        exit();
+    }
 } else {
     header('Location: login.php'); 
     exit();

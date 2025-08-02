@@ -83,20 +83,29 @@ function sendSmsOtp($phoneNumber, $otp) {
     }
 }
 
-// Ensure the response is always JSON for AJAX requests
+
 header('Content-Type: application/json');
 
-// Only process POST requests
+
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $input = file_get_contents('php://input');
     $data = json_decode($input, true);
+    
+    // Check if the JSON decoding was successful
+    if ($data === null && json_last_error() !== JSON_ERROR_NONE) {
+        http_response_code(400);
+        error_log("JSON Decode Error: " . json_last_error_msg());
+        echo json_encode(['message' => 'Invalid JSON input.']);
+        exit();
+    }
+
 
     $action = $data['action'] ?? null;
     $email = $data['email'] ?? null;
     $otpCodeEmail = $data['otpCodeEmail'] ?? null;
-    $otpCodePhone = $data['otpCodePhone'] ?? null; // Used in signup verification
+    $otpCodePhone = $data['otpCodePhone'] ?? null; 
 
-    // Data received from frontend for 'send_otp' (signup)
+
     $firstName = $data['firstName'] ?? null;
     $lastName = $data['lastName'] ?? null;
     $password = $data['password'] ?? null;
@@ -424,9 +433,30 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         exit();
 
     } elseif ($action === 'verify_reset_otp') {
-        if (empty($email) || empty($otpCodeEmail)) {
+        // First, check if the session is active and contains the necessary data
+        if (!isset($_SESSION['reset_otp_email_address'])) {
+            http_response_code(400);
+            error_log('Session data for password reset is missing or expired.');
+            echo json_encode(['message' => 'Session data missing or expired. Please re-initiate the password reset.']);
+            exit();
+        }
+
+        // Now, get the email from the session and the OTP from the request
+        $emailFromSession = $_SESSION['reset_otp_email_address'];
+        $otpCodeEmail = $data['otpCodeEmail'] ?? null;
+        
+        // Input validation using the session data
+        if (empty($emailFromSession) || empty($otpCodeEmail)) {
             http_response_code(400);
             echo json_encode(['message' => 'Email and OTP are required.']);
+            exit();
+        }
+
+        // Compare the email from the request with the one in the session
+        if ($emailFromSession !== $email) {
+            http_response_code(401);
+            error_log('Email mismatch during OTP verification.');
+            echo json_encode(['message' => 'Email address mismatch. Please start over.']);
             exit();
         }
 

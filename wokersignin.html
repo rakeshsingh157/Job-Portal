@@ -39,14 +39,14 @@
             </div>
         </div>
 
-        <!-- Recover Account (Email Input) Section -->
-        <div class="right" id="recover-email-section">
+        
+        <div class="right" id="recover-email-section" style="display: none;">
             <div class="form-box">
                
                 <form id="recover-email-form">
                    
                     <input type="email" id="recover-email" name="email" autocomplete="email" placeholder="Email" required>
-
+                     <button type="submit">verify</button>
                    
                     <p class="signin"><a href="#" id="recover-back-to-login">Back to Sign In</a></p>
                 </form>
@@ -54,21 +54,21 @@
         </div>
 
         <!-- Verify OTP Section -->
-        <div class="right" id="verify-otp-section">
-            <div class="form-box">
-                
-                <form id="verify-otp-form">
-                   
-                    <input type="text" id="email-otp" name="otp" autocomplete="off" placeholder="Email OTP" required>
+       <div class="right" id="verify-otp-section" style="display: none;">
+    <div class="form-box">
+        <form id="verify-otp-form">
+            <!-- This hidden input is no longer strictly needed with the new JS but is good to have -->
+            <input type="hidden" id="verify-otp-email" name="email">
 
-                 
-                    <p class="signin"><a href="#" id="verify-back-to-recover">Back</a></p>
-                </form>
-            </div>
-        </div>
+            <input type="text" id="email-otp" name="otp" autocomplete="off" placeholder="Email OTP" required>
+            <button type="submit">verify</button>
+            <p class="signin"><a href="#" id="verify-back-to-recover">Back</a></p>
+        </form>
+    </div>
+</div>
 
         <!-- Reset Password Section -->
-        <div class="right" id="reset-password-section">
+        <div class="right" id="reset-password-section" style="display: none;">
             <div class="form-box">
            
                 <form id="reset-password-form">
@@ -105,5 +105,5 @@
 </body>
 
 
-<script src="scriptsignin.js"></script>
+<script src="script.js"></script>
 </html>

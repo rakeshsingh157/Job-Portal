@@ -1,0 +1,106 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Company Verification Form</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+    <div class="form-container">
+        <h1>Company Verification Form</h1>
+        <form action="submit_form.php" method="POST">
+
+            <div class="form-section">
+                <h2>I. General Information</h2>
+                <div class="form-group">
+                    <label for="companyName">Company/Business Name:</label>
+                    <input type="text" id="companyName" name="companyName" required>
+                </div>
+                <div class="form-group">
+                    <label for="businessType">Business Type:</label>
+                    <select id="businessType" name="businessType" required>
+                        <option value="">Select a type</option>
+                        <option value="company">Company</option>
+                        <option value="workshop">Workshop</option>
+                        <option value="shop">Shop</option>
+                        <option value="hospital">Hospital</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label for="legalStatus">Legal Status:</label>
+                    <input type="text" id="legalStatus" name="legalStatus" placeholder="e.g., Sole Proprietorship, Public Limited" required>
+                </div>
+                <div class="form-group">
+                    <label for="registrationNumber">Registration Number:</label>
+                    <input type="text" id="registrationNumber" name="registrationNumber">
+                </div>
+                <div class="form-group">
+                    <label for="dateEstablished">Date of Establishment:</label>
+                    <input type="date" id="dateEstablished" name="dateEstablished">
+                </div>
+                <div class="form-group">
+                    <label for="address">Physical Address:</label>
+                    <textarea id="address" name="address" rows="3" required></textarea>
+                </div>
+                <div class="form-group">
+                    <label for="contactPerson">Contact Person:</label>
+                    <input type="text" id="contactPerson" name="contactPerson" required>
+                </div>
+                <div class="form-group">
+                    <label for="contactTitle">Contact Title:</label>
+                    <input type="text" id="contactTitle" name="contactTitle" required>
+                </div>
+                <div class="form-group">
+                    <label for="phone">Phone Number(s):</label>
+                    <input type="tel" id="phone" name="phone" required>
+                </div>
+                <div class="form-group">
+                    <label for="email">Email Address:</label>
+                    <input type="email" id="email" name="email" required>
+                </div>
+                <div class="form-group">
+                    <label for="website">Website:</label>
+                    <input type="url" id="website" name="website">
+                </div>
+            </div>
+
+            <div class="form-section">
+                <h2>II. Operational Details</h2>
+                <div class="form-group">
+                    <label for="natureOfBusiness">Nature of Business:</label>
+                    <textarea id="natureOfBusiness" name="natureOfBusiness" rows="3" required></textarea>
+                </div>
+                <div class="form-group">
+                    <label for="productsServices">Products/Services Offered:</label>
+                    <textarea id="productsServices" name="productsServices" rows="3" required></textarea>
+                </div>
+                <div class="form-group">
+                    <label for="hoursOfOperation">Hours of Operation:</label>
+                    <input type="text" id="hoursOfOperation" name="hoursOfOperation" placeholder="e.g., Mon-Fri, 9am-5pm" required>
+                </div>
+                <div class="form-group">
+                    <label for="numEmployees">Number of Employees:</label>
+                    <input type="number" id="numEmployees" name="numEmployees" min="1">
+                </div>
+            </div>
+
+            <div class="form-section">
+                <h2>III. Verification and Documents</h2>
+                <div class="form-group">
+                    <label>Documents for Verification:</label>
+                    <div class="checkbox-group">
+                        <label><input type="checkbox" name="documents[]" value="bizRegistration"> Business Registration Certificate</label>
+                        <label><input type="checkbox" name="documents[]" value="taxRegistration"> Tax Registration Certificate</label>
+                        <label><input type="checkbox" name="documents[]" value="bizLicense"> Valid Business License</label>
+                        <label><input type="checkbox" name="documents[]" value="proofAddress"> Proof of Address</label>
+                    </div>
+                </div>
+            </div>
+
+            <button type="submit">Submit for Verification</button>
+        </form>
+    </div>
+</body>
+</html>
