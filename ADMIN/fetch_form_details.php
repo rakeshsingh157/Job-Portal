@@ -1,5 +1,5 @@
 <?php
-require("../config.php");
+require("../PHP/config.php");
 
 // Check if form ID is provided and is a valid number
 if (isset($_GET['id']) && is_numeric($_GET['id'])) {

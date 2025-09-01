@@ -1,0 +1,50 @@
+[01-Sep-2025 01:56:40 Europe/Berlin] PHP Warning:  include(db_connect.php): Failed to open stream: No such file or directory in C:\xampp\htdocs\SyWD\PHP\fetch_user_posts.php on line 8
+[01-Sep-2025 01:56:40 Europe/Berlin] PHP Warning:  include(): Failed opening 'db_connect.php' for inclusion (include_path='C:\xampp\php\PEAR') in C:\xampp\htdocs\SyWD\PHP\fetch_user_posts.php on line 8
+[01-Sep-2025 01:56:40 Europe/Berlin] PHP Warning:  Undefined variable $conn in C:\xampp\htdocs\SyWD\PHP\fetch_user_posts.php on line 49
+[01-Sep-2025 01:56:40 Europe/Berlin] PHP Fatal error:  Uncaught Error: Call to a member function prepare() on null in C:\xampp\htdocs\SyWD\PHP\fetch_user_posts.php:49
+Stack trace:
+#0 {main}
+  thrown in C:\xampp\htdocs\SyWD\PHP\fetch_user_posts.php on line 49
+[01-Sep-2025 01:56:42 Europe/Berlin] PHP Warning:  include(db_connect.php): Failed to open stream: No such file or directory in C:\xampp\htdocs\SyWD\PHP\fetch_user_posts.php on line 8
+[01-Sep-2025 01:56:42 Europe/Berlin] PHP Warning:  include(): Failed opening 'db_connect.php' for inclusion (include_path='C:\xampp\php\PEAR') in C:\xampp\htdocs\SyWD\PHP\fetch_user_posts.php on line 8
+[01-Sep-2025 01:56:42 Europe/Berlin] PHP Warning:  Undefined variable $conn in C:\xampp\htdocs\SyWD\PHP\fetch_user_posts.php on line 49
+[01-Sep-2025 01:56:42 Europe/Berlin] PHP Fatal error:  Uncaught Error: Call to a member function prepare() on null in C:\xampp\htdocs\SyWD\PHP\fetch_user_posts.php:49
+Stack trace:
+#0 {main}
+  thrown in C:\xampp\htdocs\SyWD\PHP\fetch_user_posts.php on line 49
+[01-Sep-2025 03:59:43 Europe/Berlin] PHP Warning:  mysqli::__construct(): php_network_getaddresses: getaddrinfo for photostore.ct0go6um6tj0.ap-south-1.rds.amazonaws.com failed: No such host is known.  in C:\xampp\htdocs\SyWD\PHP\fetch_user_posts.php on line 17
+[01-Sep-2025 03:59:43 Europe/Berlin] PHP Fatal error:  Uncaught mysqli_sql_exception: php_network_getaddresses: getaddrinfo for photostore.ct0go6um6tj0.ap-south-1.rds.amazonaws.com failed: No such host is known.  in C:\xampp\htdocs\SyWD\PHP\fetch_user_posts.php:17
+Stack trace:
+#0 C:\xampp\htdocs\SyWD\PHP\fetch_user_posts.php(17): mysqli->__construct('photostore.ct0g...', 'admin', Object(SensitiveParameterValue), 'jobp_db')
+#1 {main}
+  thrown in C:\xampp\htdocs\SyWD\PHP\fetch_user_posts.php on line 17
+[01-Sep-2025 04:00:50 Europe/Berlin] PHP Warning:  mysqli::__construct(): php_network_getaddresses: getaddrinfo for photostore.ct0go6um6tj0.ap-south-1.rds.amazonaws.com failed: No such host is known.  in C:\xampp\htdocs\SyWD\PHP\fetch_user_posts.php on line 17
+[01-Sep-2025 04:00:50 Europe/Berlin] PHP Fatal error:  Uncaught mysqli_sql_exception: php_network_getaddresses: getaddrinfo for photostore.ct0go6um6tj0.ap-south-1.rds.amazonaws.com failed: No such host is known.  in C:\xampp\htdocs\SyWD\PHP\fetch_user_posts.php:17
+Stack trace:
+#0 C:\xampp\htdocs\SyWD\PHP\fetch_user_posts.php(17): mysqli->__construct('photostore.ct0g...', 'admin', Object(SensitiveParameterValue), 'jobp_db')
+#1 {main}
+  thrown in C:\xampp\htdocs\SyWD\PHP\fetch_user_posts.php on line 17
+[01-Sep-2025 04:00:52 Europe/Berlin] PHP Warning:  mysqli::__construct(): php_network_getaddresses: getaddrinfo for photostore.ct0go6um6tj0.ap-south-1.rds.amazonaws.com failed: No such host is known.  in C:\xampp\htdocs\SyWD\PHP\fetch_user_posts.php on line 17
+[01-Sep-2025 04:00:52 Europe/Berlin] PHP Fatal error:  Uncaught mysqli_sql_exception: php_network_getaddresses: getaddrinfo for photostore.ct0go6um6tj0.ap-south-1.rds.amazonaws.com failed: No such host is known.  in C:\xampp\htdocs\SyWD\PHP\fetch_user_posts.php:17
+Stack trace:
+#0 C:\xampp\htdocs\SyWD\PHP\fetch_user_posts.php(17): mysqli->__construct('photostore.ct0g...', 'admin', Object(SensitiveParameterValue), 'jobp_db')
+#1 {main}
+  thrown in C:\xampp\htdocs\SyWD\PHP\fetch_user_posts.php on line 17
+[01-Sep-2025 04:01:27 Europe/Berlin] PHP Warning:  mysqli::__construct(): php_network_getaddresses: getaddrinfo for photostore.ct0go6um6tj0.ap-south-1.rds.amazonaws.com failed: No such host is known.  in C:\xampp\htdocs\SyWD\PHP\fetch_user_posts.php on line 17
+[01-Sep-2025 04:01:27 Europe/Berlin] PHP Fatal error:  Uncaught mysqli_sql_exception: php_network_getaddresses: getaddrinfo for photostore.ct0go6um6tj0.ap-south-1.rds.amazonaws.com failed: No such host is known.  in C:\xampp\htdocs\SyWD\PHP\fetch_user_posts.php:17
+Stack trace:
+#0 C:\xampp\htdocs\SyWD\PHP\fetch_user_posts.php(17): mysqli->__construct('photostore.ct0g...', 'admin', Object(SensitiveParameterValue), 'jobp_db')
+#1 {main}
+  thrown in C:\xampp\htdocs\SyWD\PHP\fetch_user_posts.php on line 17
+[01-Sep-2025 04:02:35 Europe/Berlin] PHP Warning:  mysqli::__construct(): php_network_getaddresses: getaddrinfo for photostore.ct0go6um6tj0.ap-south-1.rds.amazonaws.com failed: No such host is known.  in C:\xampp\htdocs\SyWD\PHP\fetch_user_posts.php on line 17
+[01-Sep-2025 04:02:35 Europe/Berlin] PHP Fatal error:  Uncaught mysqli_sql_exception: php_network_getaddresses: getaddrinfo for photostore.ct0go6um6tj0.ap-south-1.rds.amazonaws.com failed: No such host is known.  in C:\xampp\htdocs\SyWD\PHP\fetch_user_posts.php:17
+Stack trace:
+#0 C:\xampp\htdocs\SyWD\PHP\fetch_user_posts.php(17): mysqli->__construct('photostore.ct0g...', 'admin', Object(SensitiveParameterValue), 'jobp_db')
+#1 {main}
+  thrown in C:\xampp\htdocs\SyWD\PHP\fetch_user_posts.php on line 17
+[01-Sep-2025 04:02:37 Europe/Berlin] PHP Warning:  mysqli::__construct(): php_network_getaddresses: getaddrinfo for photostore.ct0go6um6tj0.ap-south-1.rds.amazonaws.com failed: No such host is known.  in C:\xampp\htdocs\SyWD\PHP\fetch_user_posts.php on line 17
+[01-Sep-2025 04:02:37 Europe/Berlin] PHP Fatal error:  Uncaught mysqli_sql_exception: php_network_getaddresses: getaddrinfo for photostore.ct0go6um6tj0.ap-south-1.rds.amazonaws.com failed: No such host is known.  in C:\xampp\htdocs\SyWD\PHP\fetch_user_posts.php:17
+Stack trace:
+#0 C:\xampp\htdocs\SyWD\PHP\fetch_user_posts.php(17): mysqli->__construct('photostore.ct0g...', 'admin', Object(SensitiveParameterValue), 'jobp_db')
+#1 {main}
+  thrown in C:\xampp\htdocs\SyWD\PHP\fetch_user_posts.php on line 17

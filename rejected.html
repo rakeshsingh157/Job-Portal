@@ -1,0 +1,259 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Company Verification Status</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+        
+        body {
+            background: linear-gradient(135deg, #fff5f5 0%, #fed7d7 100%);
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 20px;
+        }
+        
+        .container {
+            background: white;
+            border-radius: 16px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.15);
+            padding: 40px;
+            text-align: center;
+            max-width: 500px;
+            width: 100%;
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .container::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 6px;
+            background: linear-gradient(90deg, #ff416c 0%, #ff4b2b 100%);
+        }
+        
+        .status-icon {
+            font-size: 80px;
+            margin: 20px 0;
+            color: #ff4b2b;
+            animation: pulse 1.5s infinite;
+        }
+        
+        @keyframes pulse {
+            0% { transform: scale(1); }
+            50% { transform: scale(1.05); }
+            100% { transform: scale(1); }
+        }
+        
+        h1 {
+            color: #2d3748;
+            margin-bottom: 15px;
+            font-weight: 700;
+        }
+        
+        p {
+            color: #718096;
+            line-height: 1.6;
+            margin-bottom: 30px;
+            font-size: 18px;
+        }
+        
+        .reasons {
+            background: #fff5f5;
+            border-radius: 10px;
+            padding: 20px;
+            margin: 25px 0;
+            text-align: left;
+            border-left: 4px solid #ff4b2b;
+        }
+        
+        .reasons h3 {
+            color: #2d3748;
+            margin-bottom: 15px;
+            font-size: 18px;
+            display: flex;
+            align-items: center;
+        }
+        
+        .reasons h3 i {
+            margin-right: 10px;
+            color: #ff4b2b;
+        }
+        
+        .reasons ul {
+            padding-left: 20px;
+            color: #718096;
+        }
+        
+        .reasons li {
+            margin-bottom: 10px;
+            font-size: 16px;
+        }
+        
+        .btn {
+            background: linear-gradient(90deg, #ff416c 0%, #ff4b2b 100%);
+            color: white;
+            border: none;
+            padding: 16px 40px;
+            border-radius: 50px;
+            font-size: 18px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            margin: 15px 0;
+            display: inline-flex;
+            align-items: center;
+            box-shadow: 0 4px 15px rgba(255, 75, 43, 0.35);
+        }
+        
+        .btn:hover {
+            background: linear-gradient(90deg, #ff4b2b 0%, #ff416c 100%);
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(255, 75, 43, 0.5);
+        }
+        
+        .btn i {
+            margin-right: 10px;
+        }
+        
+        .contact {
+            margin-top: 30px;
+            font-size: 16px;
+            color: #a0aec0;
+        }
+        
+        .contact a {
+            color: #ff4b2b;
+            text-decoration: none;
+            font-weight: 600;
+        }
+        
+        .steps {
+            text-align: left;
+            background: #f8f9fa;
+            padding: 20px;
+            border-radius: 10px;
+            margin: 20px 0;
+        }
+        
+        .steps h3 {
+            color: #2d3748;
+            margin-bottom: 15px;
+            display: flex;
+            align-items: center;
+        }
+        
+        .steps h3 i {
+            margin-right: 10px;
+            color: #ff4b2b;
+        }
+        
+        .steps ol {
+            padding-left: 20px;
+            color: #718096;
+        }
+        
+        .steps li {
+            margin-bottom: 10px;
+            font-size: 16px;
+        }
+        
+        @media (max-width: 600px) {
+            .container {
+                padding: 30px 20px;
+            }
+            
+            h1 {
+                font-size: 24px;
+            }
+            
+            .status-icon {
+                font-size: 60px;
+            }
+            
+            p {
+                font-size: 16px;
+            }
+            
+            .btn {
+                padding: 14px 30px;
+                font-size: 16px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <i class="fas fa-times-circle status-icon"></i>
+        <h1>Company Verification Rejected</h1>
+        <p>Unfortunately, your company verification request has been rejected by our admin team.</p>
+        
+        <div class="reasons">
+            <h3><i class="fas fa-exclamation-circle"></i> Reasons for rejection:</h3>
+            <ul>
+                <li>Company documentation was incomplete or unclear</li>
+                <li>Business information could not be verified</li>
+                <li>Missing required licenses or certifications</li>
+            </ul>
+        </div>
+        
+        <div class="steps">
+            <h3><i class="fas fa-clipboard-list"></i> To re-apply, please:</h3>
+            <ol>
+                <li>Review the rejection reasons above</li>
+                <li>Gather all required documents</li>
+                <li>Complete the application form</li>
+                <li>Submit for review</li>
+            </ol>
+        </div>
+        
+        <button class="btn" id="reapply-btn" window.location.href="company-test/index.html">
+            <i class="fas fa-paper-plane"></i> Re-apply Now
+        </button>
+        
+        <div class="contact">
+            Need assistance? Contact us at <a href="mailto:support@companyportal.com">support@companyportal.com</a>
+        </div>
+    </div>
+
+    <script>
+        // Add interactivity to the re-apply button
+        document.getElementById('reapply-btn').addEventListener('click', function() {
+            // Show confirmation message
+            
+            
+            // Button feedback animation
+            this.innerHTML = '<i class="fas fa-circle-notch fa-spin"></i> Processing...';
+            this.disabled = true;
+            
+            // Simulate redirect after a brief delay
+            setTimeout(function() {
+                alert('Redirecting to application form...');
+                
+                window.location.href = 'company-test/index.html';
+            }, 1500);
+        });
+        
+        // Add a subtle pulsing effect to the container
+        const container = document.querySelector('.container');
+        setInterval(() => {
+            container.style.transform = 'scale(1.01)';
+            setTimeout(() => {
+                container.style.transform = 'scale(1)';
+            }, 800);
+        }, 2000);
+    </script>
+</body>
+</html>

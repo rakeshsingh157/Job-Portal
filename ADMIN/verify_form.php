@@ -1,5 +1,5 @@
 <?php
-require("../config.php");
+require("../PHP/config.php");
 
 // Check if form ID and action are provided
 if (isset($_POST['id']) && is_numeric($_POST['id']) && isset($_POST['action'])) {

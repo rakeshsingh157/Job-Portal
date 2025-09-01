@@ -1,0 +1,536 @@
+:root {
+            --primary-color: #5d5dff;
+            --secondary-color: #4CAF50;
+            --tertiary-color: #FF69B4;
+            --quaternary-color: #8A2BE2;
+            --quinary-color: #FFD700;
+            --senary-color: #FF8C00;
+            --septenary-color: #00CED1;
+            --octonary-color: #A9A9A9;
+            --background-color: #f0f2f5;
+            --card-background: #fff;
+            --text-color: #333;
+            --light-text: #666;
+            --border-color: #ddd;
+            --shadow-color: rgba(0, 0, 0, 0.1);
+            --blue-gradient: linear-gradient(135deg, #6a82fb, #fc5c7d);
+            --green-gradient: linear-gradient(135deg, #4CAF50, #8bc34a);
+            --pink-gradient: linear-gradient(135deg, #FF69B4, #ffb6c1);
+            --purple-gradient: linear-gradient(135deg, #8A2BE2, #9370db);
+            --yellow-gradient: linear-gradient(135deg, #FFD700, #ffeb3b);
+            --orange-gradient: linear-gradient(135deg, #FF8C00, #ffc107);
+            --teal-gradient: linear-gradient(135deg, #00CED1, #48d1cc);
+            --grey-gradient: linear-gradient(135deg, #A9A9A9, #d3d3d3);
+        }
+/* Add these rules to your main CSS file (e.g., style.css) */
+.job-card.light-blue {
+    background-color: #deeaff;
+}
+
+.job-card.light-green {
+    background-color: #d5f6ed;
+}
+
+.job-card.light-pink {
+    background-color: #fbe2f5;
+}
+
+.job-card.light-purple {
+    background-color: #e2dbfa;
+}
+
+.job-card.light-yellow {
+    background-color: #ffead9;
+}
+
+.job-card.light-orange {
+    background-color: #fff9d9;
+}
+
+.job-card.light-teal {
+    background-color: #e2fbd7;
+}
+.btn.details-btn {
+    background-color: transparent; /* Makes the background clear */
+    color: #333; /* A dark text color for contrast */
+    border: 2px solid #333; /* Adds a solid border */
+}
+
+/* Styling for the Apply Now button */
+.btn.apply-btn {
+    background-color: #000; /* Makes the button black */
+    color: #fff; /* White text for readability */
+    border: none; /* Removes the border */
+    text-align: center;
+    text-decoration: none;
+    display: inline-block;
+}
+        body {
+            font-family: 'Poppins', sans-serif;
+            background-color: var(--background-color);
+            margin: 0;
+            padding: 0;
+            color: var(--text-color);
+        }
+        
+        header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 20px 5%;
+            background-color: var(--card-background);
+            box-shadow: 0 2px 10px var(--shadow-color);
+        }
+        
+        .logo {
+            font-size: 24px;
+            font-weight: 700;
+            color: var(--primary-color);
+        }
+        
+        nav a {
+            margin: 0 15px;
+            text-decoration: none;
+            color: var(--text-color);
+            font-weight: 500;
+            transition: color 0.3s ease;
+        }
+        
+        nav a:hover,
+        nav a.active {
+            color: var(--primary-color);
+        }
+        
+        .profile {
+            display: flex;
+            align-items: center;
+        }
+        
+        .profile span {
+            margin-right: 15px;
+            font-size: 14px;
+            color: var(--light-text);
+        }
+        
+        .profile img {
+            width: 35px;
+            height: 35px;
+            border-radius: 50%;
+            object-fit: cover;
+        }
+        
+        .container {
+            display: flex;
+            padding: 20px 5%;
+            gap: 20px;
+        }
+        
+        .sidebar {
+            flex: 0 0 280px;
+            background-color: var(--card-background);
+            padding: 20px;
+            border-radius: 15px;
+            box-shadow: 0 2px 10px var(--shadow-color);
+            height: fit-content;
+            position: sticky;
+            top: 20px;
+        }
+        
+        .search-container-sidebar {
+            display: flex;
+            margin-bottom: 20px;
+            border: 1px solid var(--border-color);
+            border-radius: 10px;
+            overflow: hidden;
+        }
+        
+        .side-input {
+            border: none;
+            outline: none;
+            padding: 10px;
+            flex-grow: 1;
+        }
+        
+        .search-btn {
+            background: none;
+            border: none;
+            padding: 10px;
+            cursor: pointer;
+            color: var(--light-text);
+        }
+        
+        .filter-section {
+            margin-bottom: 20px;
+        }
+        
+        .filter-section h3 {
+            font-size: 16px;
+            font-weight: 600;
+            margin-bottom: 10px;
+        }
+        
+        .filter-section label {
+            display: block;
+            margin-bottom: 8px;
+            font-size: 14px;
+            color: var(--light-text);
+        }
+        
+        .btn {
+            padding: 12px 20px;
+            border: none;
+            border-radius: 10px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: transform 0.2s ease, box-shadow 0.2s ease;
+        }
+        
+        .btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 10px var(--shadow-color);
+        }
+        
+        .apply-btn {
+            background-color: var(--primary-color);
+            color: white;
+        }
+        
+        .main-content {
+            flex-grow: 1;
+        }
+        
+        .search-container {
+            display: flex;
+            gap: 10px;
+            background-color: var(--card-background);
+            padding: 15px;
+            border-radius: 15px;
+            box-shadow: 0 2px 10px var(--shadow-color);
+            margin-bottom: 20px;
+            flex-wrap: wrap;
+        }
+        
+        .search-field {
+            display: flex;
+            align-items: center;
+            background-color: var(--background-color);
+            border-radius: 10px;
+            padding: 0 10px;
+            flex-grow: 1;
+        }
+        
+        .search-field input {
+            border: none;
+            outline: none;
+            background: transparent;
+            padding: 12px;
+            flex-grow: 1;
+        }
+        
+        .search-field i {
+            color: var(--light-text);
+        }
+        
+        .search-btn-main {
+            background-color: var(--primary-color);
+            color: white;
+            padding: 12px 25px;
+            border: none;
+            border-radius: 10px;
+            cursor: pointer;
+            font-weight: 600;
+            white-space: nowrap;
+        }
+        
+        h2 {
+            font-size: 24px;
+            font-weight: 600;
+            margin-bottom: 20px;
+        }
+        
+        .job-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+            gap: 20px;
+        }
+        
+        .job-card {
+            background-color: var(--card-background);
+            padding: 25px;
+            border-radius: 15px;
+            box-shadow: 0 4px 15px var(--shadow-color);
+            transition: transform 0.2s ease;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+        }
+        
+        .job-card:hover {
+            transform: translateY(-5px);
+        }
+        
+        .job-header {
+            display: flex;
+            align-items: center;
+            margin-bottom: 15px;
+        }
+        
+        .company-logo {
+            width: 50px;
+            height: 50px;
+            border-radius: 10px;
+            background-color: #f0f2f5;
+            margin-right: 15px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            overflow: hidden;
+        }
+        
+        .company-logo img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+        
+        .company-info h4 {
+            margin: 0;
+            font-size: 16px;
+            font-weight: 600;
+        }
+        
+        .company-info strong {
+            display: block;
+            font-size: 18px;
+            font-weight: 700;
+            color: var(--primary-color);
+        }
+
+        .job-card p {
+            font-size: 14px;
+            color: var(--light-text);
+            line-height: 1.5;
+            margin-bottom: 15px;
+            overflow: hidden;
+            display: -webkit-box;
+            -webkit-line-clamp: 3;
+            -webkit-box-orient: vertical;
+        }
+        
+        .tags {
+            display: flex;
+            gap: 8px;
+            flex-wrap: wrap;
+            margin-bottom: 15px;
+        }
+        
+        .tag {
+            background-color: var(--background-color);
+            color: var(--text-color);
+            padding: 5px 10px;
+            border-radius: 8px;
+            font-size: 12px;
+            font-weight: 500;
+        }
+        
+        .buttons {
+            display: flex;
+            gap: 10px;
+            margin-top: auto;
+        }
+        
+        .details-btn {
+            background-color: var(--background-color);
+            color: var(--primary-color);
+        }
+        
+        .apply-btn {
+            background-color: var(--primary-color);
+            color: white;
+            flex-grow: 1;
+        }
+        
+        .blue {
+            background: var(--blue-gradient);
+            color: white;
+        }
+        .blue .company-logo { background-color: rgba(255, 255, 255, 0.2); }
+        .blue .company-info strong, .blue .tag, .blue .details-btn { color: white; }
+        .blue .tag { background-color: rgba(255, 255, 255, 0.2); }
+        .blue .details-btn { background-color: rgba(255, 255, 255, 0.2); }
+        .blue .apply-btn { background-color: #5d5dff; }
+
+        .green {
+            background: var(--green-gradient);
+            color: white;
+        }
+        .green .company-logo { background-color: rgba(255, 255, 255, 0.2); }
+        .green .company-info strong, .green .tag, .green .details-btn { color: white; }
+        .green .tag { background-color: rgba(255, 255, 255, 0.2); }
+        .green .details-btn { background-color: rgba(255, 255, 255, 0.2); }
+        .green .apply-btn { background-color: #4CAF50; }
+
+        .pink {
+            background: var(--pink-gradient);
+            color: white;
+        }
+        .pink .company-logo { background-color: rgba(255, 255, 255, 0.2); }
+        .pink .company-info strong, .pink .tag, .pink .details-btn { color: white; }
+        .pink .tag { background-color: rgba(255, 255, 255, 0.2); }
+        .pink .details-btn { background-color: rgba(255, 255, 255, 0.2); }
+        .pink .apply-btn { background-color: #FF69B4; }
+
+        .purple {
+            background: var(--purple-gradient);
+            color: white;
+        }
+        .purple .company-logo { background-color: rgba(255, 255, 255, 0.2); }
+        .purple .company-info strong, .purple .tag, .purple .details-btn { color: white; }
+        .purple .tag { background-color: rgba(255, 255, 255, 0.2); }
+        .purple .details-btn { background-color: rgba(255, 255, 255, 0.2); }
+        .purple .apply-btn { background-color: #8A2BE2; }
+
+        .yellow {
+            background: var(--yellow-gradient);
+            color: white;
+        }
+        .yellow .company-logo { background-color: rgba(255, 255, 255, 0.2); }
+        .yellow .company-info strong, .yellow .tag, .yellow .details-btn { color: white; }
+        .yellow .tag { background-color: rgba(255, 255, 255, 0.2); }
+        .yellow .details-btn { background-color: rgba(255, 255, 255, 0.2); }
+        .yellow .apply-btn { background-color: #FFD700; }
+
+        .orange {
+            background: var(--orange-gradient);
+            color: white;
+        }
+        .orange .company-logo { background-color: rgba(255, 255, 255, 0.2); }
+        .orange .company-info strong, .orange .tag, .orange .details-btn { color: white; }
+        .orange .tag { background-color: rgba(255, 255, 255, 0.2); }
+        .orange .details-btn { background-color: rgba(255, 255, 255, 0.2); }
+        .orange .apply-btn { background-color: #FF8C00; }
+
+        .teal {
+            background: var(--teal-gradient);
+            color: white;
+        }
+        .teal .company-logo { background-color: rgba(255, 255, 255, 0.2); }
+        .teal .company-info strong, .teal .tag, .teal .details-btn { color: white; }
+        .teal .tag { background-color: rgba(255, 255, 255, 0.2); }
+        .teal .details-btn { background-color: rgba(255, 255, 255, 0.2); }
+        .teal .apply-btn { background-color: #00CED1; }
+
+        .grey {
+            background: var(--grey-gradient);
+            color: white;
+        }
+        .grey .company-logo { background-color: rgba(255, 255, 255, 0.2); }
+        .grey .company-info strong, .grey .tag, .grey .details-btn { color: white; }
+        .grey .tag { background-color: rgba(255, 255, 255, 0.2); }
+        .grey .details-btn { background-color: rgba(255, 255, 255, 0.2); }
+        .grey .apply-btn { background-color: #A9A9A9; }
+        
+        .custom-alert-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.5);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            z-index: 9999;
+        }
+        .custom-alert-box {
+            background: white;
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
+            text-align: center;
+        }
+
+        /* Mobile Styles */
+        .mobile-menu-toggle,
+        .mobile-search-toggle,
+        .sidebar-close-btn,
+        .filter-toggle-btn {
+            display: none;
+        }
+        .mobile-overlay {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: white;
+            z-index: 1000;
+            flex-direction: column;
+            padding: 20px;
+            box-sizing: border-box;
+            transform: translateX(100%);
+            transition: transform 0.3s ease-in-out;
+        }
+        .mobile-overlay.visible {
+            display: flex;
+            transform: translateX(0);
+        }
+        .mobile-overlay-close {
+            background: none;
+            border: none;
+            font-size: 30px;
+            align-self: flex-end;
+        }
+
+        @media (max-width: 768px) {
+            header {
+                padding: 15px 5%;
+            }
+            #main-nav,
+            #main-profile {
+                display: none;
+            }
+            .mobile-menu-toggle,
+            .mobile-search-toggle {
+                display: block;
+                background: none;
+                border: none;
+                font-size: 24px;
+                color: var(--text-color);
+            }
+            .container {
+                flex-direction: column;
+            }
+            .sidebar {
+                position: fixed;
+                top: 0;
+                left: -300px;
+                height: 100%;
+                z-index: 1000;
+                transition: left 0.3s ease;
+            }
+            .sidebar.sidebar-visible {
+                left: 0;
+            }
+            .sidebar-close-btn {
+                display: block;
+                background: none;
+                border: none;
+                font-size: 30px;
+                position: absolute;
+                top: 10px;
+                right: 10px;
+            }
+            .filter-toggle-btn {
+                display: block;
+                margin-bottom: 20px;
+                width: 100%;
+            }
+            .search-container {
+                flex-direction: column;
+            }
+            .search-btn-main {
+                width: 100%;
+            }
+        }

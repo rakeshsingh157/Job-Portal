@@ -1,6 +1,6 @@
 <?php
 // Database credentials
-require("../config.php");
+require("../PHP/config.php");
 
 
 $sql = "SELECT id, cuser_id, company_name, created_at, status FROM companies ORDER BY created_at DESC";

@@ -1,0 +1,97 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Pinterest-Style Photo Gallery</title>
+    <link rel="stylesheet" href="CSS/postview-style.css">
+
+</head>
+<body>
+     <header class="navbar">
+        <div class="navbar-left">
+            <h1 class="logo">JOBconnect.</h1>
+        </div>
+        <nav class="navbar-center">
+            <ul>
+                <li><a href="#" class="active">Jobs</a></li>
+                <li><a href="#">Messages</a></li>
+                <li><a href="#">Notifications</a></li>
+            </ul>
+        </nav>
+        <div class="navbar-right">
+            <div class="location">
+                
+                <span id="navbarLocation">City, District </span> ㅤ<i class="fas fa-map-marker-alt"></i>
+            </div>
+            <div class="profile-avatar">
+                <img src="https://placehold.co/150x150/png?text=P" alt="Profile Picture" id="navbarProfilePicture">
+            </div>
+        </div>
+    </header>
+
+    <div class="main-content">
+        <div class="message" id="messageBox" style="display: none;"></div>
+        
+        <div class="posts-grid" id="postsGrid">
+            <!-- Posts will be dynamically loaded by JavaScript -->
+        </div>
+    </div>
+
+    <!-- Create Post Button -->
+    <a href="PHP/post.php" class="create-post-btn" id="createPostBtn" style="display: none;">+</a>
+
+    <!-- Modal -->
+    <div class="modal" id="imageModal">
+        <div class="modal-close" onclick="closeModal()">×</div>
+        <div class="modal-content">
+            <div class="modal-image-container">
+                <img class="modal-image" id="modalImage" src="" alt="Enlarged post image">
+                
+                <div class="modal-nav">
+                    <div class="nav-btn prev-btn" onclick="navigateImage(-1)">❮</div>
+                    <div class="nav-btn next-btn" onclick="navigateImage(1)">❯</div>
+                </div>
+                
+                <div class="modal-dots" id="modalDots"></div>
+            </div>
+            
+            <div class="modal-details">
+                <div class="modal-header">
+                    <div class="modal-avatar">
+                        <img id="modalAvatar" src="https://via.placeholder.com/48" alt="Profile">
+                    </div>
+                    <div class="modal-user-info">
+                        <div class="modal-username" id="modalUsername"></div>
+                    </div>
+                    
+                    <form id="deleteForm" method="POST" style="display: none;">
+                        <input type="hidden" name="post_id" id="deletePostId">
+                        <button type="submit" name="delete_post" class="modal-action-btn delete-btn">🗑️ Delete</button>
+                    </form>
+                </div>
+                
+                <div class="modal-image-count" id="modalImageCount"></div>
+                
+                <div class="modal-text" id="modalText"></div>
+                
+                <div class="modal-actions">
+                    
+                </div>
+                
+                <div class="modal-comments" id="modalComments">
+                    <!-- Comments will be inserted here -->
+                </div>
+                
+                <form id="commentForm" method="POST" class="modal-comment-input">
+                    <input type="hidden" name="post_id" id="commentPostId">
+                    <input type="text" name="comment_text" placeholder="Add a comment..." required>
+                    <button type="submit" name="add_comment">Post</button>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <script src="JS/postview-script.js"></script>
+</body>
+</html>

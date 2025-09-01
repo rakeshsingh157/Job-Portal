@@ -1,51 +1,16 @@
 $(document).ready(function() {
-    // Function to load all forms from the backend
+    let allFormsData = []; 
+
+
     function loadForms() {
         $.ajax({
             url: 'fetch_forms.php',
             type: 'GET',
             dataType: 'json',
             success: function(data) {
-                const tableBody = $('#formsTable tbody');
-                tableBody.empty(); // Clear existing rows
-
-                if (data.length > 0) {
-                    data.forEach(form => {
-                        let statusClass = '';
-                        let statusText = '';
-                        switch (form.status) {
-                            case 'pending':
-                                statusClass = 'status-pending';
-                                statusText = 'Pending';
-                                break;
-                            case 'done':
-                                statusClass = 'status-done';
-                                statusText = 'Done';
-                                break;
-                            case 'rejected':
-                                statusClass = 'status-rejected';
-                                statusText = 'Rejected';
-                                break;
-                            default:
-                                statusText = 'Unknown';
-                        }
-                        
-                        const row = `
-                            <tr>
-                                <td>${form.id}</td>
-                                <td>${form.company_name}</td>
-                                <td>${form.created_at}</td>
-                                <td class="${statusClass}">${statusText}</td>
-                                <td>
-                                    <button class="action-button view-details-btn" data-id="${form.id}">View Details</button>
-                                </td>
-                            </tr>
-                        `;
-                        tableBody.append(row);
-                    });
-                } else {
-                    tableBody.append('<tr><td colspan="5">No forms found.</td></tr>');
-                }
+                allFormsData = data; 
+                renderForms(allFormsData);
+                updateStats(data);
             },
             error: function(xhr, status, error) {
                 console.error("Error fetching forms: " + error);
@@ -56,11 +21,83 @@ $(document).ready(function() {
         });
     }
 
-    // Handle the "View Details" button click
+    function renderForms(formsToRender) {
+        const tableBody = $('#formsTable tbody');
+        tableBody.empty();
+
+        if (formsToRender.length > 0) {
+            formsToRender.forEach(form => {
+                let statusClass = '';
+                let statusText = '';
+                let actionButtonsHtml = '';
+
+                switch (form.status) {
+                    case 'pending':
+                        statusClass = 'status-pending';
+                        statusText = 'Pending';
+                        actionButtonsHtml = `
+                            <button class="action-button view-details-btn" data-id="${form.id}"><i class="fas fa-eye"></i> View</button>
+                            <button class="action-button verify-btn" data-id="${form.id}"><i class="fas fa-check"></i> Verify</button>
+                            <button class="action-button reject-btn" data-id="${form.id}"><i class="fas fa-times"></i> Reject</button>
+                        `;
+                        break;
+                    case 'done':
+                        statusClass = 'status-done';
+                        statusText = 'Verified';
+                        actionButtonsHtml = `
+                            <button class="action-button view-details-btn" data-id="${form.id}"><i class="fas fa-eye"></i> View</button>
+                            <button class="action-button edit-btn" data-id="${form.id}"><i class="fas fa-edit"></i> Edit</button>
+                            
+                        `;
+                        break;
+                    case 'rejected':
+                        statusClass = 'status-rejected';
+                        statusText = 'Rejected';
+                        actionButtonsHtml = `
+                            <button class="action-button view-details-btn" data-id="${form.id}"><i class="fas fa-eye"></i> View</button>
+                            <button class="action-button verify-btn" data-id="${form.id}"><i class="fas fa-redo"></i> Restore</button>
+                        `;
+                        break;
+                    default:
+                        statusText = 'Unknown';
+                        actionButtonsHtml = `
+                            <button class="action-button view-details-btn" data-id="${form.id}"><i class="fas fa-eye"></i> View</button>
+                        `;
+                }
+                
+                const row = `
+                    <tr>
+                        <td>#CV-${form.id}</td>
+                        <td>${form.company_name}</td>
+                        <td>${form.created_at}</td>
+                        <td><span class="status-badge ${statusClass}">${statusText}</span></td>
+                        <td>
+                            <div class="action-buttons">
+                                ${actionButtonsHtml}
+                            </div>
+                        </td>
+                    </tr>
+                `;
+                tableBody.append(row);
+            });
+        } else {
+            tableBody.append('<tr><td colspan="5">No forms found.</td></tr>');
+        }
+    }
+
+    function updateStats(data) {
+        const pendingCount = data.filter(form => form.status === 'pending').length;
+        const verifiedCount = data.filter(form => form.status === 'done').length;
+        const rejectedCount = data.filter(form => form.status === 'rejected').length;
+
+        $('#pendingCount').text(pendingCount);
+        $('#verifiedCount').text(verifiedCount);
+        $('#rejectedCount').text(rejectedCount);
+    }
+
     $(document).on('click', '.view-details-btn', function() {
         const formId = $(this).data('id');
         
-        // Fetch all details for the selected form
         $.ajax({
             url: `fetch_form_details.php?id=${formId}`,
             type: 'GET',
@@ -71,26 +108,70 @@ $(document).ready(function() {
                     return;
                 }
                 
-                // Populate the modal with all details
-                let modalHtml = '';
                 for (const key in data) {
-                    if (key !== 'id' && key !== 'cuser_id') {
+                    const elementId = `#detail-${key}`;
+                    const element = $(elementId);
+                    if (element.length) {
                         let value = data[key];
-                        // Format status for display
                         if (key === 'status') {
                             value = value.charAt(0).toUpperCase() + value.slice(1);
+                            let statusClass = '';
+                            switch (data[key]) {
+                                case 'pending': statusClass = 'status-pending'; break;
+                                case 'done': statusClass = 'status-done'; break;
+                                case 'rejected': statusClass = 'status-rejected'; break;
+                            }
+                            element.html(`<span class="status-badge ${statusClass}">${value}</span>`);
+                        } else if (key === 'documents') {
+                            const documentLabels = [
+                                "Certificate of Incorporation",
+                                "Tax Registration Certificate",
+                                "Bank Statement",
+                                "Proof of Address"
+                            ];
+                            const docUrls = value.split(',').map(url => url.trim()).filter(url => url !== '');
+                            
+                            let docLinksHtml = '';
+                            if (docUrls.length > 0) {
+                                docUrls.forEach((docUrl, index) => {
+                                    const label = documentLabels[index] || `Document ${index + 1}`; // Fallback label
+                                    docLinksHtml += `
+                                        <div>
+                                            <strong>${label}:</strong> 
+                                            <a href="${docUrl}" target="_blank" style="color: var(--primary); text-decoration: underline;">View Document</a>
+                                        </div>
+                                    `;
+                                });
+                            } else {
+                                docLinksHtml = 'N/A';
+                            }
+                            element.html(docLinksHtml);
                         }
-                        const formattedKey = key.replace(/_/g, ' ').replace(/\b\w/g, char => char.toUpperCase());
-                        modalHtml += `<div class="detail-item"><strong>${formattedKey}:</strong> ${value}</div>`;
+                        else {
+                            element.text(value);
+                        }
                     }
                 }
-                $('#modalBody').html(modalHtml);
 
-                // Set the form ID on the buttons
                 $('#verifyModalBtn').data('id', formId);
                 $('#rejectModalBtn').data('id', formId);
+                $('#pendingModalBtn').data('id', formId);
 
-                // Show the modal
+                const currentStatus = data.status;
+                if (currentStatus === 'pending') {
+                    $('#verifyModalBtn').show();
+                    $('#rejectModalBtn').show();
+                    $('#pendingModalBtn').hide();
+                } else if (currentStatus === 'done') {
+                    $('#verifyModalBtn').hide();
+                    $('#rejectModalBtn').show();
+                    $('#pendingModalBtn').show();
+                } else if (currentStatus === 'rejected') {
+                    $('#verifyModalBtn').show();
+                    $('#rejectModalBtn').hide();
+                    $('#pendingModalBtn').show();
+                }
+
                 $('#detailsModal').show();
             },
             error: function() {
@@ -99,59 +180,67 @@ $(document).ready(function() {
         });
     });
 
-    // Handle the "Mark as Done" button click inside the modal
+    function updateFormStatus(formId, action) {
+        const confirmMessage = `Are you sure you want to set this form to '${action}'?`;
+        if (confirm(confirmMessage)) {
+            $.ajax({
+                url: 'verify_form.php',
+                type: 'POST',
+                data: { id: formId, action: action },
+                dataType: 'json',
+                success: function(response) {
+                    if (response.success) {
+                        alert(response.message);
+                        $('#detailsModal').hide();
+                        loadForms();
+                    } else {
+                        alert(`Action failed: ${response.message}`);
+                    }
+                },
+                error: function() {
+                    alert("An error occurred. Please try again.");
+                }
+            });
+        }
+    }
+
+    $(document).on('click', '.verify-btn', function() {
+        const formId = $(this).data('id');
+        const action = $(this).text().trim() === 'Restore' ? 'done' : 'done';
+        updateFormStatus(formId, action);
+    });
+
+    $(document).on('click', '.reject-btn', function() {
+        const formId = $(this).data('id');
+        updateFormStatus(formId, 'rejected');
+    });
+
+    $(document).on('click', '.edit-btn', function() {
+        const formId = $(this).data('id');
+        alert(`Edit functionality for Form ID: ${formId} would be implemented here.`);
+    });
+
+    $(document).on('click', '.download-btn', function() {
+        const formId = $(this).data('id');
+        alert(`Download documents functionality for Form ID: ${formId} would be implemented here.`);
+    });
+
+
     $('#verifyModalBtn').on('click', function() {
         const formId = $(this).data('id');
-        
-        if (confirm(`Are you sure you want to mark this form as done?`)) {
-            $.ajax({
-                url: 'verify_form.php',
-                type: 'POST',
-                data: { id: formId, action: 'done' }, // Send the new action 'done'
-                dataType: 'json',
-                success: function(response) {
-                    if (response.success) {
-                        alert(response.message);
-                        $('#detailsModal').hide();
-                        loadForms(); // Reload the table to reflect the change
-                    } else {
-                        alert("Verification failed: " + response.message);
-                    }
-                },
-                error: function() {
-                    alert("An error occurred. Please try again.");
-                }
-            });
-        }
+        updateFormStatus(formId, 'done');
     });
 
-    // Handle the "Reject" button click inside the modal
     $('#rejectModalBtn').on('click', function() {
         const formId = $(this).data('id');
-        
-        if (confirm(`Are you sure you want to reject this form?`)) {
-            $.ajax({
-                url: 'verify_form.php',
-                type: 'POST',
-                data: { id: formId, action: 'rejected' }, // Send the new action 'rejected'
-                dataType: 'json',
-                success: function(response) {
-                    if (response.success) {
-                        alert(response.message);
-                        $('#detailsModal').hide();
-                        loadForms(); // Reload the table to reflect the change
-                    } else {
-                        alert("Rejection failed: " + response.message);
-                    }
-                },
-                error: function() {
-                    alert("An error occurred. Please try again.");
-                }
-            });
-        }
+        updateFormStatus(formId, 'rejected');
     });
 
-    // Close the modal when the user clicks on 'x' or outside the modal
+    $('#pendingModalBtn').on('click', function() {
+        const formId = $(this).data('id');
+        updateFormStatus(formId, 'pending');
+    });
+
     $('.close-btn').on('click', function() {
         $('#detailsModal').hide();
     });
@@ -162,6 +251,70 @@ $(document).ready(function() {
         }
     });
 
-    // Initial load of forms when the page is ready
+    $('.filter-btn').on('click', function() {
+        $('.filter-btn').removeClass('active');
+        $(this).addClass('active');
+        const filter = $(this).data('filter');
+        let filteredForms = [];
+
+        if (filter === 'all') {
+            filteredForms = allFormsData;
+        } else {
+            filteredForms = allFormsData.filter(form => form.status === filter);
+        }
+        renderForms(filteredForms);
+    });
+
+    $('th[data-sort]').on('click', function() {
+        const column = $(this).data('sort');
+        const isAsc = $(this).hasClass('sort-asc');
+        const isDesc = $(this).hasClass('sort-desc');
+
+        $('th[data-sort]').removeClass('sort-asc sort-desc');
+
+        let sortOrder = 'asc';
+        if (!isAsc && !isDesc) {
+            $(this).addClass('sort-asc');
+            sortOrder = 'asc';
+        } else if (isAsc) {
+            $(this).removeClass('sort-asc');
+            $(this).addClass('sort-desc');
+            sortOrder = 'desc';
+        } else {
+            $(this).removeClass('sort-desc');
+            $(this).addClass('sort-asc');
+            sortOrder = 'asc';
+        }
+
+        const sortedForms = [...allFormsData].sort((a, b) => {
+            let valA = a[column];
+            let valB = b[column];
+
+            if (column === 'id') {
+                valA = parseInt(valA);
+                valB = parseInt(valB);
+            }
+
+            if (valA < valB) {
+                return sortOrder === 'asc' ? -1 : 1;
+            }
+            if (valA > valB) {
+                return sortOrder === 'asc' ? 1 : -1;
+            }
+            return 0;
+        });
+        renderForms(sortedForms);
+    });
+
+    $('#searchInput').on('input', function() {
+        const searchTerm = $(this).val().toLowerCase();
+        const filteredForms = allFormsData.filter(form => 
+            form.company_name.toLowerCase().includes(searchTerm) ||
+            form.id.toString().includes(searchTerm) ||
+            form.status.toLowerCase().includes(searchTerm)
+        );
+        renderForms(filteredForms);
+    });
+
     loadForms();
 });

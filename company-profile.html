@@ -1,0 +1,371 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>JOBconnect Profile - Microsoft</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <link rel="stylesheet" href="CSS/company-styles.css"/>
+  <style>
+    /* New styles for the additional form fields to match existing design */
+    .form-group.half-width {
+      display: inline-block;
+      width: 48%;
+      margin-right: 2%;
+    }
+    .form-group.half-width:last-child {
+      margin-right: 0;
+    }
+
+    /* Custom Modal styles */
+    .custom-modal {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background-color: rgba(0, 0, 0, 0.6);
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      z-index: 1000;
+    }
+    .custom-modal-content {
+      background-color: white;
+      padding: 30px;
+      border-radius: 12px;
+      text-align: center;
+      box-shadow: 0 4px 20px rgba(0, 0, 0, 0.2);
+      max-width: 400px;
+      width: 90%;
+    }
+    .custom-modal-content p {
+      font-size: 16px;
+      margin-bottom: 20px;
+    }
+    .custom-modal-actions {
+      display: flex;
+      justify-content: center;
+      gap: 15px;
+    }
+    .custom-btn-ok, .custom-btn-cancel {
+      padding: 10px 25px;
+      border: none;
+      border-radius: 8px;
+      cursor: pointer;
+      font-weight: bold;
+      transition: background-color 0.3s ease;
+    }
+    .custom-btn-ok {
+      background-color: var(--primary);
+      color: white;
+    }
+    .custom-btn-ok:hover {
+      background-color: #0056b3;
+    }
+    .custom-btn-cancel {
+      background-color: #e0e0e0;
+      color: #333;
+    }
+    .custom-btn-cancel:hover {
+      background-color: #ccc;
+    }
+    
+    /* Loading Overlay Styles */
+    #loading-overlay {
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background-color: rgba(255, 255, 255, 1);
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        z-index: 9999;
+        visibility: hidden;
+        opacity: 0;
+        transition: visibility 0s 0.5s, opacity 0.5s linear;
+    }
+    
+    #loading-overlay.visible {
+        visibility: visible;
+        opacity: 1;
+        transition-delay: 0s;
+    }
+    
+    .loader {
+        animation: rotate 1s infinite;
+        height: 50px;
+        width: 50px;
+    }
+    
+    .loader:before,
+    .loader:after {
+        border-radius: 50%;
+        content: '';
+        display: block;
+        height: 20px;
+        width: 20px;
+    }
+    
+    .loader:before {
+        animation: ball1 1s infinite;
+        background-color: #cb2025;
+        box-shadow: 30px 0 0 #f8b334;
+        margin-bottom: 10px;
+    }
+    
+    .loader:after {
+        animation: ball2 1s infinite;
+        background-color: #00a096;
+        box-shadow: 30px 0 0 #97bf0d;
+    }
+    
+    @keyframes rotate {
+        0% {
+            transform: rotate(0deg) scale(0.8);
+        }
+        50% {
+            transform: rotate(360deg) scale(1.2);
+        }
+        100% {
+            transform: rotate(720deg) scale(0.8);
+        }
+    }
+    
+    @keyframes ball1 {
+        0% {
+            box-shadow: 30px 0 0 #f8b334;
+        }
+        50% {
+            box-shadow: 0 0 0 #f8b334;
+            margin-bottom: 0;
+            transform: translate(15px, 15px);
+        }
+        100% {
+            box-shadow: 30px 0 0 #f8b334;
+            margin-bottom: 10px;
+        }
+    }
+    
+    @keyframes ball2 {
+        0% {
+            box-shadow: 30px 0 0 #97bf0d;
+        }
+        50% {
+            box-shadow: 0 0 0 #97bf0d;
+            margin-top: -20px;
+            transform: translate(15px, 15px);
+        }
+        100% {
+            box-shadow: 30px 0 0 #97bf0d;
+            margin-top: 0;
+        }
+    }
+  </style>
+</head>
+<body>
+  <header>
+    <div class="logo">JOBconnect.</div>
+    <nav>
+      <a href="#" class="active">Jobs</a>
+      <a href="#">Messages</a>
+      <a href="#">Notifications</a>
+    </nav>
+    <div class="profile-icon"> <img id="profile-image2" style="display: none;" src="" alt="Profile Picture"> </div>
+  </header>
+  
+  <div class="container">
+    <div class="card profile-card">
+      <div class="profile-avatar" id="avatar-container">
+        <div class="avatar-placeholder" id="avatar-placeholder">👤</div>
+        <img id="profile-image" style="display: none;" alt="Profile Picture">
+        <div class="upload-hint">📷</div>
+      </div>
+      <input type="file" id="avatar-input" accept="image/*">
+      
+      <div id="profile-display">
+        <div class="company-name" id="display-name">Company Name</div>
+        <div class="company-type" id="display-type">Industry Type</div>
+        <div class="verified-badge">Verified</div>
+        
+        <button class="edit-btn" id="edit-profile-btn">Edit Profile</button>
+        
+        <div class="profile-info">
+          <div class="info-section">
+            <div class="info-label">Headquarters</div>
+            <div class="info-value" id="display-hq">City, Country</div>
+          </div>
+          
+          <div class="info-section">
+            <div class="info-label">Founded</div>
+            <div class="info-value" id="display-founded">Year</div>
+          </div>
+          
+          <div class="info-section">
+            <div class="info-label">Contact Information</div>
+            <div class="info-value" id="display-contact">email@company.com<br>Phone: +1-000-000-0000</div>
+          </div>
+          
+          <div class="info-section">
+            <div class="info-label">Industry</div>
+            <div class="info-value" id="display-industry">Your Industry</div>
+          </div>
+          
+          <div class="info-section">
+            <div class="info-label">Company Type</div>
+            <div class="info-value" id="display-company-type">Company Type</div>
+          </div>
+          
+          <div class="info-section">
+            <div class="info-label">Website</div>
+            <a href="#" class="info-value website-link" id="display-website">www.yourcompany.com</a>
+          </div>
+        </div>
+      </div>
+      
+      <div id="profile-edit" class="edit-form">
+        <div class="form-group">
+          <label class="form-label">Company Name</label>
+          <input type="text" id="edit-name" placeholder="Enter your company name">
+        </div>
+        
+        <div class="form-group half-width">
+          <label class="form-label">Email</label>
+          <input type="email" id="edit-email" placeholder="email@company.com">
+        </div>
+        
+        <div class="form-group half-width">
+          <label class="form-label">Phone Number</label>
+          <input type="tel" id="edit-phone" placeholder="e.g., +1-555-555-5555">
+        </div>
+        
+        <div class="form-group">
+          <label class="form-label">Headquarters</label>
+          <input type="text" id="edit-hq" placeholder="City, Country">
+        </div>
+        
+        <div class="form-group">
+          <label class="form-label">Founded</label>
+          <input type="text" id="edit-founded" placeholder="Year or Date">
+        </div>
+        
+        <div class="form-group">
+          <label class="form-label">Industry</label>
+          <input type="text" id="edit-industry" placeholder="Your industry sector">
+        </div>
+        
+        <div class="form-group">
+          <label class="form-label">Company Type</label>
+          <input type="text" id="edit-company-type" placeholder="Public, Private, Startup, etc.">
+        </div>
+        
+        <div class="form-group">
+          <label class="form-label">Website</label>
+          <input type="url" id="edit-website" placeholder="https://yourcompany.com">
+        </div>
+        
+        <button class="save-btn" id="save-profile-btn">Save Changes</button>
+      </div>
+    </div>
+    
+    <div class="main-content">
+      <div class="overview-section">
+        <h2 class="section-title">Overview</h2>
+        
+        <div id="overview-display">
+          <p class="overview-text" id="display-overview">
+            Add your company overview here. Describe your mission, values, culture, and what makes your organization unique. This is your opportunity to attract top talent by showcasing what makes your company a great place to work.
+          </p>
+        </div>
+        
+        <div id="overview-edit" class="edit-form">
+          <textarea id="edit-overview" placeholder="Describe your company's mission, values, culture, and what makes it unique...">Add your company overview here. Describe your mission, values, culture, and what makes your organization unique. This is your opportunity to attract top talent by showcasing what makes your company a great place to work.</textarea>
+        </div>
+      </div>
+      
+      <div class="jobs-section">
+        <div class="jobs-header">
+          <h2 class="section-title">Job Posts</h2>
+          <button class="add-job-btn" id="add-job-btn">+</button>
+        </div>
+        
+        <div id="jobs-list">
+          <div style="text-align: center; padding: 40px; color: var(--muted);">
+            <div style="font-size: 48px; margin-bottom: 16px;">💼</div>
+            <div>No job postings yet</div>
+            <div style="font-size: 14px; margin-top: 8px;">Click the + button to add your first job posting</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+  
+  <div class="modal" id="job-modal">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h3 class="modal-title" id="modal-title">Add New Job</h3>
+        <button class="close-btn" id="close-modal">&times;</button>
+      </div>
+      
+      <form id="job-form">
+        <div class="form-group">
+          <label class="form-label">Job Title</label>
+          <input type="text" id="job-title-input" required>
+        </div>
+        
+        <div class="form-group">
+          <label class="form-label">Job Description</label>
+          <textarea id="job-desc-input" required></textarea>
+        </div>
+        
+        <div class="form-group">
+          <label class="form-label">Location</label>
+          <input type="text" id="job-location-input">
+        </div>
+        
+        <div class="form-group">
+          <label class="form-label">Work Mode</label>
+          <input type="text" id="job-work-mode-input" placeholder="e.g., On-site, Remote, Hybrid">
+        </div>
+        
+        <div class="form-group">
+          <label class="form-label">Experience</label>
+          <input type="text" id="job-experience-input" placeholder="e.g., 2-5 years">
+        </div>
+        
+        <div class="form-group">
+          <label class="form-label">Time</label>
+          <input type="text" id="job-time-input" placeholder="e.g., Full-time, Part-time, Contract">
+        </div>
+
+        <div class="form-group">
+          <label class="form-label">Salary</label>
+          <input type="text" id="job-salary-input" placeholder="e.g., $50,000 - $70,000 annually">
+        </div>
+        
+        <div class="form-group">
+          <label class="form-label">Skills</label>
+          <input type="text" id="job-skills-input" placeholder="e.g., PHP, SQL, JavaScript (comma-separated)">
+        </div>
+        
+        <div class="form-group">
+          <label class="form-label">Application Form Link</label>
+          <input type="url" id="job-form-link-input" placeholder="https://yourcompany.com/apply">
+        </div>
+
+        <div class="modal-actions">
+          <button type="button" class="btn-cancel" id="cancel-job">Cancel</button>
+          <button type="submit" class="btn-save">Save Job</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <div id="loading-overlay">
+    <div class="loader"></div>
+  </div>
+
+    <script src="JS/company-script.js" defer></script>
+</body>
+</html>

@@ -1,0 +1,127 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>JobConnect - Profile</title>
+    <link rel="stylesheet" href="../CSS/profile.css">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+</head>
+<style>
+    
+</style>
+
+
+
+<body>
+    <header class="navbar">
+        <div class="navbar-left">
+            <h1 class="logo">JOBconnect.</h1>
+        </div>
+        <nav class="navbar-center">
+            <ul>
+                <li><a href="#" class="active">Jobs</a></li>
+                <li><a href="#">Messages</a></li>
+                <li><a href="#">Notifications</a></li>
+            </ul>
+        </nav>
+        <div class="navbar-right">
+            <div class="location">
+                
+                <span id="navbarLocation">City, District </span> ㅤ<i class="fas fa-map-marker-alt"></i>
+            </div>
+            <div class="profile-avatar">
+                <img src="https://placehold.co/150x150/png?text=P" alt="Profile Picture" id="navbarProfilePicture">
+            </div>
+        </div>
+    </header>
+
+    <main class="profile-container">
+        <aside class="profile-sidebar">
+            <div class="profile-header">
+                <img src="https://placehold.co/150x150/png?text=P" alt="Profile Picture" class="profile-picture" id="mainProfilePicture">
+
+                <h2 id="profileName"></h2>
+                <p class="position-name" id="profilePosition"></p>
+                <button class="status-button">open to work</button>
+            </div>
+            <div class="bio-section">
+                <p id="profileBio">something about yourself or something you would write for your bio or experience.</p>
+            </div>
+            <div class="skills-section">
+                <h3>Skills</h3> 
+                
+                <div class="skill-tags" id="skillTagsContainer">
+                   
+                </div>
+            </div>
+            <div class="languages-section">
+                <h3>Languages</h3>
+                <ul id="languagesList">
+                   
+                </ul>
+            </div>
+        </aside>
+
+        <section class="profile-content">
+            <div class="basic-information-card card">
+                <h3>Basic Information</h3>
+                <div class="info-grid">
+                    <div class="info-item">
+                        <span class="label">AGE</span>
+                        <span class="value" id="profileAge"></span>
+                    </div>
+                    <div class="info-item">
+                        <span class="label">GENDER</span>
+                        <span class="value" id="profilegender"></span>
+                    </div>
+                    <div class="info-item">
+                        <span class="label">LOCATION</span>
+                        <span class="value" id="profileLocation"></span>
+                    </div>
+                    <div class="info-item">
+                        <span class="label">EMAIL</span>
+                        <span class="value" id="profileEmail"></span>
+                    </div>
+                </div>
+            </div>
+
+            <div class="experience-card card " >
+                <h3>Experience</h3>
+                <div id="experienceContainer" class="experience-container">
+                   
+                </div>
+            </div>
+
+            <div class="education-card card">
+                <h3>Education</h3>
+                <div id="educationContainer" class="education-container">
+                  
+                </div>
+            </div>
+        </section>
+    </main>
+    
+    <div id="custom-modal-overlay" class="custom-modal-overlay">
+        <div class="custom-modal-content">
+            <h3 id="custom-modal-title"></h3>
+            <p id="custom-modal-message"></p>
+            <button id="custom-modal-ok-btn">OK</button>
+        </div>
+    </div>
+    
+    <div id="loader-overlay" class="loader-overlay">
+        <div class="loader"></div>
+        <p class="loader-text">Loading...</p>
+    </div>
+
+    <script src="JS/profile.js">
+    
+  
+
+    </script>
+
+
+</body>
+</html>

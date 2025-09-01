@@ -1,0 +1,104 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>JOBconnect</title>
+    <link rel="preconnect" href="[https://fonts.googleapis.com](https://fonts.googleapis.com)">
+    <link rel="preconnect" href="[https://fonts.gstatic.com](https://fonts.gstatic.com)" crossorigin>
+    <link href="[https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap](https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap)" rel="stylesheet">
+    <link rel="stylesheet" href="[https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css](https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css)">
+    <link rel="stylesheet" href="CSS/explore.css">
+    <script src="explore.js"></script>
+</head>
+<body>
+
+<header>
+    <button class="mobile-search-toggle" onclick="toggleSearchOverlay()">
+        <i class="fas fa-search"></i>
+    </button>
+    <div class="logo">JOBconnect.</div>
+    <button class="mobile-menu-toggle" onclick="toggleMenuOverlay()">
+        <i class="fas fa-bars"></i>
+    </button>
+
+    <nav id="main-nav">
+        <a href="#" class="active"><i class="fas fa-briefcase"></i>Jobs</a>
+        <a href="#"><i class="fas fa-envelope"></i>Messages</a>
+        <a href="#"><i class="fas fa-bell"></i>Notifications</a>
+    </nav>
+    <div class="profile" id="main-profile">
+        <span><i class="fas fa-map-marker-alt"></i> City, District</span>
+        <img src="[https://via.placeholder.com/35](https://via.placeholder.com/35)" alt="Profile Picture">
+    </div>
+</header>
+
+<div class="container">
+    <div class="sidebar" id="sidebar">
+        <div class="sidebar-header">
+            <button class="sidebar-close-btn" onclick="toggleSidebar()">&times;</button>
+        </div>
+        <div class="search-container-sidebar">
+            <input type="text" class="side-input" placeholder="Job title/keyword">
+            <button class="search-btn"><i class="fas fa-search"></i></button>
+        </div>
+
+       
+        
+        <button class="btn apply-btn" style="width: 100%;">Apply Filters</button>
+    </div>
+
+    <div class="main-content">
+        <button class="filter-toggle-btn" onclick="toggleSidebar()">Show Filters</button>
+        
+        <div class="search-container">
+            <div class="search-field">
+                <i class="fas fa-search"></i>
+                <input type="text" placeholder="Job title">
+            </div>
+            <div class="search-field">
+                <i class="fas fa-map-marker-alt"></i>
+                <input type="text" placeholder="Location">
+            </div>
+            <button class="search-btn-main"><i class="fas fa-search"></i> Search</button>
+        </div>
+
+        <h2>Recommended Jobs</h2>
+
+        <div class="job-grid" id="job-grid">
+            <!-- Job cards will be dynamically inserted here -->
+        </div>
+    </div>
+</div>
+
+<div class="mobile-overlay" id="mobileMenuOverlay">
+    <button class="mobile-overlay-close" onclick="toggleMenuOverlay()">&times;</button>
+    <nav>
+        <a href="#" class="active"><i class="fas fa-briefcase"></i>Jobs</a>
+        <a href="#"><i class="fas fa-envelope"></i>Messages</a>
+        <a href="#"><i class="fas fa-bell"></i>Notifications</a>
+    </nav>
+    <div class="profile">
+        <span><i class="fas fa-map-marker-alt"></i> City, District</span>
+        <img src="[https://via.placeholder.com/35](https://via.placeholder.com/35)" alt="Profile Picture">
+    </div>
+</div>
+
+<div class="mobile-overlay" id="mobileSearchOverlay">
+    <button class="mobile-overlay-close" onclick="toggleSearchOverlay()">&times;</button>
+    <div class="search-container">
+        <div class="search-field">
+            <i class="fas fa-search"></i>
+            <input type="text" placeholder="Job title">
+        </div>
+        <div class="search-field">
+            <i class="fas fa-map-marker-alt"></i>
+            <input type="text" placeholder="Location">
+        </div>
+        <button class="search-btn-main"><i class="fas fa-search"></i> Search</button>
+    </div>
+</div>
+
+</body>
+</html>
+<script src="JS/explore.js"></script>

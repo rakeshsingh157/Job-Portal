@@ -3,104 +3,401 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Company Verification Form</title>
+    <title>Company Verification Form - VerseWell</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <link rel="stylesheet" href="style.css">
 </head>
 <body>
-
+    
+    <div class="floating-bg">
+        <i class="fas fa-building"></i>
+    </div>
+    <div class="floating-bg">
+        <i class="fas fa-file-contract"></i>
+    </div>
+    <div class="floating-bg">
+        <i class="fas fa-check-circle"></i>
+    </div>
+    
     <div class="form-container">
-        <h1>Company Verification Form</h1>
-        <form action="submit_form.php" method="POST">
-
-            <div class="form-section">
-                <h2>I. General Information</h2>
-                <div class="form-group">
-                    <label for="companyName">Company/Business Name:</label>
-                    <input type="text" id="companyName" name="companyName" required>
+        <div class="form-header">
+            <h1><i class="fas fa-building"></i> Company Verification</h1>
+            <p>Complete this form to verify your company and gain full access to our platform</p>
+            
+            <div class="progress-container">
+                <div class="progress-bar" id="progressBar"></div>
+                <div class="progress-step active" id="step1Indicator">
+                    1
+                    <span class="step-label">Company Info</span>
                 </div>
-                <div class="form-group">
-                    <label for="businessType">Business Type:</label>
-                    <select id="businessType" name="businessType" required>
-                        <option value="">Select a type</option>
-                        <option value="company">Company</option>
-                        <option value="workshop">Workshop</option>
-                        <option value="shop">Shop</option>
-                        <option value="hospital">Hospital</option>
-                    </select>
+                <div class="progress-step" id="step2Indicator">
+                    2
+                    <span class="step-label">Documents</span>
                 </div>
-                <div class="form-group">
-                    <label for="legalStatus">Legal Status:</label>
-                    <input type="text" id="legalStatus" name="legalStatus" placeholder="e.g., Sole Proprietorship, Public Limited" required>
-                </div>
-                <div class="form-group">
-                    <label for="registrationNumber">Registration Number:</label>
-                    <input type="text" id="registrationNumber" name="registrationNumber">
-                </div>
-                <div class="form-group">
-                    <label for="dateEstablished">Date of Establishment:</label>
-                    <input type="date" id="dateEstablished" name="dateEstablished">
-                </div>
-                <div class="form-group">
-                    <label for="address">Physical Address:</label>
-                    <textarea id="address" name="address" rows="3" required></textarea>
-                </div>
-                <div class="form-group">
-                    <label for="contactPerson">Contact Person:</label>
-                    <input type="text" id="contactPerson" name="contactPerson" required>
-                </div>
-                <div class="form-group">
-                    <label for="contactTitle">Contact Title:</label>
-                    <input type="text" id="contactTitle" name="contactTitle" required>
-                </div>
-                <div class="form-group">
-                    <label for="phone">Phone Number(s):</label>
-                    <input type="tel" id="phone" name="phone" required>
-                </div>
-                <div class="form-group">
-                    <label for="email">Email Address:</label>
-                    <input type="email" id="email" name="email" required>
-                </div>
-                <div class="form-group">
-                    <label for="website">Website:</label>
-                    <input type="url" id="website" name="website">
+                <div class="progress-step" id="step3Indicator">
+                    3
+                    <span class="step-label">Review</span>
                 </div>
             </div>
+        </div>
+        
+        <form id="verificationForm" enctype="multipart/form-data">
+            <div class="form-content">
+                
+                <div class="form-section active" id="step1">
+                    <h2 class="section-title"><i class="fas fa-info-circle"></i> Company Information</h2>
+                    
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label for="companyName" class="required">Company Name</label>
+                            <div class="input-icon">
+                                <i class="fas fa-building"></i>
+                                <input type="text" id="companyName" name="company_name" required>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label for="registrationNumber" class="required">Registration Number</label>
+                            <div class="input-icon">
+                                <i class="fas fa-id-card"></i>
+                                <input type="text" id="registrationNumber" name="registration_number" required>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label for="businessType">Business Type</label>
+                            <div class="input-icon">
+                                <i class="fas fa-briefcase"></i>
+                                <input type="text" id="businessType" name="business_type">
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label for="legalStatus">Legal Status</label>
+                            <div class="input-icon">
+                                <i class="fas fa-balance-scale"></i>
+                                <input type="text" id="legalStatus" name="legal_status">
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="form-group full">
+                        <label for="physicalAddress" class="required">Physical Address</label>
+                        <div class="input-icon">
+                            <i class="fas fa-map-marker-alt"></i>
+                            <textarea id="physicalAddress" name="physical_address" rows="3" required></textarea>
+                        </div>
+                    </div>
+                    
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label for="contactPerson" class="required">Contact Person</label>
+                            <div class="input-icon">
+                                <i class="fas fa-user"></i>
+                                <input type="text" id="contactPerson" name="contact_person" required>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label for="contactTitle">Contact Title</label>
+                            <div class="input-icon">
+                                <i class="fas fa-user-tie"></i>
+                                <input type="text" id="contactTitle" name="contact_title">
+                            </div>
+                        </div>
+                    </div>
 
-            <div class="form-section">
-                <h2>II. Operational Details</h2>
-                <div class="form-group">
-                    <label for="natureOfBusiness">Nature of Business:</label>
-                    <textarea id="natureOfBusiness" name="natureOfBusiness" rows="3" required></textarea>
-                </div>
-                <div class="form-group">
-                    <label for="productsServices">Products/Services Offered:</label>
-                    <textarea id="productsServices" name="productsServices" rows="3" required></textarea>
-                </div>
-                <div class="form-group">
-                    <label for="hoursOfOperation">Hours of Operation:</label>
-                    <input type="text" id="hoursOfOperation" name="hoursOfOperation" placeholder="e.g., Mon-Fri, 9am-5pm" required>
-                </div>
-                <div class="form-group">
-                    <label for="numEmployees">Number of Employees:</label>
-                    <input type="number" id="numEmployees" name="numEmployees" min="1">
-                </div>
-            </div>
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label for="phoneNumber" class="required">Phone Number</label>
+                            <div class="input-icon">
+                                <i class="fas fa-phone"></i>
+                                <input type="tel" id="phoneNumber" name="phone_number" required>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label for="email" class="required">Email</label>
+                            <div class="input-icon">
+                                <i class="fas fa-envelope"></i>
+                                <input type="email" id="email" name="email" required>
+                            </div>
+                        </div>
+                    </div>
 
-            <div class="form-section">
-                <h2>III. Verification and Documents</h2>
-                <div class="form-group">
-                    <label>Documents for Verification:</label>
-                    <div class="checkbox-group">
-                        <label><input type="checkbox" name="documents[]" value="bizRegistration"> Business Registration Certificate</label>
-                        <label><input type="checkbox" name="documents[]" value="taxRegistration"> Tax Registration Certificate</label>
-                        <label><input type="checkbox" name="documents[]" value="bizLicense"> Valid Business License</label>
-                        <label><input type="checkbox" name="documents[]" value="proofAddress"> Proof of Address</label>
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label for="website">Website</label>
+                            <div class="input-icon">
+                                <i class="fas fa-globe"></i>
+                                <input type="url" id="website" name="website">
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label for="dateEstablished" class="required">Date Established</label>
+                            <div class="input-icon">
+                                <i class="fas fa-calendar-alt"></i>
+                                <input type="date" id="dateEstablished" name="date_established" required>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="form-row">
+                        <div class="form-group full">
+                            <label for="natureOfBusiness">Nature of Business</label>
+                            <div class="input-icon">
+                                <i class="fas fa-lightbulb"></i>
+                                <textarea id="natureOfBusiness" name="nature_of_business" rows="3"></textarea>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="form-row">
+                        <div class="form-group full">
+                            <label for="productsServices">Products/Services Offered</label>
+                            <div class="input-icon">
+                                <i class="fas fa-box-open"></i>
+                                <textarea id="productsServices" name="products_services" rows="3"></textarea>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label for="hoursOfOperation">Hours of Operation</label>
+                            <div class="input-icon">
+                                <i class="fas fa-clock"></i>
+                                <input type="text" id="hoursOfOperation" name="hours_of_operation">
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label for="numEmployees">Number of Employees</label>
+                            <div class="input-icon">
+                                <i class="fas fa-users"></i>
+                                <input type="number" id="numEmployees" name="num_employees" min="1">
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="form-actions">
+                        <div></div>
+                        <button type="button" class="btn btn-next" id="nextToStep2">Next <i class="fas fa-arrow-right"></i></button>
+                    </div>
+                </div>
+                
+                <!-- Step 2: Documents -->
+                <div class="form-section" id="step2">
+                    <h2 class="section-title"><i class="fas fa-file-alt"></i> Required Documents</h2>
+                    <p style="margin-bottom: 20px; color: var(--gray);">Please upload the following documents for verification. All documents must be in PDF, JPG, or PNG format and less than 5MB each.</p>
+                    
+                    <div class="form-group full">
+                        <label class="required">Certificate of Incorporation</label>
+                        <div class="file-upload" id="incCertUpload">
+                            <i class="fas fa-cloud-upload-alt"></i>
+                            <p>Click to upload or drag and drop</p>
+                            <p>PDF, JPG, or PNG (max 5MB)</p>
+                            <button type="button" class="btn" onclick="triggerFileInput1()">Choose File</button>
+                            
+                            <input type="file" id="incCert" name="documents[]" accept=".pdf,.jpg,.jpeg,.png" class="visually-hidden-input" required>
+                        </div>
+                        <div class="uploaded-files" id="incCertFiles"></div>
+                    </div>
+                    
+                    <div class="form-group full">
+                        <label class="required">Tax Registration Certificate</label>
+                        <div class="file-upload" id="taxCertUpload">
+                            <i class="fas fa-cloud-upload-alt"></i>
+                            <p>Click to upload or drag and drop</p>
+                            <p>PDF, JPG, or PNG (max 5MB)</p>
+                            <button type="button" class="btn" onclick="triggerFileInput2()">Choose File</button>
+                            
+                            <input type="file" id="taxCert" name="documents[]" accept=".pdf,.jpg,.jpeg,.png" class="visually-hidden-input" required>
+                        </div>
+                        <div class="uploaded-files" id="taxCertFiles"></div>
+                    </div>
+                    
+                    <div class="form-group full">
+                        <label>Bank Statement (Last 3 Months)</label>
+                        <div class="file-upload" id="bankStatementUpload">
+                            <i class="fas fa-cloud-upload-alt"></i>
+                            <p>Click to upload or drag and drop</p>
+                            <p>PDF, JPG, or PNG (max 5MB)</p>
+                            <button type="button" class="btn" onclick="triggerFileInput3()">Choose File</button>
+                            
+                            <input type="file" id="bankStatement" name="documents[]" accept=".pdf,.jpg,.jpeg,.png" class="visually-hidden-input">
+                        </div>
+                        <div class="uploaded-files" id="bankStatementFiles"></div>
+                    </div>
+                    
+                    <div class="form-group full">
+                        <label>Proof of Address</label>
+                        <div class="file-upload" id="addressProofUpload">
+                            <i class="fas fa-cloud-upload-alt"></i>
+                            <p>Click to upload or drag and drop</p>
+                            <p>PDF, JPG, or PNG (max 5MB)</p>
+                            <button type="button" class="btn" onclick="triggerFileInput4()">Choose File</button>
+                            
+                            <input type="file" id="addressProof" name="documents[]" accept=".pdf,.jpg,.jpeg,.png" class="visually-hidden-input">
+                        </div>
+                        <div class="uploaded-files" id="addressProofFiles"></div>
+                    </div>
+                    
+                    <div class="form-actions">
+                        <button type="button" class="btn btn-prev" id="prevToStep1"><i class="fas fa-arrow-left"></i> Previous</button>
+                        <button type="button" class="btn btn-next" id="nextToStep3">Next <i class="fas fa-arrow-right"></i></button>
+                    </div>
+                </div>
+                
+                <!-- Step 3: Review & Submit -->
+                <div class="form-section" id="step3">
+                    <h2 class="section-title"><i class="fas fa-check-circle"></i> Review & Submit</h2>
+                    <p style="margin-bottom: 30px; color: var(--gray);">Please review your information before submitting. You can go back to make changes if needed.</p>
+                    
+                    <div class="form-group full">
+                        <h3 style="margin-bottom: 20px; color: var(--primary);">Company Information</h3>
+                        <div class="review-details">
+                            <div class="detail-item">
+                                <strong>Company Name:</strong>
+                                <span id="reviewCompanyName">-</span>
+                            </div>
+                            <div class="detail-item">
+                                <strong>Registration Number:</b>
+                                <span id="reviewRegNumber">-</span>
+                            </div>
+                            <div class="detail-item">
+                                <strong>Business Type:</strong>
+                                <span id="reviewBusinessType">-</span>
+                            </div>
+                            <div class="detail-item">
+                                <strong>Legal Status:</strong>
+                                <span id="reviewLegalStatus">-</span>
+                            </div>
+                            <div class="detail-item">
+                                <strong>Physical Address:</strong>
+                                <span id="reviewPhysicalAddress">-</span>
+                            </div>
+                            <div class="detail-item">
+                                <strong>Contact Person:</strong>
+                                <span id="reviewContactPerson">-</span>
+                            </div>
+                            <div class="detail-item">
+                                <strong>Contact Title:</strong>
+                                <span id="reviewContactTitle">-</span>
+                            </div>
+                            <div class="detail-item">
+                                <strong>Phone Number:</strong>
+                                <span id="reviewPhoneNumber">-</span>
+                            </div>
+                            <div class="detail-item">
+                                <strong>Email:</strong>
+                                <span id="reviewEmail">-</span>
+                            </div>
+                            <div class="detail-item">
+                                <strong>Website:</strong>
+                                <span id="reviewWebsite">-</span>
+                            </div>
+                            <div class="detail-item">
+                                <strong>Date Established:</strong>
+                                <span id="reviewDateEstablished">-</span>
+                            </div>
+                            <div class="detail-item">
+                                <strong>Nature of Business:</strong>
+                                <span id="reviewNatureOfBusiness">-</span>
+                            </div>
+                            <div class="detail-item">
+                                <strong>Products/Services:</strong>
+                                <span id="reviewProductsServices">-</span>
+                            </div>
+                            <div class="detail-item">
+                                <strong>Hours of Operation:</strong>
+                                <span id="reviewHoursOfOperation">-</span>
+                            </div>
+                            <div class="detail-item">
+                                <strong>Number of Employees:</strong>
+                                <span id="reviewNumEmployees">-</span>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="form-group full" style="margin-top: 30px;">
+                        <h3 style="margin-bottom: 20px; color: var(--primary);">Uploaded Documents</h3>
+                        <div class="review-details">
+                            <div class="detail-item">
+                                <strong>Certificate of Incorporation:</strong>
+                                <span id="reviewIncCert">Not uploaded</span>
+                            </div>
+                            <div class="detail-item">
+                                <strong>Tax Registration Certificate:</strong>
+                                <span id="reviewTaxCert">Not uploaded</span>
+                            </div>
+                            <div class="detail-item">
+                                <strong>Bank Statement:</strong>
+                                <span id="reviewBankStatement">Not uploaded</span>
+                            </div>
+                            <div class="detail-item">
+                                <strong>Proof of Address:</strong>
+                                <span id="reviewAddressProof">Not uploaded</span>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="form-group full" style="margin-top: 30px;">
+                        <label>
+                            <input type="checkbox" id="termsAgreement" required>
+                            I certify that the information provided is accurate and complete to the best of my knowledge.
+                        </label>
+                    </div>
+                    
+                    <div class="form-actions">
+                        <button type="button" class="btn btn-prev" id="prevToStep2"><i class="fas fa-arrow-left"></i> Previous</button>
+                        <button type="submit" class="btn btn-submit"><i class="fas fa-paper-plane"></i> Submit Application</button>
+                    </div>
+                </div>
+                
+                
+                <div class="form-section" id="confirmation">
+                    <div class="confirmation">
+                        <i class="fas fa-check-circle"></i>
+                        <h2>Application Submitted Successfully!</h2>
+                        <p>Your company verification request has been received. Our team will review your application and notify you via email once the verification process is complete. This usually takes 3-5 business days.</p>
+                        <button type="button" class="btn" onclick="location.reload()"><i class="fas fa-sync-alt"></i> Submit Another Application</button>
                     </div>
                 </div>
             </div>
-
-            <button type="submit">Submit for Verification</button>
         </form>
     </div>
+
+    <!-- Custom Message Box -->
+    <div id="messageBox" class="message-box">
+        <h3 id="messageTitle"></h3>
+        <p id="messageText"></p>
+        <button id="messageBoxCloseBtn">OK</button>
+    </div>
+
+  
+   <div id="loading-overlay">
+        <div class="loader"></div>
+    </div>
+
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+    <script src="script.js"></script>
 </body>
+<script>
+     function triggerFileInput1() {
+     
+      document.getElementById('incCert').click();
+    }
+
+    function triggerFileInput2() {
+    
+      document.getElementById('taxCert').click();
+    }
+
+    function triggerFileInput3() {
+     
+      document.getElementById('bankStatement').click();
+    }
+    function triggerFileInput4() {
+      
+      document.getElementById('addressProof').click();
+    }
+</script>
 </html>

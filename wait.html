@@ -1,0 +1,346 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Company Verification Portal</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+        
+        body {
+            background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 20px;
+        }
+        
+        .container {
+            background: white;
+            border-radius: 16px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+            padding: 40px;
+            text-align: center;
+            max-width: 500px;
+            width: 100%;
+            position: relative;
+            overflow: hidden;
+            transition: all 0.3s ease;
+        }
+        
+        .container::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 6px;
+        }
+        
+        .waiting::before {
+            background: linear-gradient(90deg, #4b6cb7 0%, #182848 100%);
+        }
+        
+        .rejected::before {
+            background: linear-gradient(90deg, #ff416c 0%, #ff4b2b 100%);
+        }
+        
+        .logo {
+            margin-bottom: 20px;
+            font-weight: 700;
+            font-size: 24px;
+            color: #4b6cb7;
+        }
+        
+        h1 {
+            color: #2c3e50;
+            margin-bottom: 20px;
+            font-weight: 600;
+        }
+        
+        p {
+            color: #7f8c8d;
+            line-height: 1.6;
+            margin-bottom: 30px;
+        }
+        
+        .loader {
+            display: inline-block;
+            position: relative;
+            width: 80px;
+            height: 80px;
+            margin: 20px 0;
+        }
+        
+        .loader div {
+            position: absolute;
+            top: 33px;
+            width: 13px;
+            height: 13px;
+            border-radius: 50%;
+            background: #4b6cb7;
+            animation-timing-function: cubic-bezier(0, 1, 1, 0);
+        }
+        
+        .loader div:nth-child(1) {
+            left: 8px;
+            animation: loader1 0.6s infinite;
+        }
+        
+        .loader div:nth-child(2) {
+            left: 8px;
+            animation: loader2 0.6s infinite;
+        }
+        
+        .loader div:nth-child(3) {
+            left: 32px;
+            animation: loader2 0.6s infinite;
+        }
+        
+        .loader div:nth-child(4) {
+            left: 56px;
+            animation: loader3 0.6s infinite;
+        }
+        
+        @keyframes loader1 {
+            0% { transform: scale(0); }
+            100% { transform: scale(1); }
+        }
+        
+        @keyframes loader3 {
+            0% { transform: scale(1); }
+            100% { transform: scale(0); }
+        }
+        
+        @keyframes loader2 {
+            0% { transform: translate(0, 0); }
+            100% { transform: translate(24px, 0); }
+        }
+        
+        .contact {
+            margin-top: 30px;
+            font-size: 14px;
+            color: #95a5a6;
+        }
+        
+        .contact a {
+            color: #4b6cb7;
+            text-decoration: none;
+        }
+        
+        .status-icon {
+            font-size: 80px;
+            margin: 20px 0;
+        }
+        
+        .waiting-icon {
+            color: #4b6cb7;
+        }
+        
+        .rejected-icon {
+            color: #ff4b2b;
+        }
+        
+        .reasons {
+            background: #f8f9fa;
+            border-radius: 10px;
+            padding: 15px;
+            margin: 20px 0;
+            text-align: left;
+        }
+        
+        .reasons h3 {
+            color: #2c3e50;
+            margin-bottom: 10px;
+            font-size: 16px;
+        }
+        
+        .reasons ul {
+            padding-left: 20px;
+            color: #7f8c8d;
+        }
+        
+        .reasons li {
+            margin-bottom: 8px;
+            font-size: 14px;
+        }
+        
+        .btn {
+            background: #4b6cb7;
+            color: white;
+            border: none;
+            padding: 12px 30px;
+            border-radius: 50px;
+            font-size: 16px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            margin-top: 10px;
+        }
+        
+        .btn:hover {
+            background: #3a559e;
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+        }
+        
+        .btn-reapply {
+            background: linear-gradient(90deg, #ff416c 0%, #ff4b2b 100%);
+        }
+        
+        .btn-reapply:hover {
+            background: linear-gradient(90deg, #ff4b2b 0%, #ff416c 100%);
+        }
+        
+        .toggle-state {
+            margin-top: 25px;
+            font-size: 14px;
+            color: #95a5a6;
+        }
+        
+        .toggle-state a {
+            color: #4b6cb7;
+            text-decoration: none;
+            cursor: pointer;
+            font-weight: 600;
+        }
+        
+        @media (max-width: 600px) {
+            .container {
+                padding: 30px 20px;
+            }
+            
+            h1 {
+                font-size: 24px;
+            }
+            
+            .status-icon {
+                font-size: 60px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container waiting" id="status-container">
+        <div class="logo">COMPANY PORTAL</div>
+        
+        <!-- Waiting State (Default) -->
+        <div id="waiting-state">
+            <i class="fas fa-clock status-icon waiting-icon"></i>
+            <h1>Please Wait</h1>
+            <p>Our admin team is verifying your company details. This process usually takes 1-2 business days.</p>
+            
+            <div class="loader">
+                <div></div>
+                <div></div>
+                <div></div>
+                <div></div>
+            </div>
+            
+            <p>You'll receive a notification email once your verification is complete.</p>
+        </div>
+        
+        <!-- Rejected State (Hidden by Default) -->
+        <div id="rejected-state" style="display: none;">
+            <i class="fas fa-times-circle status-icon rejected-icon"></i>
+            <h1>Verification Rejected</h1>
+            <p>Unfortunately, your company verification request has been rejected by our admin team.</p>
+            
+            <div class="reasons">
+                <h3>Reasons for rejection:</h3>
+                <ul>
+                    <li>Company documentation was incomplete or unclear</li>
+                    <li>Business information could not be verified</li>
+                    <li>Missing required licenses or certifications</li>
+                </ul>
+            </div>
+            
+            <p>Please review the reasons for rejection and submit a new application with corrected information.</p>
+            
+            <button class="btn btn-reapply" id="reapply-btn">
+                <i class="fas fa-paper-plane"></i> Re-apply Now
+            </button>
+        </div>
+        
+        <div class="contact">
+            Need help? Contact us at <a href="mailto:support@companyportal.com">support@companyportal.com</a>
+        </div>
+        
+        <div class="toggle-state">
+            <a id="toggle-state-link">View rejected state</a>
+        </div>
+    </div>
+
+    <script>
+        // DOM elements
+        const statusContainer = document.getElementById('status-container');
+        const waitingState = document.getElementById('waiting-state');
+        const rejectedState = document.getElementById('rejected-state');
+        const toggleStateLink = document.getElementById('toggle-state-link');
+        const reapplyBtn = document.getElementById('reapply-btn');
+        
+        // State management
+        let isRejectedState = false;
+        
+        // Toggle between waiting and rejected states
+        toggleStateLink.addEventListener('click', function() {
+            isRejectedState = !isRejectedState;
+            
+            if (isRejectedState) {
+                // Show rejected state
+                waitingState.style.display = 'none';
+                rejectedState.style.display = 'block';
+                statusContainer.classList.remove('waiting');
+                statusContainer.classList.add('rejected');
+                toggleStateLink.textContent = 'View waiting state';
+            } else {
+                // Show waiting state
+                waitingState.style.display = 'block';
+                rejectedState.style.display = 'none';
+                statusContainer.classList.remove('rejected');
+                statusContainer.classList.add('waiting');
+                toggleStateLink.textContent = 'View rejected state';
+            }
+        });
+        
+        // Re-apply button functionality
+        reapplyBtn.addEventListener('click', function() {
+            // Show confirmation and reset to waiting state
+            alert('Thank you! Your re-application has been submitted for review.');
+            isRejectedState = false;
+            waitingState.style.display = 'block';
+            rejectedState.style.display = 'none';
+            statusContainer.classList.remove('rejected');
+            statusContainer.classList.add('waiting');
+            toggleStateLink.textContent = 'View rejected state';
+        });
+        
+        // Add a subtle pulsing effect to the container
+        setInterval(() => {
+            statusContainer.style.transform = 'scale(1.01)';
+            setTimeout(() => {
+                statusContainer.style.transform = 'scale(1)';
+            }, 500);
+        }, 2000);
+        
+        // Change the color of the dots gradually
+        const dots = document.querySelectorAll('.loader div');
+        const colors = ['#4b6cb7', '#3498db', '#2c3e50', '#1abc9c'];
+        let colorIndex = 0;
+        
+        setInterval(() => {
+            dots.forEach((dot, index) => {
+                dot.style.background = colors[(colorIndex + index) % colors.length];
+            });
+            colorIndex = (colorIndex + 1) % colors.length;
+        }, 1000);
+    </script>
+</body>
+</html>

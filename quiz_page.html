@@ -981,7 +981,7 @@
                         window.location.href = 'profile.html'; // Redirect back to profile
                     });
                 }
-            }, 500); // Small delay before showing results
+            }, 500); 
         }
 
         async function submitSkillsToServer(quizScore, skillName) {
@@ -995,7 +995,7 @@
             formData.append('skill_name', skillName);
 
             try {
-                const response = await fetch('add_skills.php', {
+                const response = await fetch('PHP/add_skills.php', {
                     method: 'POST',
                     body: formData
                 });

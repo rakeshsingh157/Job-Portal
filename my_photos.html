@@ -1,0 +1,253 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>My Photos - Professional Gallery</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="CSS/my_photos.css">
+
+    <style>
+        
+.navbar {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    background-color: var(--card-background);
+    padding: 15px 40px;
+    box-shadow: 0 2px 4px var(--shadow-light);
+    position: sticky;
+    top: 0;
+    z-index: 1000;
+    background-color: white;
+}
+
+.navbar-left .logo {
+    font-size: 24px;
+    font-weight: 700;
+    color: var(--primary-blue);
+}
+
+.navbar-center ul {
+    list-style: none;
+    display: flex;
+    gap: 30px;
+}
+
+.navbar-center ul li a {
+    text-decoration: none;
+    color: var(--text-color-light);
+    font-weight: 500;
+    transition: color 0.3s ease;
+}
+
+.navbar-center ul li a:hover,
+.navbar-center ul li a.active {
+    color: var(--primary-blue);
+}
+
+.navbar-right {
+    display: flex;
+    align-items: center;
+    gap: 20px;
+}
+
+.navbar-right .location {
+    display: flex;
+    align-items: center;
+    color: var(--text-color-light);
+    font-size: 14px;
+}
+
+.navbar-right .location i {
+    margin-right: 5px;
+    color: var(--primary-blue);
+}
+
+.navbar-right .profile-avatar img {
+    width: 36px;
+    height: 36px;
+    border-radius: 50%;
+    object-fit: cover;
+    border: 1px solid var(--border-color);
+}
+
+.navbar-right .menu-icon {
+    color: var(--text-color-light);
+    font-size: 18px;
+    cursor: pointer;
+}
+
+
+.profile-container {
+    display: flex;
+    gap: 30px;
+ 
+    max-width: 100%;
+    margin: 30px ;
+    
+    align-items: flex-start;
+}
+
+.create-post-btn {
+    position: fixed;
+    bottom: 30px;
+    right: 30px;
+    width: 60px;
+    height: 60px;
+    border-radius: 50%;
+    background-color: #e60023;
+    color: white;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 24px;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+    text-decoration: none;
+    z-index: 10;
+}
+
+
+    </style>
+</head>
+<body>
+    <header class="navbar">
+        <div class="navbar-left">
+            <h1 class="logo">JOBconnect.</h1>
+        </div>
+        <nav class="navbar-center">
+            <ul>
+                <li><a href="#" class="active">Jobs</a></li>
+                <li><a href="#">Messages</a></li>
+                <li><a href="#">Notifications</a></li>
+            </ul>
+        </nav>
+        <div class="navbar-right">
+            <div class="location">
+                
+                <span id="navbarLocation">City, District </span> ㅤ<i class="fas fa-map-marker-alt"></i>
+            </div>
+            <div class="profile-avatar">
+                <img src="https://placehold.co/150x150/png?text=P" alt="Profile Picture" id="navbarProfilePicture">
+            </div>
+        </div>
+    </header>
+<a href="PHP/post.php" class="create-post-btn" id="createPostBtn" >+</a>
+
+
+    <div class="main-content">
+        <h1 class="page-title">My Posts</h1>
+        
+        <div class="filter-options">
+            <button class="filter-btn active">All Posts</button>
+            <button class="filter-btn">Most Engaged</button>
+            <button class="filter-btn">Recent</button>
+        </div>
+        
+        <div class="posts-grid" id="postsGrid">
+            <div class="empty-state">
+                <div class="empty-state-icon"><i class="fas fa-camera"></i></div>
+                <h3>Your Professional Gallery</h3>
+                <p>When you share posts, they will appear here</p>
+            </div>
+        </div>
+    </div>
+
+    <div class="modal" id="editModal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2 class="modal-title">Edit Post</h2>
+                <button class="modal-close">&times;</button>
+            </div>
+            <div class="modal-body">
+                <div class="modal-image-container">
+                    <img src="" alt="Post image" class="modal-image" id="editModalImage">
+                    <button class="modal-image-nav-btn modal-nav-btn-prev" id="editModalPrevBtn" style="display: none;"><i class="fas fa-chevron-left"></i></button>
+                    <button class="modal-image-nav-btn modal-nav-btn-next" id="editModalNextBtn" style="display: none;"><i class="fas fa-chevron-right"></i></button>
+                    <div class="modal-image-count" id="editModalImageCount" style="display: none;"></div>
+                    <div class="modal-image-navigation" id="editModalNavDots" style="display: none;"></div>
+                </div>
+                <div class="modal-details">
+                    <textarea class="modal-text" id="editModalText" placeholder="Add a description..."></textarea>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button class="btn btn-secondary" onclick="closeModal('editModal')">Cancel</button>
+                <button class="btn btn-primary" onclick="savePostChanges()">Save Changes</button>
+            </div>
+        </div>
+    </div>
+
+    <div class="modal" id="deleteModal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2 class="modal-title">Delete Post</h2>
+                <button class="modal-close" onclick="closeModal('deleteModal')">&times;</button>
+            </div>
+            <div class="modal-body">
+                <p>Are you sure you want to delete this post? This action cannot be undone.</p>
+            </div>
+            <div class="modal-footer">
+                <button class="btn btn-secondary" onclick="closeModal('deleteModal')">Cancel</button>
+                <button class="btn btn-primary" onclick="confirmDelete()">Delete</button>
+            </div>
+        </div>
+    </div>
+
+    <div class="modal" id="viewModal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2 class="modal-title">Post Details</h2>
+                <button class="modal-close" onclick="closeModal('viewModal')">&times;</button>
+            </div>
+            <div class="modal-body">
+                <div class="modal-image-container">
+                    <img src="" alt="Post image" class="modal-image" id="viewModalImage">
+                    <button class="modal-image-nav-btn modal-nav-btn-prev" id="viewModalPrevBtn" style="display: none;"><i class="fas fa-chevron-left"></i></button>
+                    <button class="modal-image-nav-btn modal-nav-btn-next" id="viewModalNextBtn" style="display: none;"><i class="fas fa-chevron-right"></i></button>
+                    <div class="modal-image-count" id="viewModalImageCount" style="display: none;"></div>
+                    <div class="modal-image-navigation" id="viewModalNavDots" style="display: none;"></div>
+                </div>
+                <div class="modal-details">
+                    <div class="post-author">
+                        <div class="author-avatar">
+                            <img src="" alt="Author" class="profile-image" id="viewModalAvatar">
+                        </div>
+                        <div class="author-info">
+                            <div class="author-name" id="viewModalAuthor"></div>
+                            <div class="author-title" id="viewModalTitle"></div>
+                        </div>
+                        <div class="post-time" id="viewModalTime"></div>
+                    </div>
+                    
+                    <div class="modal-text" id="viewModalText"></div>
+                    
+                    <div class="engagement-stats" style="display:none;">
+                        <span id="viewModalLikes"></span>
+                        <span id="viewModalComments"></span>
+                    </div>
+                    
+                    
+                    <div class="comments-section" id="viewModalCommentsSection">
+                        <h3 class="comments-title">Comments</h3>
+                    </div>
+                    
+                    <div class="add-comment">
+                        <div class="commenter-avatar">
+                            <img src="" alt="Your avatar" class="profile-image" id="commenterAvatar">
+                        </div>
+                        <div class="comment-input-container">
+                            <textarea class="comment-input" placeholder="Add a comment..." id="commentInput"></textarea>
+                            <button class="comment-submit" id="submitComment" disabled>Comment</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <script src="JS/my_photos.js">
+       
+    </script>
+</body>
+</html>
