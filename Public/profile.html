@@ -7,13 +7,150 @@
     <link rel="stylesheet" href="../CSS/profile.css">
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
-</head>
-<style>
+    <style>
+           #loading-overlay {
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background-color: rgba(255, 255, 255, 1);
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        z-index: 9999;
+        visibility: hidden;
+        opacity: 0;
+        transition: visibility 0s 0.5s, opacity 0.5s linear;
+    }
     
-</style>
-
-
-
+    #loading-overlay.visible {
+        visibility: visible;
+        opacity: 1;
+        transition-delay: 0s;
+    }
+    
+    .loader {
+        animation: rotate 1s infinite;
+        height: 50px;
+        width: 50px;
+    }
+    
+    .loader:before,
+    .loader:after {
+        border-radius: 50%;
+        content: '';
+        display: block;
+        height: 20px;
+        width: 20px;
+    }
+    
+    .loader:before {
+        animation: ball1 1s infinite;
+        background-color: #cb2025;
+        box-shadow: 30px 0 0 #f8b334;
+        margin-bottom: 10px;
+    }
+    
+    .loader:after {
+        animation: ball2 1s infinite;
+        background-color: #00a096;
+        box-shadow: 30px 0 0 #97bf0d;
+    }
+    
+    @keyframes rotate {
+        0% {
+            transform: rotate(0deg) scale(0.8);
+        }
+        50% {
+            transform: rotate(360deg) scale(1.2);
+        }
+        100% {
+            transform: rotate(720deg) scale(0.8);
+        }
+    }
+    
+    @keyframes ball1 {
+        0% {
+            box-shadow: 30px 0 0 #f8b334;
+        }
+        50% {
+            box-shadow: 0 0 0 #f8b334;
+            margin-bottom: 0;
+            transform: translate(15px, 15px);
+        }
+        100% {
+            box-shadow: 30px 0 0 #f8b334;
+            margin-bottom: 10px;
+        }
+    }
+    
+    @keyframes ball2 {
+        0% {
+            box-shadow: 30px 0 0 #97bf0d;
+        }
+        50% {
+            box-shadow: 0 0 0 #97bf0d;
+            margin-top: -20px;
+            transform: translate(15px, 15px);
+        }
+        100% {
+            box-shadow: 30px 0 0 #97bf0d;
+            margin-top: 0;
+        }
+    }
+        /* Additional styles for the Go to Posts button */
+        .basic-information-card {
+            position: relative;
+        }
+        
+        .posts-button-container {
+            position: absolute;
+            top: 20px;
+            right: 20px;
+        }
+        
+        .posts-button {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            padding: 8px 16px;
+            background-color: #4a6cf7;
+            color: white;
+            text-decoration: none;
+            border-radius: 6px;
+            font-weight: 500;
+            transition: all 0.3s ease;
+            border: none;
+            cursor: pointer;
+            font-size: 14px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+        
+        .posts-button:hover {
+            background-color: #3b5be3;
+            transform: translateY(-2px);
+            box-shadow: 0 4px 8px rgba(0,0,0,0.15);
+        }
+        
+        .posts-button i {
+            margin-right: 6px;
+        }
+        
+        @media (max-width: 768px) {
+            .posts-button-container {
+                position: static;
+                margin-top: 15px;
+                text-align: right;
+            }
+            
+            .posts-button {
+                padding: 6px 12px;
+                font-size: 13px;
+            }
+        }
+    </style>
+</head>
 <body>
     <header class="navbar">
         <div class="navbar-left">
@@ -21,14 +158,13 @@
         </div>
         <nav class="navbar-center">
             <ul>
-                <li><a href="#" class="active">Jobs</a></li>
-                <li><a href="#">Messages</a></li>
-                <li><a href="#">Notifications</a></li>
+                <li><a href="explore.html" class="active">Jobs</a></li>
+                <li><a href="chat.html">Messages</a></li>
+                <li><a href="view-post.html">Posts</a></li>
             </ul>
         </nav>
         <div class="navbar-right">
             <div class="location">
-                
                 <span id="navbarLocation">City, District </span> ㅤ<i class="fas fa-map-marker-alt"></i>
             </div>
             <div class="profile-avatar">
@@ -40,7 +176,8 @@
     <main class="profile-container">
         <aside class="profile-sidebar">
             <div class="profile-header">
-                <img src="https://placehold.co/150x150/png?text=P" alt="Profile Picture" class="profile-picture" id="mainProfilePicture">
+                <img src="https://placehold.co/150x150/png?text=P" alt="Profile Picture" class="profile-picture" id="mainProfilePicture" onclick="changeProfilePhoto()">
+                <input type="file" id="profilePhotoInput" accept="image/*" style="display: none;">
 
                 <h2 id="profileName"></h2>
                 <p class="position-name" id="profilePosition"></p>
@@ -48,16 +185,17 @@
             </div>
             <div class="bio-section">
                 <p id="profileBio">something about yourself or something you would write for your bio or experience.</p>
+                <button class="edit-profile-button" id="contact">contact</button>
             </div>
             <div class="skills-section">
-                <h3>Skills</h3> 
+                <h3>Skills <button id="skill-btn" onclick="openAddSkillModal()" style="display: none; cursor: pointer; float: right;  border: 2px solid black; height: 30px; width: 30px; border-radius: 100px; align-items: center; text-align: center; justify-content: center; justify-items: center; font-size: 15px; font-weight: 700;">+</button></h3> 
                 
                 <div class="skill-tags" id="skillTagsContainer">
                    
                 </div>
             </div>
             <div class="languages-section">
-                <h3>Languages</h3>
+                <h3>Languages <button  id="lang-btn" onclick="openAddlangModal()" style=" display: none; cursor: pointer; float: right;  border: 2px solid black; height: 30px; width: 30px; border-radius: 100px; align-items: center; text-align: center; justify-content: center; justify-items: center; font-size: 15px; font-weight: 700;">+</button></h3>
                 <ul id="languagesList">
                    
                 </ul>
@@ -67,6 +205,12 @@
         <section class="profile-content">
             <div class="basic-information-card card">
                 <h3>Basic Information</h3>
+                <div class="posts-button-container">
+                    <a id="redirect" href="" class="posts-button">
+                        <i class="fas fa-sticky-note"></i>
+                        Go to Posts
+                    </a>
+                </div>
                 <div class="info-grid">
                     <div class="info-item">
                         <span class="label">AGE</span>
@@ -86,23 +230,215 @@
                     </div>
                 </div>
             </div>
+<script>
+    const params = new URLSearchParams(window.location.search);
 
+    // user_id ka value lena
+    const userId = params.get("user_id");
+
+    // correct template literal
+    document.getElementById("redirect").href = `../gallery.html?user_id=${userId}`;
+    document.getElementById("contact").addEventListener("click", () => {
+        window.location.href = `../chat.html?user_id=${userId}`;
+    });
+</script>
             <div class="experience-card card " >
-                <h3>Experience</h3>
+                <h3>Experience <button id="exp-btn" style= " display: none; cursor: pointer; float: right;  border: 2px solid black; height: 30px; width: 30px; border-radius: 100px; align-items: center; text-align: center; justify-content: center; justify-items: center; font-size: 15px; font-weight: 700;">+</button></h3>
                 <div id="experienceContainer" class="experience-container">
                    
                 </div>
             </div>
 
             <div class="education-card card">
-                <h3>Education</h3>
+                <h3>Education <button id="edu-btn" style=" display: none; cursor: pointer; float: right;  border: 2px solid black; height: 30px; width: 30px; border-radius: 100px; align-items: center; text-align: center; justify-content: center; justify-items: center; font-size: 15px; font-weight: 700;">+</button></h3>
                 <div id="educationContainer" class="education-container">
                   
                 </div>
             </div>
         </section>
     </main>
+
+ 
+    <div id="editProfileModal" class="modal">
+        <div class="modal-content">
+            <span class="close-button" onclick="closeEditProfileModal()">&times;</span>
+            <h2>Contact</h2>
+            <form id="editProfileForm">
+                <div class="form-group">
+                    <label for="first_name">First Name</label>
+                    <input type="text" id="first_name" name="first_name" value="">
+                </div>
+                <div class="form-group">
+                    <label for="last_name">Last Name</label>
+                    <input type="text" id="last_name" name="last_name" value="">
+                </div>
+                <div class="form-group">
+                   <label for="age">Age:</label>
+                    <input type="number" id="age" name="age" min="18" max="60" >
+
+                </div>
+                <div class="form-group">
+                    <label for="job_field">Job Field</label>
+                    <input type="text" id="job_field" name="job_field"  disabled>
+                </div>
+                 <div class="form-group">
+                    <label>Gender:</label>
+                    <div class="radio-group">
+                        <input type="radio" id="gender-male" name="gender" value="Male" title="Select Male">
+                        Male
+                        <input type="radio" id="gender-female" name="gender" value="Female" title="Select Female">
+                        Female
+                    </div>
+                   
+                </div>
+                
+                <div class="form-group">
+                    <label for="bio">Bio / Experience</label>
+                    <textarea id="bio" name="bio" rows="4"></textarea>
+                </div>
+                
+                <div class="form-group">
+                    <label for="address">Address</label>
+                    <input type="text" id="address" name="address" value="">
+                </div>
+                <div class="form-group">
+                    <label for="phone_number">Phone Number</label>
+                    <input type="tel" id="phone_number" name="phone_number"  disabled>
+                </div>
+                <div class="form-group">
+                    <label for="email">Email</label>
+                    <input type="email" id="email" name="email"  disabled>
+                </div>
+               <div class="form-group">
+  <label for="employment_type">Employment Type</label><br>
+  <input type="radio" id="employment_type" name="employment_type" value="Full Time"> Full Time
+  <input type="radio" id="employment_type" name="employment_type" value="Part Time"> Part Time
+</div>
+
+<div class="form-group" id="shift_type" style="display: none;">
+  <label for="shift_type">Shift Type</label><br>
+  <input type="radio" id="shift_type" name="shift_type" value="Night"> Night
+  <input type="radio" id="shift_type" name="shift_type" value="Day"> Day
+</div>
+
+<div class="form-group" id="part_time" style="display: none;">
+  <label for="part_time_hours">Part Time Hours</label>
+  <input type="text" id="part_time_hours" name="part_time_hours" value="">
+</div>
+
+<script>
+  const typeRadios = document.querySelectorAll('input[name="employment_type"]');
+
+  typeRadios.forEach(radio => {
+    radio.addEventListener("change", function () {
+      if (this.value === "Full Time") {
+        document.getElementById('shift_type').style.display = 'block';
+        document.getElementById('part_time').style.display = 'none';
+      } else if (this.value === "Part Time") {
+        document.getElementById('shift_type').style.display = 'none';
+        document.getElementById('part_time').style.display = 'block';
+      }
+    });
+  });
+</script>
+
+                <div class="form-actions">
+                    <button type="submit">Save Changes</button>
+                    <button type="button" class="cancel-button" onclick="closeEditProfileModal()">Cancel</button>
+                </div>
+
+            </form>
+        </div>
+    </div>
     
+    <div id="addSkillModal" class="modal">
+        <div class="modal-content">
+            <span class="close-button" onclick="closeAddSkillModal()">&times;</span>
+            <h2>Manage Skills</h2>
+            <div id="currentSkills" class="skill-tags edit-skills">
+                </div>
+            <h3>Add New Skill</h3>
+            <form id="addSkillForm">
+                <div class="form-group add-skill-group">
+                    <input type="text" id="newSkillInput" name="newSkillInput" placeholder="e.g., Python, Figma, React" required>
+                    <button type="submit">Start Quiz</button>
+                </div>
+            </form>
+            <div class="form-actions">
+                <button type="button" class="cancel-button" onclick="closeAddSkillModal()">Close</button>
+            </div>
+        </div>
+    </div>
+
+
+
+<div id="addlangModal" class="modal" >
+        <div class="modal-content">
+            <span class="close-button" onclick="closeAddlangModal()">&times;</span>
+            <h2>Manage Language</h2>
+            <div id="currentlang" class="lang-tags  lang-skills"  >
+                
+            </div>
+            <h3>Add Language</h3>
+            <form id="addlangForm">
+                <div class="form-group add-lang-group">
+                    <input type="text" id="newlangInput" name="newlangInput" placeholder="e.g., English, Hindi , Marathi" required>
+                    
+                </div>
+            
+            <div class="form-actions">
+                <button type="submit">Save</button>
+                <button type="button" class="cancel-button" onclick="closeAddlangModal()">Close</button>
+            </div>
+            </form>
+        </div>
+    </div>
+
+
+
+
+    <div id="addexp" class="modal"  style="line-height: 20px;">
+        <div class="modal-content">
+            <span class="close-button" onclick="closeAddexpModal()">&times;</span>
+            <h3>Add Experience</h3>
+            <form id="addexpForm">
+                <div class="form-group add-exp-group ">
+                   <div class="padding">
+                        <input style="margin-bottom: 5px;" type="text" id="expPosition" name="postion" placeholder="Position" required>
+                        <input style="margin-bottom: 10px;" type="text" id="expCompany" name="company_name" placeholder="Company Name" required>
+                        <label>Enter Duration (e.g., 2020-2023 or Present)</label>
+                        <input style="margin-bottom: 10px;" type="text" id="expDate" name="date" placeholder="e.g., 2020-2023 or Present" required>
+                   </div>
+                </div>
+                <div class="form-actions">
+                    <button type="submit" >Save</button>
+                    <button type="button" class="cancel-button" onclick="closeAddexpModal()">Close</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <div id="addedu" class="modal"  style="line-height: 20px;">
+        <div class="modal-content">
+            <span class="close-button" onclick="closeAddeduModal()">&times;</span>
+            <h3>Add Education</h3>
+            <form id="addeduForm">
+                <div class="form-group add-edu-group ">
+                   <div class="padding">
+                        <input style="margin-bottom: 5px;" type="text" id="eduInstitute" name="instude_name" placeholder="Institute Name" required>
+                        <input style="margin-bottom: 10px;" type="text" id="eduClass" name="class" placeholder="Degree / Class" required>
+                        <input style="margin-bottom: 10px;" type="text" id="eduYears" name="years" placeholder="Years (e.g., 2022 - 2025)" required>
+                        <input style="margin-bottom: 10px;" type="text" id="eduPercentage" name="percentage" placeholder="Percentage / CGPA (leave blank if pursuing)">
+                   </div>
+                </div>
+                <div class="form-actions">
+                    <button type="submit" >Save</button>
+                    <button type="button" class="cancel-button" onclick="closeAddeduModal()">Close</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
     <div id="custom-modal-overlay" class="custom-modal-overlay">
         <div class="custom-modal-content">
             <h3 id="custom-modal-title"></h3>
@@ -111,10 +447,10 @@
         </div>
     </div>
     
-    <div id="loader-overlay" class="loader-overlay">
-        <div class="loader"></div>
-        <p class="loader-text">Loading...</p>
-    </div>
+   <div id="loading-overlay" class="loader-overlay">
+    <div class="loader"></div>
+    
+</div>
 
     <script src="JS/profile.js">
     

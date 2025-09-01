@@ -7,14 +7,7 @@
   <link rel="stylesheet" href="CSS/company-styles.css"/>
   <style>
     /* New styles for the additional form fields to match existing design */
-    .form-group.half-width {
-      display: inline-block;
-      width: 48%;
-      margin-right: 2%;
-    }
-    .form-group.half-width:last-child {
-      margin-right: 0;
-    }
+    
 
     /* Custom Modal styles */
     .custom-modal {
@@ -162,17 +155,64 @@
             margin-top: 0;
         }
     }
+    li{
+      list-style: none; 
+    }
+    
+    /* New styles for the Go to Posts button */
+    .posts-btn-container {
+      display: inline-block;
+      margin-left: 15px;
+    }
+    
+    .go-to-posts-btn {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      width: 40px;
+      height: 40px;
+      background-color: #6c757d;
+      color: white;
+      text-decoration: none;
+      border-radius: 50%;
+      font-weight: bold;
+      transition: all 0.3s ease;
+      border: none;
+      cursor: pointer;
+      font-size: 18px;
+    }
+    
+    .go-to-posts-btn:hover {
+      background-color: #5a6268;
+      transform: scale(1.05);
+    }
+    
+    .jobs-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+    
+    .jobs-header .section-title {
+      margin: 0;
+    }
+    
+    .header-actions {
+      display: flex;
+      align-items: center;
+      gap: 15px;
+    }
   </style>
 </head>
 <body>
   <header>
     <div class="logo">JOBconnect.</div>
     <nav>
-      <a href="#" class="active">Jobs</a>
-      <a href="#">Messages</a>
-      <a href="#">Notifications</a>
+       <li><a href="explore.html" class="active">Jobs</a></li>
+                <li><a href="chat.html">Messages</a></li>
+                <li><a href="view-post.html">Posts</a></li>
     </nav>
-    <div class="profile-icon"> <img id="profile-image2" style="display: none;" src="" alt="Profile Picture"> </div>
+    <div onclick="location.href='PHP/redirect.php'" class="profile-icon"> <img id="profile-image2" style="display: none;" src="" alt="Profile Picture"> </div>
   </header>
   
   <div class="container">
@@ -287,7 +327,13 @@
       <div class="jobs-section">
         <div class="jobs-header">
           <h2 class="section-title">Job Posts</h2>
-          <button class="add-job-btn" id="add-job-btn">+</button>
+          <div class="header-actions">
+            <!-- Added Go to Posts button next to Add Job button -->
+            <div class="posts-btn-container">
+              <a href="my_photos.html" class="go-to-posts-btn" title="Go to Posts">📝</a>
+            </div>
+            <button class="add-job-btn" id="add-job-btn">+</button>
+          </div>
         </div>
         
         <div id="jobs-list">

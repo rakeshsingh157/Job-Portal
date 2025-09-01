@@ -110,8 +110,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $phoneNumber = $data['phoneNumber'] ?? null;
 
     // Gmail SMTP Credentials for PHPMailer
-    $smtpUsername = 'kumarpatelrakesh222@gmail.com';
-    $smtpPassword = 'acshpmbiyrybsigu';
+    $smtpUsername = 'jobportal00000@gmail.com';
+    $smtpPassword = 'gztykeykurgggklb';
 
 
     

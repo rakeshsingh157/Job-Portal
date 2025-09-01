@@ -7,6 +7,58 @@
     <link rel="stylesheet" href="CSS/profile.css">
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <style>
+        /* Additional styles for the Go to Posts button */
+        .basic-information-card {
+            position: relative;
+        }
+        
+        .posts-button-container {
+            position: absolute;
+            top: 20px;
+            right: 20px;
+        }
+        
+        .posts-button {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            padding: 8px 16px;
+            background-color: #4a6cf7;
+            color: white;
+            text-decoration: none;
+            border-radius: 6px;
+            font-weight: 500;
+            transition: all 0.3s ease;
+            border: none;
+            cursor: pointer;
+            font-size: 14px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+        
+        .posts-button:hover {
+            background-color: #3b5be3;
+            transform: translateY(-2px);
+            box-shadow: 0 4px 8px rgba(0,0,0,0.15);
+        }
+        
+        .posts-button i {
+            margin-right: 6px;
+        }
+        
+        @media (max-width: 768px) {
+            .posts-button-container {
+                position: static;
+                margin-top: 15px;
+                text-align: right;
+            }
+            
+            .posts-button {
+                padding: 6px 12px;
+                font-size: 13px;
+            }
+        }
+    </style>
 </head>
 <body>
     <header class="navbar">
@@ -15,14 +67,13 @@
         </div>
         <nav class="navbar-center">
             <ul>
-                <li><a href="#" class="active">Jobs</a></li>
-                <li><a href="#">Messages</a></li>
-                <li><a href="#">Notifications</a></li>
+                <li><a href="explore.html" class="active">Jobs</a></li>
+                <li><a href="chat.html">Messages</a></li>
+                <li><a href="view-post.html">Posts</a></li>
             </ul>
         </nav>
         <div class="navbar-right">
             <div class="location">
-                
                 <span id="navbarLocation">City, District </span> ㅤ<i class="fas fa-map-marker-alt"></i>
             </div>
             <div class="profile-avatar">
@@ -63,6 +114,13 @@
         <section class="profile-content">
             <div class="basic-information-card card">
                 <h3>Basic Information</h3>
+                <!-- Added Go to Posts button container -->
+                <div class="posts-button-container">
+                    <a href="my_photos.html" class="posts-button">
+                        <i class="fas fa-sticky-note"></i>
+                        Go to Posts
+                    </a>
+                </div>
                 <div class="info-grid">
                     <div class="info-item">
                         <span class="label">AGE</span>
@@ -234,7 +292,6 @@
             </form>
         </div>
     </div>
-
 
 
 

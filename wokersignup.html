@@ -6,90 +6,151 @@
   <title>Register Page</title>
   <link rel="stylesheet" href="CSS/sign.css">
  <style>
-  
    body {
       font-family: 'Montserrat', sans-serif;
       background: #f7f7f7;
       padding: 30px;
       overflow: hidden;
-      
+    }
+  
+    /* Loading Overlay Styles */
+    #loading-overlay {
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background-color: rgba(255, 255, 255, 1);
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        z-index: 9999;
+        visibility: hidden;
+        opacity: 0;
+        transition: visibility 0s 0.5s, opacity 0.5s linear;
+    }
+    
+    #loading-overlay.visible {
+        visibility: visible;
+        opacity: 1;
+        transition-delay: 0s;
+    }
+    
+    .spinner {
+        animation: rotate 1s infinite;
+        height: 50px;
+        width: 50px;
+    }
+    
+    .spinner:before,
+    .spinner:after {
+        border-radius: 50%;
+        content: '';
+        display: block;
+        height: 20px;
+        width: 20px;
+    }
+    
+    .spinner:before {
+        animation: ball1 1s infinite;
+        background-color: #cb2025;
+        box-shadow: 30px 0 0 #f8b334;
+        margin-bottom: 10px;
+    }
+    
+    .spinner:after {
+        animation: ball2 1s infinite;
+        background-color: #00a096;
+        box-shadow: 30px 0 0 #97bf0d;
+    }
+    
+    @keyframes rotate {
+        0% {
+            transform: rotate(0deg) scale(0.8);
+        }
+        50% {
+            transform: rotate(360deg) scale(1.2);
+        }
+        100% {
+            transform: rotate(720deg) scale(0.8);
+        }
+    }
+    
+    @keyframes ball1 {
+        0% {
+            box-shadow: 30px 0 0 #f8b334;
+        }
+        50% {
+            box-shadow: 0 0 0 #f8b334;
+            margin-bottom: 0;
+            transform: translate(15px, 15px);
+        }
+        100% {
+            box-shadow: 30px 0 0 #f8b334;
+            margin-bottom: 10px;
+        }
+    }
+    
+    @keyframes ball2 {
+        0% {
+            box-shadow: 30px 0 0 #97bf0d;
+        }
+        50% {
+            box-shadow: 0 0 0 #97bf0d;
+            margin-top: -20px;
+            transform: translate(15px, 15px);
+        }
+        100% {
+            box-shadow: 30px 0 0 #97bf0d;
+            margin-top: 0;
+        }
     }
  </style>
 </head>
 <body >
-
   <div style="font-size: 30px; font-weight: 700; margin: -20px; position: relative; z-index: 100;">JOBconnect</div>
     <div style="font-size: 30px; font-weight: 600; margin: -20px; float: right; position: relative; z-index: 10; "><span >Sign up</span></div>
   
-
-        
   <div class="container" id="signup-container" style="display: flex;">
         <div class="left">
-           
         </div>
         <div class="right">
             <div class="form-box">
-                
                 <form id="signup-form">
-                   
                     <input type="text" id="first-name" name="first_name" autocomplete="given-name" placeholder="First name" required>
-
-                  
                     <input type="text" id="last-name" name="last_name" autocomplete="family-name" placeholder="Last name" required>
-
-                    
                     <input type="email" id="signup-email" name="email" autocomplete="email" placeholder="Email" required>
-
-                    
                     <input type="password" id="signup-password" name="password" autocomplete="new-password" placeholder="Password" required>
-                    
-                   
                     <input type="password" id="confirm-password" name="confirm_password" autocomplete="new-password" placeholder="Confirm Password" required>
-
-                    
                     <div class="phone-input-group">
-                        
                         <input type="tel" id="phone-number" name="phone_number" placeholder="Enter 10-digit number" pattern="[0-9]{10}" title="Please enter a valid 10-digit phone number" required>
                     </div>
-
                     <button type="submit">Create</button>
-
                     <p class="signin">Already have an account? <a href="wokersignin.html">Sign In</a></p>
                 </form>
             </div>
         </div>
     </div>
-
     <div class="container" id="otp-container" style="display: none;">
         <div class="left">
-           
         </div>
         <div class="right">
             <div class="form-box">
-          
                 <form id="otp-form">
-                    
                     <input type="number" id="email-otp" placeholder="E-Mail OTP" required>
-
-                   
                     <input type="number" id="phone-otp" placeholder="Phone OTP" required>
-
                     <button type="submit">Verify</button>
-
                     <p class="signin">Already have an account? <a href="#">Sign In</a></p>
                 </form>
             </div>
         </div>
     </div>
-
     <div class="right-text" >Let’s get you started on your job hunt journey.<br> <span style="font-size: 30px;">Ready to create an account?</span>
-
     </div>
-
     <div id="loading-overlay">
         <div class="spinner"></div>
     </div>
-<div style="z-index: -19;">
+    <div style="z-index: -19;">
      <img src="IAMGES/white.png" alt="" style="width: 110%; height: 110%;  object-fit: cover;  margin-top: -1000px; margin-left: -40px;">
     <div class="c1"></div>
     <div class="c2"></div>
@@ -99,6 +160,5 @@
 </div>
 </body>
 <script src="JS/script.js">
-  
 </script>
 </html>

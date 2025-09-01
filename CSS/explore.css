@@ -1,5 +1,6 @@
 :root {
             --primary-color: #5d5dff;
+             --primary-colors: #000000;
             --secondary-color: #4CAF50;
             --tertiary-color: #FF69B4;
             --quaternary-color: #8A2BE2;
@@ -85,7 +86,7 @@
         .logo {
             font-size: 24px;
             font-weight: 700;
-            color: var(--primary-color);
+            color: var(--primary-colors);
         }
         
         nav a {
@@ -98,7 +99,7 @@
         
         nav a:hover,
         nav a.active {
-            color: var(--primary-color);
+            color: var(--primary-colors);
         }
         
         .profile {
@@ -534,3 +535,10 @@
                 width: 100%;
             }
         }
+
+.location-info{
+    margin-right: 20px;
+}
+li{
+    list-style: none; 
+}

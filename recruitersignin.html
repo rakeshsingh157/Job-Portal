@@ -10,85 +10,107 @@
         padding: 30px;
         overflow: hidden;
         font-family: 'Montserrat', sans-serif;
-    }</style>
-  <link rel="preconnect" href="https://fonts.googleapis.com">
-</head>
-<body style="background-image: url('wokersingup.jpg'); no-repeat; background-size: cover;">
-       <div style="font-size: 30px; font-weight: 700; margin: -20px; position: relative; z-index: 100; ">JOBconnect</div>
-    <div style="font-size: 30px; font-weight: 600; margin: -20px; float: right; position: relative; z-index: 10; "><span >Sign in</span></div>
-  
+    }
 
-    <div class="container" id="main-login-container">
-        <div class="left">
-        </div>
+    /* Loading Overlay Styles */
+    #loading-overlay {
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background-color: rgba(255, 255, 255, 1);
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        z-index: 9999;
+        visibility: hidden;
+        opacity: 0;
+        transition: visibility 0s 0.5s, opacity 0.5s linear;
+    }
+    
+    #loading-overlay.visible {
+        visibility: visible;
+        opacity: 1;
+        transition-delay: 0s;
+    }
+    
+    .spinner {
+        animation: rotate 1s infinite;
+        height: 50px;
+        width: 50px;
+    }
+    
+    .spinner:before,
+    .spinner:after {
+        border-radius: 50%;
+        content: '';
+        display: block;
+        height: 20px;
+        width: 20px;
+    }
+    
+    .spinner:before {
+        animation: ball1 1s infinite;
+        background-color: #cb2025;
+        box-shadow: 30px 0 0 #f8b334;
+        margin-bottom: 10px;
+    }
+    
+    .spinner:after {
+        animation: ball2 1s infinite;
+        background-color: #00a096;
+        box-shadow: 30px 0 0 #97bf0d;
+    }
+    
+    @keyframes rotate {
+        0% {
+            transform: rotate(0deg) scale(0.8);
+        }
+        50% {
+            transform: rotate(360deg) scale(1.2);
+        }
+        100% {
+            transform: rotate(720deg) scale(0.8);
+        }
+    }
+    
+    @keyframes ball1 {
+        0% {
+            box-shadow: 30px 0 0 #f8b334;
+        }
+        50% {
+            box-shadow: 0 0 0 #f8b334;
+            margin-bottom: 0;
+            transform: translate(15px, 15px);
+        }
+        100% {
+            box-shadow: 30px 0 0 #f8b334;
+            margin-bottom: 10px;
+        }
+    }
+    
+    @keyframes ball2 {
+        0% {
+            box-shadow: 30px 0 0 #97bf0d;
+        }
+        50% {
+            box-shadow: 0 0 0 #97bf0d;
+            margin-top: -20px;
+            transform: translate(15px, 15px);
+        }
+        100% {
+            box-shadow: 30px 0 0 #97bf0d;
+            margin-top: 0;
+        }
+    }
 
-        <!-- Login Form Section -->
-        <div class="right active-step" id="login-section">
-            <div class="form-box">
-                <form id="login-form">
-                    <input type="email" id="login-email" name="email" autocomplete="email" placeholder="Email" required>
-
-                    
-                    <input type="password" id="login-password" name="password" autocomplete="current-password" placeholder="Password" required>
-
-                    <button type="submit">Sign In</button>
-
-                    <p class="signin">Don't have an account?<a href="recruitersignup.html" id="signup-link">Sign Up</a> <br> <br> <a href="#" id="forgot-password-link">Forget password?</a></p>
-                </form>
-            </div>
-        </div>
-
-        <!-- Recover Account (Email Input) Section -->
-        <div class="right" id="recover-email-section">
-            <div class="form-box">
-              
-                <form id="recover-email-form">
-                    
-                    <input type="email" id="recover-email" name="email" autocomplete="email" placeholder="Email" required>
-
-                    <p class="signin"><a href="#" id="recover-back-to-login">Back to Sign In</a></p>
-                </form>
-            </div>
-        </div>
-
-        <!-- Verify OTP Section -->
-        <div class="right" id="verify-otp-section">
-            <div class="form-box">
-                
-                <form id="verify-otp-form">
-                  
-                    <input type="text" id="email-otp" name="otp" autocomplete="off" placeholder="Email OTP" required>
-
-                    <button type="submit">Verify</button>
-                    <p class="signin"><a href="#" id="verify-back-to-recover">Back</a></p>
-                </form>
-            </div>
-        </div>
-
-        <!-- Reset Password Section -->
-        <div class="right" id="reset-password-section">
-            <div class="form-box">
-                
-                <form id="reset-password-form">
-                   
-                    <input type="password" id="new-password" name="password" autocomplete="new-password" placeholder="New Password" required>
-
-                    
-                    <input type="password" id="confirm-new-password" name="confirm_password" autocomplete="new-password" placeholder="Confirm Password" required>
-
-                   
-                    <p class="signin"><a href="#" id="reset-back-to-login">Back to Sign In</a></p>
-                </form>
-            </div>
-        </div>
-    </div>
-<style>
     .right-text {
         font-family: 'Poppins', sans-serif;
         font-size: 50px;
         color: #333;
-        white-space: nowrap; /* Prevents text from wrapping to a new line */
-        position: relative; /* Needed to position the pseudo-element */
+        white-space: nowrap;
+        position: relative;
     }
 
     .animated-word {
@@ -117,31 +139,27 @@
         }
     }
 
-    /* New CSS for the typing animation */
     .right-text::after {
-        content: ""; /* This is where the typing text will go */
+        content: "";
         color: #2b7a7a;
         font-weight: 600;
         display: inline-block;
         overflow: hidden;
         border-right: 3px solid transparent;
-        margin-left: 10px; /* Spacing between the last word and the typing text */
+        margin-left: 10px;
 
-        /* This animation starts after the last word-fade-up animation finishes */
-        animation: 
-            typing-loop 20s steps(1) forwards, 
+        animation:
+            typing-loop 20s steps(1) forwards,
             typing-text 20s steps(27) forwards,
             cursor-blink 0.7s step-end infinite;
-        animation-delay: 1.8s; /* Wait for the "journey." fade-in to complete */
+        animation-delay: 1.8s;
     }
 
-    /* The main typing and deleting animation */
     @keyframes typing-text {
         0%, 5%, 26%, 30%, 51%, 55%, 76%, 80%, 100% { width: 0; }
         10%, 20%, 35%, 45%, 60%, 70% { width: 100%; }
     }
 
-    /* The animation to switch the content of the pseudo-element */
     @keyframes typing-loop {
         0% { content: ""; }
         5% { content: "Find your next story."; }
@@ -149,32 +167,83 @@
 
         30% { content: "Share your unique voice."; }
         50% { content: "Share your unique voice."; }
-        
+
         55% { content: "Connect with readers."; }
         75% { content: "Connect with readers."; }
 
         80%, 100% { content: ""; }
     }
 
-    /* The blinking cursor animation */
     @keyframes cursor-blink {
         5%, 22%, 26%, 47%, 51%, 72%, 76% { border-right: 3px solid #333; }
         0%, 4%, 21%, 24%, 46%, 49%, 71%, 74%, 80%, 100% { border-right: 3px solid transparent; }
     }
-</style>
+  </style>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+</head>
+<body style="background-image: url('wokersingup.jpg'); no-repeat; background-size: cover;">
+       <div style="font-size: 30px; font-weight: 700; margin: -20px; position: relative; z-index: 100; ">JOBconnect</div>
+    <div style="font-size: 30px; font-weight: 600; margin: -20px; float: right; position: relative; z-index: 10; "><span >Sign in</span></div>
 
-<div class="right-text">
-    <span class="animated-word">Let’s</span>
-    <span class="animated-word">get</span>
-    <span class="animated-word">you</span>
-    <span class="animated-word">signed</span>
-    <span class="animated-word">in</span>
-    <span class="animated-word">to</span>
-    <span class="animated-word">continue</span>
-    <span class="animated-word">your</span>
-    <span class="animated-word">journey.</span>
-</div>
-    <!-- Loading overlay and message container -->
+    <div class="container" id="main-login-container">
+        <div class="left">
+        </div>
+
+        <div class="right active-step" id="login-section">
+            <div class="form-box">
+                <form id="login-form">
+                    <input type="email" id="login-email" name="email" autocomplete="email" placeholder="Email" required>
+                    <input type="password" id="login-password" name="password" autocomplete="current-password" placeholder="Password" required>
+                    <button type="submit">Sign In</button>
+                    <p class="signin">Don't have an account?<a href="recruitersignup.html" id="signup-link">Sign Up</a> <br> <br> <a href="#" id="forgot-password-link">Forget password?</a></p>
+                </form>
+            </div>
+        </div>
+
+        <div class="right" id="recover-email-section">
+            <div class="form-box">
+                <form id="recover-email-form">
+                    <input type="email" id="recover-email" name="email" autocomplete="email" placeholder="Email" required>
+                    <button type="submit">Sent- OTP</button>
+                    <p class="signin"><a href="#" id="recover-back-to-login">Back to Sign In</a></p>
+                </form>
+            </div>
+        </div>
+
+        <div class="right" id="verify-otp-section">
+            <div class="form-box">
+                <form id="verify-otp-form">
+                    <input type="text" id="email-otp" name="otp" autocomplete="off" placeholder="Email OTP" required>
+                    <button type="submit">Verify</button>
+                    <p class="signin"><a href="#" id="verify-back-to-recover">Back</a></p>
+                </form>
+            </div>
+        </div>
+
+        <div class="right" id="reset-password-section">
+            <div class="form-box">
+                <form id="reset-password-form">
+                    <input type="password" id="new-password" name="password" autocomplete="new-password" placeholder="New Password" required>
+                    <input type="password" id="confirm-new-password" name="confirm_password" autocomplete="new-password" placeholder="Confirm Password" required>
+                    <button type="submit">Change Password</button>
+                    <p class="signin"><a href="#" id="reset-back-to-login">Back to Sign In</a></p>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <div class="right-text">
+        <span class="animated-word">Let’s</span>
+        <span class="animated-word">get</span>
+        <span class="animated-word">you</span>
+        <span class="animated-word">signed</span>
+        <span class="animated-word">in</span>
+        <span class="animated-word">to</span>
+        <span class="animated-word">continue</span>
+        <span class="animated-word">your</span>
+        <span class="animated-word">journey.</span>
+    </div>
+
     <div id="loading-overlay">
         <div class="spinner"></div>
     </div>
@@ -185,11 +254,7 @@
     <div class="c4"></div>
     <div class="c3"></div>
     <img class="img" src="IMAGES/back.jpg" alt="">
-
-
-    
 </body>
-
 
 <script src="JS/scriptsigninR.js"></script>
 </html>

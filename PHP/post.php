@@ -21,25 +21,28 @@ $company_id = isset($_SESSION['cuser_id']) ? $_SESSION['cuser_id'] : null;
 $user_type = null;
 $user_name = '';
 $profile_photo = '';
+$location_data = ''; // New variable for location
 
-// Determine user type based on which session variable is set
+// Determine user type based on which session variable is set and fetch data
 if ($user_id) {
     $user_type = 'user';
-    $sql = "SELECT first_name, last_name, profile_url FROM users WHERE id = '$user_id'";
+    $sql = "SELECT first_name, last_name, profile_url, address FROM users WHERE id = '$user_id'";
     $result = $conn->query($sql);
     if ($result->num_rows > 0) {
         $row = $result->fetch_assoc();
         $user_name = $row['first_name'] . ' ' . $row['last_name'];
         $profile_photo = $row['profile_url'];
+        $location_data = $row['address'];
     }
 } elseif ($company_id) {
     $user_type = 'company';
-    $sql = "SELECT company_name, profile_photo FROM cuser WHERE id = '$company_id'";
+    $sql = "SELECT company_name, profile_photo, headquarter FROM cuser WHERE id = '$company_id'";
     $result = $conn->query($sql);
     if ($result->num_rows > 0) {
         $row = $result->fetch_assoc();
         $user_name = $row['company_name'];
         $profile_photo = $row['profile_photo'];
+        $location_data = $row['headquarter'];
     }
 }
 
@@ -524,21 +527,24 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['create_post'])) {
         </div>
         <nav class="navbar-center">
             <ul>
-                <li><a href="#" class="active">Jobs</a></li>
-                <li><a href="#">Messages</a></li>
-                <li><a href="#">Notifications</a></li>
+                <li><a href="../explore.html" class="active">Jobs</a></li>
+                <li><a href="../chat.html">Messages</a></li>
+                <li><a href="../view-post.html">Posts</a></li>
+                
+
             </ul>
         </nav>
         <div class="navbar-right">
             <div class="location">
                 
-                <span id="navbarLocation">City, District </span> ㅤ<i class="fas fa-map-marker-alt"></i>
+                <span id="navbarLocation"><?php echo htmlspecialchars(!empty($location_data) ? $location_data : 'N/A'); ?></span> <i class="fas fa-map-marker-alt"></i>
             </div>
-            <div class="profile-avatar">
-                <img src="https://placehold.co/150x150/png?text=P" alt="Profile Picture" id="navbarProfilePicture">
+            <div class="profile-avatar" onclick="location.href='redirect.php';">
+                <img src="<?php echo htmlspecialchars(!empty($profile_photo) ? $profile_photo : 'https://placehold.co/150x150/png?text=P'); ?>" alt="Profile Picture" id="navbarProfilePicture">
             </div>
         </div>
     </header>
+
     <div class="container">
         <h1>Create a New Post</h1>
         

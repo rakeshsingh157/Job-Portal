@@ -10,8 +10,8 @@ session_start();
 
 // Database connection
 define('DB_SERVER', 'photostore.ct0go6um6tj0.ap-south-1.rds.amazonaws.com');
-define('DB_USERNAME', 'admin'); 
-define('DB_PASSWORD', 'DBpicshot'); 
+define('DB_USERNAME', 'admin');
+define('DB_PASSWORD', 'DBpicshot');
 define('DB_NAME', 'jobp_db');
 
 $conn = new mysqli(DB_SERVER, DB_USERNAME, DB_PASSWORD, DB_NAME);
@@ -81,7 +81,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['delete_post']) && iss
         $response['message']['type'] = "error";
     }
     
-    // Send response and exit immediately after handling the action
     echo json_encode($response);
     $conn->close();
     exit;
@@ -113,20 +112,87 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['add_comment']) && iss
         }
     }
     
-    // Send response and exit immediately after handling the action
     echo json_encode($response);
     $conn->close();
     exit;
 }
 
-// If no action is specified, just fetch the posts
+// Handle search requests for the search dropdown
+if (isset($_GET['search_query'])) {
+    $search_query = trim($conn->real_escape_string($_GET['search_query']));
+    $results = [];
+
+    if (strpos($search_query, '@') === 0) {
+        // Search for users or companies
+        $clean_query = substr($search_query, 1);
+        $search_term = "%{$clean_query}%";
+
+        // Search users
+        $user_sql = "SELECT id, first_name, last_name, profile_url FROM users WHERE first_name LIKE ? OR last_name LIKE ?";
+        $stmt_user = $conn->prepare($user_sql);
+        $stmt_user->bind_param("ss", $search_term, $search_term);
+        $stmt_user->execute();
+        $user_result = $stmt_user->get_result();
+        while ($row = $user_result->fetch_assoc()) {
+            $results[] = [
+                'type' => 'user',
+                'id' => $row['id'],
+                'name' => $row['first_name'] . ' ' . $row['last_name'],
+                'profile_url' => $row['profile_url']
+            ];
+        }
+        
+        // Search companies
+        $company_sql = "SELECT id, company_name, profile_photo FROM cuser WHERE company_name LIKE ?";
+        $stmt_company = $conn->prepare($company_sql);
+        $stmt_company->bind_param("s", $search_term);
+        $stmt_company->execute();
+        $company_result = $stmt_company->get_result();
+        while ($row = $company_result->fetch_assoc()) {
+            $results[] = [
+                'type' => 'company',
+                'id' => $row['id'],
+                'name' => $row['company_name'],
+                'profile_url' => $row['profile_photo']
+            ];
+        }
+
+    } else {
+        // Search for posts (for the dropdown preview)
+        $search_term = "%{$search_query}%";
+        $post_sql = "SELECT id, content FROM posts WHERE content LIKE ?";
+        $stmt_post = $conn->prepare($post_sql);
+        $stmt_post->bind_param("s", $search_term);
+        $stmt_post->execute();
+        $post_result = $stmt_post->get_result();
+        while ($row = $post_result->fetch_assoc()) {
+            $results[] = [
+                'type' => 'post',
+                'id' => $row['id'],
+                'name' => 'Post: ' . substr($row['content'], 0, 50) . '...'
+            ];
+        }
+    }
+
+    echo json_encode(['results' => $results]);
+    $conn->close();
+    exit;
+}
+
+// Main logic to fetch all posts or filtered posts
 $sql = "SELECT p.*, 
                u.first_name, u.last_name, u.profile_url as user_profile,
                c.company_name, c.profile_photo as company_profile
         FROM posts p
         LEFT JOIN users u ON p.user_id = u.id AND p.user_type = 'user'
-        LEFT JOIN cuser c ON p.company_id = c.id AND p.user_type = 'company'
-        ORDER BY p.created_at DESC";
+        LEFT JOIN cuser c ON p.company_id = c.id AND p.user_type = 'company'";
+
+if (isset($_GET['post_search'])) {
+    $search_term = '%' . $conn->real_escape_string($_GET['post_search']) . '%';
+    $sql .= " WHERE p.content LIKE '$search_term'";
+}
+
+$sql .= " ORDER BY p.created_at DESC";
 
 $result = $conn->query($sql);
 $posts = [];

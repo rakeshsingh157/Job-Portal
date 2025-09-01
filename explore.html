@@ -10,9 +10,15 @@
     <link rel="stylesheet" href="[https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css](https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css)">
     <link rel="stylesheet" href="CSS/explore.css">
     <script src="explore.js"></script>
+    <style>
+        li{
+            list-style: none;
+            display: inline;
+        }
+    </style>
 </head>
 <body>
-
+<link rel="stylesheet" href="CSS/header.css">
 <header>
     <button class="mobile-search-toggle" onclick="toggleSearchOverlay()">
         <i class="fas fa-search"></i>
@@ -23,15 +29,19 @@
     </button>
 
     <nav id="main-nav">
-        <a href="#" class="active"><i class="fas fa-briefcase"></i>Jobs</a>
-        <a href="#"><i class="fas fa-envelope"></i>Messages</a>
-        <a href="#"><i class="fas fa-bell"></i>Notifications</a>
+        <li><a href="explore.html" class="active">Jobs</a></li>
+                <li><a href="chat.html">Messages</a></li>
+                <li><a href="view-post.html">Posts</a></li>
     </nav>
     <div class="profile" id="main-profile">
-        <span><i class="fas fa-map-marker-alt"></i> City, District</span>
-        <img src="[https://via.placeholder.com/35](https://via.placeholder.com/35)" alt="Profile Picture">
-    </div>
+        <div class="location-info" style="margin-right:10px ;">
+            <i class="fas fa-map-marker-alt"></i> <span id="location-text"></span>
+        </div>
+        <div onclick="location.href='PHP/redirect.php'" class="profile-avatar">
+            <img id="profile-image2" style="display: none;" src="" alt="Profile Picture">
+        </div></div>
 </header>
+ <script src="JS/header.js"></script>
 
 <div class="container">
     <div class="sidebar" id="sidebar">

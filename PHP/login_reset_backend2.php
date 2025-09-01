@@ -95,8 +95,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $otpCodeEmail = $data['otpCodeEmail'] ?? null; // Email OTP provided by user
 
     // Gmail SMTP Credentials for PHPMailer
-    $smtpUsername = 'kumarpatelrakesh222@gmail.com';
-    $smtpPassword = 'acshpmbiyrybsigu'; // Your Gmail App Password
+    $smtpUsername = 'jobportal00000@gmail.com';
+    $smtpPassword = 'gztykeykurgggklb'; // Your Gmail App Password
 
 
     // --- LOGIN ACTION ---

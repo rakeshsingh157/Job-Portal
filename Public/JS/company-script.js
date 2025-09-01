@@ -40,6 +40,14 @@ document.addEventListener('DOMContentLoaded', () => {
                 console.error('Fetch error:', error);
                 showError('Could not load profile data. Please check your connection.');
             });
+
+        // Add contact button functionality
+        const contactButton = document.getElementById('contactButton');
+        if (contactButton) {
+            contactButton.addEventListener('click', function() {
+                window.location.href = `../chat.html?company_id=${cuserId}`;
+            });
+        }
     } else {
         showError('Please specify a valid company user ID in the URL, for example: company-profile.html?cuser_id=1');
     }
@@ -112,7 +120,6 @@ document.addEventListener('DOMContentLoaded', () => {
                 const jobElement = document.createElement('div');
                 jobElement.className = 'job-item';
                 
-                // You will need to add the appropriate CSS for these classes (job-icon, job-details, job-title, job-description, etc.)
                 jobElement.innerHTML = `
                     <div class="job-icon">${getJobIcon(job.job_title)}</div>
                     <div class="job-details">

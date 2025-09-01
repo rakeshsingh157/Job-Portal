@@ -92,8 +92,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $email = $data['email'] ?? null;
     $otpCodeEmail = $data['otpCodeEmail'] ?? null;
 
-    $smtpUsername = 'kumarpatelrakesh222@gmail.com';
-    $smtpPassword = 'acshpmbiyrybsigu';
+    $smtpUsername = 'jobportal00000@gmail.com';
+    $smtpPassword = 'gztykeykurgggklb';
 
 
     if ($action === 'login') {

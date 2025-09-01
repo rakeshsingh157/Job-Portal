@@ -19,7 +19,7 @@ define('DB_PASS', 'DBpicshot');
 define('DB_NAME', 'jobp_db'); 
 
 
-define('FAST2SMS_API_KEY', ''); 
+define('FAST2SMS_API_KEY', 'j7PzBgITwA49QlS3iyXrqskCaYME08HvtfbLUGFhxD1VJmZ6ucjrFg5SVfye7NbH1Umlc80TKvZW6tLd'); 
 
 function getDbConnection() {
     $conn = new mysqli(DB_HOST, DB_USER, DB_PASS, DB_NAME);
@@ -112,8 +112,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     // Gmail SMTP Credentials for PHPMailer
     // IMPORTANT: Replace with your actual Gmail address and 16-character App Password.
     // An App Password is required if you have 2-Factor Authentication enabled on your Gmail.
-    $smtpUsername = 'kumarpatelrakesh222@gmail.com';
-    $smtpPassword = 'acshpmbiyrybsigu';
+    $smtpUsername = 'jobportal00000@gmail.com';
+    $smtpPassword = 'gztykeykurgggklb';
 
 
     // --- SIGNUP ACTIONS (for 'cuser' table) ---

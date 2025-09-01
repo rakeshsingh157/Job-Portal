@@ -162,18 +162,53 @@
             margin-top: 0;
         }
     }
+    /* New styles for the Go to Posts button */
+    .posts-btn-container {
+      display: inline-block;
+      margin-left: 15px;
+    }
+    
+    .go-to-posts-btn {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      width: 40px;
+      height: 40px;
+      background-color: #6c757d;
+      color: white;
+      text-decoration: none;
+      border-radius: 50%;
+      font-weight: bold;
+      transition: all 0.3s ease;
+      border: none;
+      cursor: pointer;
+      font-size: 18px;
+    }
+    
+    .go-to-posts-btn:hover {
+      background-color: #5a6268;
+      transform: scale(1.05);
+    }
+    li{
+      list-style: none;
+      text-decoration: none;
+    }
   </style>
 </head>
 <body>
   <header>
     <div class="logo">JOBconnect.</div>
     <nav>
-      <a href="#" class="active">Jobs</a>
-      <a href="#">Messages</a>
-      <a href="#">Notifications</a>
+      <li><a href="../explore.html" >Jobs</a></li>
+                <li><a href="../chat.html">Messages</a></li>
+                <li><a href="../view-post.html">Posts</a></li>
     </nav>
-    <div class="profile-icon"> <img id="profile-image2" style="display: none;" src="" alt="Profile Picture"> </div>
+     <div class="location-info">
+            <i class="fas fa-map-marker-alt"></i> <span id="location-text"></span>
+        </div>
+    <div onclick="location.href='../PHP/redirect.php'" class="profile-icon"> <img id="profile-image2" style="display: none;" src="" alt="Profile Picture"> </div>
   </header>
+  <script src="JS/header.js"></script>
   
   <div class="container">
     <div class="card profile-card">
@@ -189,6 +224,8 @@
         <div class="company-type" id="display-type">Industry Type</div>
         <div class="verified-badge">Verified</div>
         
+        <button class="edit-btn" id="contactButton">contact</button>
+
         <div class="profile-info">
           <div class="info-section">
             <div class="info-label">Headquarters</div>
@@ -237,7 +274,19 @@
       <div class="jobs-section">
         <div class="jobs-header">
           <h2 class="section-title">Job Posts</h2>
+          <div class="posts-btn-container">
+              <a href="" id="redirect" class="go-to-posts-btn" title="Go to Posts">📝</a>
+            </div>
         </div>
+        <script>
+          const params = new URLSearchParams(window.location.search);
+
+    // user_id ka value lena
+    const userId = params.get("cuser_id");
+
+    // correct template literal
+    document.getElementById("redirect").href = `../gallery.html?cuser_id=${userId}`;
+          </script>
         
         <div id="jobs-list">
           <div style="text-align: center; padding: 40px; color: var(--muted);">

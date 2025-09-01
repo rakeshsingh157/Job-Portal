@@ -48,3 +48,13 @@ Stack trace:
 #0 C:\xampp\htdocs\SyWD\PHP\fetch_user_posts.php(17): mysqli->__construct('photostore.ct0g...', 'admin', Object(SensitiveParameterValue), 'jobp_db')
 #1 {main}
   thrown in C:\xampp\htdocs\SyWD\PHP\fetch_user_posts.php on line 17
+[01-Sep-2025 14:44:48 Europe/Berlin] PHP Fatal error:  Uncaught mysqli_sql_exception: Unknown column 'p.post_text' in 'where clause' in C:\xampp\htdocs\SyWD\PHP\search.php:63
+Stack trace:
+#0 C:\xampp\htdocs\SyWD\PHP\search.php(63): mysqli->prepare('SELECT p.*, u.f...')
+#1 {main}
+  thrown in C:\xampp\htdocs\SyWD\PHP\search.php on line 63
+[01-Sep-2025 14:46:43 Europe/Berlin] PHP Fatal error:  Uncaught mysqli_sql_exception: Unknown column 'p.post_text' in 'where clause' in C:\xampp\htdocs\SyWD\PHP\search.php:78
+Stack trace:
+#0 C:\xampp\htdocs\SyWD\PHP\search.php(78): mysqli->prepare('SELECT p.*, u.f...')
+#1 {main}
+  thrown in C:\xampp\htdocs\SyWD\PHP\search.php on line 78

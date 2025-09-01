@@ -1,4 +1,5 @@
 document.addEventListener('DOMContentLoaded', () => {
+    // Helper function to get a URL parameter
     const getUrlParameter = (name) => {
         name = name.replace(/[\[]/, "\\[").replace(/[\]]/, "\\]");
         const regex = new RegExp("[\\?&]" + name + "=([^&#]*)");
@@ -7,18 +8,67 @@ document.addEventListener('DOMContentLoaded', () => {
     };
 
     const userId = getUrlParameter('user_id');
+    // CORRECTED: The ID now matches the HTML element's ID
+    const loadingOverlay = document.getElementById('loading-overlay'); 
 
+    const showLoading = () => {
+        if (loadingOverlay) {
+            // Using the 'visible' class as defined in your CSS
+            loadingOverlay.classList.add('visible'); 
+        }
+    };
+
+    const hideLoading = () => {
+        if (loadingOverlay) {
+            // Removing the 'visible' class
+            loadingOverlay.classList.remove('visible');
+        }
+    };
+
+    // --- Part 1: Fetch and display the logged-in user's data for the header ---
+    showLoading(); // Show the loader before the first fetch
+    fetch('PHP/get_logged_in_user_data.php')
+        .then(response => {
+            if (!response.ok) {
+                throw new Error('Network response was not ok');
+            }
+            return response.json();
+        })
+        .then(data => {
+            const navbarProfilePicture = document.getElementById('navbarProfilePicture');
+            const navbarLocation = document.getElementById('navbarLocation');
+            
+            // Set the header profile picture and location from the logged-in user's data
+            navbarProfilePicture.src = data.profile_url;
+            navbarLocation.textContent = data.location;
+        })
+        .catch(error => {
+            console.error('Error fetching header data:', error);
+            // Fallback for when the logged-in user's data can't be fetched
+            document.getElementById('navbarProfilePicture').src = 'https://placehold.co/150x150/png?text=P';
+            document.getElementById('navbarLocation').textContent = 'N/A';
+        })
+        .finally(() => {
+            hideLoading();
+        });
+
+    // --- Part 2: Fetch and display the public profile data from the URL ---
     if (userId) {
-        // Fetch data from the new PHP backend
+        showLoading(); // Also show the loader for the main profile data fetch
         fetch(`PHP/profile.php?user_id=${userId}`)
-            .then(response => response.json())
+            .then(response => {
+                if (!response.ok) {
+                    throw new Error('Network response was not ok');
+                }
+                return response.json();
+            })
             .then(data => {
                 if (data.error) {
                     console.error('Error fetching user data:', data.error);
                     document.body.innerHTML = `<div style="text-align: center; padding: 50px;"><h2>Error</h2><p>${data.error}</p></div>`;
                     return;
                 }
-                
+
                 // Populate the static HTML fields
                 document.getElementById('profileName').textContent = `${data.first_name} ${data.last_name}`;
                 document.getElementById('profilePosition').textContent = data.job_field || 'N/A';
@@ -28,16 +78,12 @@ document.addEventListener('DOMContentLoaded', () => {
                 document.getElementById('profileLocation').textContent = data.address || 'N/A';
                 document.getElementById('profileEmail').textContent = data.email || 'N/A';
 
-                // Render Profile Photo
+                // Render Profile Photo for the main profile page
                 const mainProfilePicture = document.getElementById('mainProfilePicture');
-                const navbarProfilePicture = document.getElementById('navbarProfilePicture');
                 if (data.profile_url) {
                     mainProfilePicture.src = data.profile_url;
-                    navbarProfilePicture.src = data.profile_url;
                 } else {
-                    // Set a placeholder if no profile picture is available
                     mainProfilePicture.src = 'https://placehold.co/150x150/png?text=P';
-                    navbarProfilePicture.src = 'https://placehold.co/150x150/png?text=P';
                 }
 
                 // Render Skills
@@ -66,8 +112,8 @@ document.addEventListener('DOMContentLoaded', () => {
                 } else {
                     languagesList.innerHTML = '<span class="text-muted">No languages added yet.</span>';
                 }
-                
-                // Render Experience (Updated)
+
+                // Render Experience
                 const experienceContainer = document.getElementById('experienceContainer');
                 experienceContainer.innerHTML = '';
                 if (Array.isArray(data.experience) && data.experience.length > 0) {
@@ -88,7 +134,7 @@ document.addEventListener('DOMContentLoaded', () => {
                     experienceContainer.innerHTML = '<span class="text-muted">No experience added yet.</span>';
                 }
 
-                // Render Education (Updated)
+                // Render Education
                 const educationContainer = document.getElementById('educationContainer');
                 educationContainer.innerHTML = '';
                 if (Array.isArray(data.education) && data.education.length > 0) {
@@ -113,8 +159,22 @@ document.addEventListener('DOMContentLoaded', () => {
             .catch(error => {
                 console.error('Error:', error);
                 document.body.innerHTML = `<div style="text-align: center; padding: 50px;"><h2>Error</h2><p>Could not load profile data.</p></div>`;
+            })
+            .finally(() => {
+                hideLoading();
             });
+
+        // This is the code for the contact button. It is now correctly placed
+        // inside the single DOMContentLoaded listener.
+        const contactButton = document.getElementById('contactButton');
+
+        if (contactButton) {
+            contactButton.addEventListener('click', function() {
+                window.location.href = `../chat.html?user_id=${userId}`;
+            });
+        }
     } else {
         document.body.innerHTML = `<div style="text-align: center; padding: 50px;"><h2>Invalid Request</h2><p>Please specify a valid user ID in the URL, for example: profile.html?user_id=1</p></div>`;
+        hideLoading(); // Hide the loader if no user ID is found
     }
 });

@@ -1,5 +1,6 @@
-
 <?php
+// Filename: explore-posts.php
+// This file is a refactored version of the original explore.php to focus on job posts.
 header('Content-Type: application/json');
 
 // Database connection

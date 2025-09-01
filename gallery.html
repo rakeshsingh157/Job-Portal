@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>My Photos - Professional Gallery</title>
+    <title>Professional Gallery - Explore Posts</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <link rel="stylesheet" href="CSS/my_photos.css">
 
@@ -88,39 +88,19 @@
     
     align-items: flex-start;
 }
-
-.create-post-btn {
-    position: fixed;
-    bottom: 30px;
-    right: 30px;
-    width: 60px;
-    height: 60px;
-    border-radius: 50%;
-    background-color: #e60023;
-    color: white;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    font-size: 24px;
-    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
-    text-decoration: none;
-    z-index: 10;
-}
-
-
     </style>
 </head>
 <body>
-        <link rel="stylesheet" href="CSS/header.css">
+    <link rel="stylesheet" href="CSS/header.css">
     <header class="navbar">
     <div class="navbar-left">
         <div class="logo">JOBconnect.</div>
     </div>
     <div class="navbar-center">
         <ul>
-            <li><a href="explore.html" class="active">Jobs</a></li>
-                <li><a href="chat.html">Messages</a></li>
-                <li><a href="view-post.html">Posts</a></li>
+            <li><a href="explore.html">Jobs</a></li>
+            <li><a href="chat.html">Messages</a></li>
+            <li><a href="view-post.html" class="active">Posts</a></li>
         </ul>
     </div>
     <div class="navbar-right">
@@ -134,64 +114,15 @@
 </header>
 
 <script src="JS/header.js"></script>
-<a href="PHP/post.php" class="create-post-btn" id="createPostBtn" >+</a>
-
 
     <div class="main-content">
-        <h1 class="page-title">My Posts</h1>
-        
-        <div class="filter-options">
-            <button class="filter-btn active">All Posts</button>
-            <button class="filter-btn">Most Engaged</button>
-            <button class="filter-btn">Recent</button>
-        </div>
+        <h1 class="page-title">Professional Gallery</h1>
         
         <div class="posts-grid" id="postsGrid">
             <div class="empty-state">
                 <div class="empty-state-icon"><i class="fas fa-camera"></i></div>
-                <h3>Your Professional Gallery</h3>
-                <p>When you share posts, they will appear here</p>
-            </div>
-        </div>
-    </div>
-
-    <div class="modal" id="editModal">
-        <div class="modal-content">
-            <div class="modal-header">
-                <h2 class="modal-title">Edit Post</h2>
-                <button class="modal-close">&times;</button>
-            </div>
-            <div class="modal-body">
-                <div class="modal-image-container">
-                    <img src="" alt="Post image" class="modal-image" id="editModalImage">
-                    <button class="modal-image-nav-btn modal-nav-btn-prev" id="editModalPrevBtn" style="display: none;"><i class="fas fa-chevron-left"></i></button>
-                    <button class="modal-image-nav-btn modal-nav-btn-next" id="editModalNextBtn" style="display: none;"><i class="fas fa-chevron-right"></i></button>
-                    <div class="modal-image-count" id="editModalImageCount" style="display: none;"></div>
-                    <div class="modal-image-navigation" id="editModalNavDots" style="display: none;"></div>
-                </div>
-                <div class="modal-details">
-                    <textarea class="modal-text" id="editModalText" placeholder="Add a description..."></textarea>
-                </div>
-            </div>
-            <div class="modal-footer">
-                <button class="btn btn-secondary" onclick="closeModal('editModal')">Cancel</button>
-                <button class="btn btn-primary" onclick="savePostChanges()">Save Changes</button>
-            </div>
-        </div>
-    </div>
-
-    <div class="modal" id="deleteModal">
-        <div class="modal-content">
-            <div class="modal-header">
-                <h2 class="modal-title">Delete Post</h2>
-                <button class="modal-close" onclick="closeModal('deleteModal')">&times;</button>
-            </div>
-            <div class="modal-body">
-                <p>Are you sure you want to delete this post? This action cannot be undone.</p>
-            </div>
-            <div class="modal-footer">
-                <button class="btn btn-secondary" onclick="closeModal('deleteModal')">Cancel</button>
-                <button class="btn btn-primary" onclick="confirmDelete()">Delete</button>
+                <h3>Nothing to see here yet</h3>
+                <p>New posts will appear here shortly!</p>
             </div>
         </div>
     </div>
@@ -248,8 +179,6 @@
         </div>
     </div>
     
-    <script src="JS/my_photos.js">
-       
-    </script>
+    <script src="JS/gallery.js"></script>
 </body>
 </html>

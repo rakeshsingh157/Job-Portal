@@ -1,6 +1,5 @@
 <!DOCTYPE html>
 <html lang="en">
-
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -8,28 +7,22 @@
     <script src="https://cdn.tailwindcss.com"></script>
     <style>
         @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap');
-
         body {
             font-family: 'Inter', sans-serif;
             background-color: #f8fafc;
         }
-
         .pink-box {
             background-color: #f9a8d4;
             border-radius: 0.5rem;
         }
-
         .nav-link.active {
             color: #2563eb;
             border-bottom: 2px solid #2563eb;
             padding-bottom: 0.5rem;
         }
-
         .mirror-square {
-
             background: linear-gradient(145deg, #e8e6e6, #eee);
             border: 2px solid #e7e5e5;
-
             border-radius: 10px;
             height: 45px;
             width: 45px;
@@ -38,167 +31,173 @@
             margin: 5px;
             padding: 7px;
             gap: 10px;
-
-
-
         }
-
         .gap {
             gap: 30vh;
         }
-
         .h1 {
             height: 530px;
         }
+        .company-name-link {
+            text-decoration: none;
+            color: #000000;
+        }
+        .company-name-link:hover {
+            color: #000000;
+            text-decoration: none;
+        }
+      
     </style>
 </head>
-
 <body class="bg-gray-100">
 
-    <header class="bg-white shadow-sm mb-12">
-        <div class="container mx-auto px-6 py-4 flex items-center justify-between">
-            <div class="flex items-center space-x-6 gap">
-                <a href="#" class="text-2xl font-extrabold text-gray-800">Placeholder.</a>
-                <nav class="hidden md:flex space-x-8 text-gray-600 g">
-                    <a href="#" class="hover:text-blue-600 font-medium nav-link">Jobs</a>
-                    <a href="#" class="hover:text-blue-600 font-medium ">Messages</a>
-                    <a href="#" class="hover:text-blue-600 font-medium ">Notifications</a>
-                </nav>
-            </div>
-            <div class="flex items-center space-x-4">
-                <span class="text-gray-500 text-sm hidden md:block">City, District</span>
-                <img src="https://placehold.co/40x40/94a3b8/ffffff?text=U" alt="User Profile"
-                    class="w-10 h-10 rounded-full border-2 border-gray-300">
-            </div>
+    <link rel="stylesheet" href="CSS/header.css">
+    <header class="navbar">
+    <div class="navbar-left">
+        <div class="logo">JOBconnect.</div>
+    </div>
+    <div class="navbar-center">
+        <ul>
+             <li><a href="explore.html" class="active">Jobs</a></li>
+                <li><a href="chat.html">Messages</a></li>
+                <li><a href="view-post.html">Posts</a></li>
+        </ul>
+    </div>
+    <div class="navbar-right">
+        <div class="location-info">
+            <i class="fas fa-map-marker-alt"></i> <span id="location-text"></span>
         </div>
-    </header>
+        <div onclick="location.href='PHP/redirect.php'" class="profile-avatar">
+            <img id="profile-image2" style="display: none;" src="" alt="Profile Picture">
+        </div>
+    </div>
+</header>
 
-
+<script src="JS/header.js"></script>
     <main class="container mx-auto px-6 py-8">
-        <div class="bg-white p-8 rounded-xl shadow-md flex items-center justify-between w-full mb-9">
-            <div class="flex items-center gap-6 flex-grow">
-                <div class="pink-box w-20 h-20 flex-shrink-0 bg-pink-500"></div>
-                <div>
-                    <h1 class="text-3xl font-bold text-gray-800">Position</h1>
-                    <p class="text-lg text-gray-600">Company Name</p>
-                </div>
+    <div class="bg-white p-8 rounded-xl shadow-md flex items-center justify-between w-full mb-9">
+        <div class="flex items-center gap-6 flex-grow">
+            <div class="pink-box w-20 h-20 flex-shrink-0 bg-pink-500"></div>
+            <div>
+                <h1 class="text-3xl font-bold text-gray-800">Position</h1>
+                <p class="text-lg text-gray-600">
+                    <a id="companyNameLink" href="#" class="company-name-link">Company Name</a>
+                </p>
             </div>
-            <button
-                class="bg-black text-white px-8 py-3 rounded-xl font-semibold hover:bg-gray-800 transition-colors whitespace-nowrap">Apply
-                Now</button>
+        </div>
+        <button
+            class="bg-black text-white px-8 py-3 rounded-xl font-semibold hover:bg-gray-800 transition-colors whitespace-nowrap">Apply
+            Now</button>
+    </div>
+
+    <div class="flex flex-col lg:flex-row gap-6">
+        <div class="lg:w-3/3 space-y-6">
+            <section class="bg-white p-8 rounded-xl shadow-md">
+                <h2 class="text-xl font-bold text-gray-800 mb-4">About the Job</h2>
+                <p class="text-gray-600 leading-relaxed text-sm mb-8">
+                    In a world that's constantly evolving, finding balance becomes both a challenge and an art. We
+                    move forward, driven by ambition, yet often pause to reflect on where we began. Somewhere
+                    between change and continuity lies the space where ideas take shape, connections are formed, and
+                    new paths emerge -- reminding us that progress is rarely a straight line, but a journey shaped
+                    by every step we take.
+                </p>
+                <h2 class="text-xl font-bold text-gray-800 mb-4">Skills</h2>
+                <div class="flex flex-wrap gap-3">
+                    <span class="bg-gray-100 text-gray-800 px-4 py-2 rounded-lg font-medium text-sm">Figma</span>
+                    <span class="bg-gray-100 text-gray-800 px-4 py-2 rounded-lg font-medium text-sm">Python</span>
+                    <span class="bg-gray-100 text-gray-800 px-4 py-2 rounded-lg font-medium text-sm">Adobe</span>
+                    <span class="bg-gray-100 text-gray-800 px-4 py-2 rounded-lg font-medium text-sm">User Interface
+                        Designing</span>
+                    <span
+                        class="bg-gray-100 text-gray-800 px-4 py-2 rounded-lg font-medium text-sm">JavaScript</span>
+                    <span class="bg-gray-100 text-gray-800 px-4 py-2 rounded-lg font-medium text-sm">React</span>
+                </div>
+            </section>
+
+            <section class="bg-white p-8 rounded-xl shadow-md flex items-start gap-6">
+                <div class="flex-grow">
+                    <h2 class="text-xl font-bold text-gray-800 mb-4">About Company</h2>
+                    <p class="text-gray-600 leading-relaxed text-sm">
+                        In a world that's constantly evolving, finding balance becomes both a challenge and an art.
+                        We move forward, driven by ambition, yet often pause to reflect on where we began. Somewhere
+                        between change and continuity lies the space where ideas take shape, connections are formed,
+                        and new paths emerge -- reminding us that progress is rarely a straight line, but a journey
+                        shaped by every step we take.
+                    </p>
+                </div>
+                <div class="hidden md:flex flex-col items-center flex-shrink-0 pt-4">
+                    <div class="pink-box w-20 h-20 flex-shrink-0 bg-pink-500"></div>
+                    <a id="companyNameLinkSide" href="#" class="company-name-link">
+                        <span class="text-sm text-gray-600">Company Name</span>
+                    </a>
+                </div>
+            </section>
         </div>
 
-        <div class="flex flex-col lg:flex-row gap-6">
+        <div class="lg:w-1/3 ">
+            <div class="bg-white p-7 rounded-xl shadow-md h1 ">
+                <h3 class="text-xl font-bold text-gray-800 mb-1">₹00,00 - ₹00,000</h3>
+                <p class="text-sm text-gray-500 mb-9">Avg salary</p>
 
-
-            <div class="lg:w-3/3 space-y-6">
-
-
-                <section class="bg-white p-8 rounded-xl shadow-md">
-                    <h2 class="text-xl font-bold text-gray-800 mb-4">About the Job</h2>
-                    <p class="text-gray-600 leading-relaxed text-sm mb-8">
-                        In a world that's constantly evolving, finding balance becomes both a challenge and an art. We
-                        move forward, driven by ambition, yet often pause to reflect on where we began. Somewhere
-                        between change and continuity lies the space where ideas take shape, connections are formed, and
-                        new paths emerge -- reminding us that progress is rarely a straight line, but a journey shaped
-                        by every step we take.
-                    </p>
-                    <h2 class="text-xl font-bold text-gray-800 mb-4">Skills</h2>
-                    <div class="flex flex-wrap gap-3">
-                        <span class="bg-gray-100 text-gray-800 px-4 py-2 rounded-lg font-medium text-sm">Figma</span>
-                        <span class="bg-gray-100 text-gray-800 px-4 py-2 rounded-lg font-medium text-sm">Python</span>
-                        <span class="bg-gray-100 text-gray-800 px-4 py-2 rounded-lg font-medium text-sm">Adobe</span>
-                        <span class="bg-gray-100 text-gray-800 px-4 py-2 rounded-lg font-medium text-sm">User Interface
-                            Designing</span>
-                        <span
-                            class="bg-gray-100 text-gray-800 px-4 py-2 rounded-lg font-medium text-sm">JavaScript</span>
-                        <span class="bg-gray-100 text-gray-800 px-4 py-2 rounded-lg font-medium text-sm">React</span>
+                <div class="  flex items-star mb-9 ">
+                    <div class="mirror-square">
+                        <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 text-gray-400 mt-0.5 flex-shrink-0"
+                            fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                            <path stroke-linecap="round" stroke-linejoin="round"
+                                d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z" />
+                        </svg>
                     </div>
-                </section>
-
-                <section class="bg-white p-8 rounded-xl shadow-md flex items-start gap-6">
-                    <div class="flex-grow">
-                        <h2 class="text-xl font-bold text-gray-800 mb-4">About Company</h2>
-                        <p class="text-gray-600 leading-relaxed text-sm">
-                            In a world that's constantly evolving, finding balance becomes both a challenge and an art.
-                            We move forward, driven by ambition, yet often pause to reflect on where we began. Somewhere
-                            between change and continuity lies the space where ideas take shape, connections are formed,
-                            and new paths emerge -- reminding us that progress is rarely a straight line, but a journey
-                            shaped by every step we take.
-                        </p>
+                    <div>
+                        <h4 class="text-sm font-medium text-gray-500 m-1 ">Email</h4>
+                        <p class="text-gray-800">companyname@gamil.com</p>
                     </div>
-                    <div class="hidden md:flex flex-col items-center flex-shrink-0 pt-4">
-                        <div class="pink-box w-20 h-20 flex-shrink-0 bg-pink-500"></div>
+                </div>
 
-                        <span class="text-sm text-gray-600">Company Name</span>
+                <div class="flex items-star space-x-3 mb-9">
+                    <div class="mirror-square">
+                         <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 text-gray-400 mt-0.5 flex-shrink-0"
+                            fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                            <path stroke-linecap="round" stroke-linejoin="round" d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-2m2 0h-2m0 0h-4m-4 0h4m-4 0v-5m0-6h6m-6 0v6m0-6h6m-6 0v6" />
+                        </svg>
                     </div>
-                </section>
-            </div>
+                    <div>
+                        <h4 class="text-sm font-medium text-gray-500 mb-1 ">Industry</h4>
+                        <p class="text-gray-800 ">Something</p>
+                    </div>
+                </div>
 
-            <div class="lg:w-1/3 ">
-                <div class="bg-white p-7 rounded-xl shadow-md h1 ">
-                    <h3 class="text-xl font-bold text-gray-800 mb-1">₹00,00 - ₹00,000</h3>
-                    <p class="text-sm text-gray-500 mb-9">Avg salary</p>
-
-
-
-                    <div class="  flex items-star mb-9 ">
+                <div>
+                    <div class="flex items-star space-x-3 mb-9">
                         <div class="mirror-square">
-
-
                             <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 text-gray-400 mt-0.5 flex-shrink-0"
                                 fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
-                                <path stroke-linecap="round" stroke-linejoin="round"
-                                    d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z" />
+                                <path stroke-linecap="round" stroke-linejoin="round" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
                             </svg>
                         </div>
                         <div>
-
-                            <h4 class="text-sm font-medium text-gray-500 m-1 ">Email</h4>
-                            <p class="text-gray-800">companyname@gamil.com</p>
-                        </div>
-                    </div>
-
-                    <div class="flex items-star space-x-3 mb-9">
-                        <div class="mirror-square ">
-                        </div>
-                        <div>
-
-                            <h4 class="text-sm font-medium text-gray-500 mb-1 ">Industry</h4>
-                            <p class="text-gray-800 ">Something</p>
+                            <h4 class="text-sm font-medium text-gray-500 mb-1 ">Experience Level</h4>
+                            <p class="text-gray-800 ">Entry Level</p>
                         </div>
                     </div>
 
                     <div>
-                        <div class="flex items-star space-x-3 mb-9">
-                            <div class="mirror-square ">
+                        <div class="flex items-star space-x-3">
+                            <div class="mirror-square">
+                                <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 text-gray-400 mt-0.5 flex-shrink-0"
+                                    fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                                    <path stroke-linecap="round" stroke-linejoin="round" d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14" />
+                                </svg>
                             </div>
                             <div>
-
-                                <h4 class="text-sm font-medium text-gray-500 mb-1 ">Experience Level</h4>
-                                <p class="text-gray-800 ">Entry Level</p>
+                                <h4 class="text-sm font-medium text-gray-500 mb-1 ">Employment Type</h4>
+                                <p class="text-gray-800 ">Full Time</p>
                             </div>
                         </div>
-
                         <div>
-                            <div class="flex items-star space-x-3">
-                                <div class="mirror-square ">
-                                </div>
-                                <div>
-
-                                    <h4 class="text-sm font-medium text-gray-500 mb-1 ">Employment Type</h4>
-                                    <p class="text-gray-800 ">Full Time</p>
-                                </div>
-                            </div>
-                            <div>
-
-
-                            </div>
                         </div>
-    </main>
-    <script src="JS/job-details.js">
-      
-    </script>
+                    </div>
+</main>
+<script src="JS/job-details.js"></script>
 </body>
 
 </html>

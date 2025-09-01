@@ -1,0 +1,146 @@
+/* Reset and base styles */
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    font-family: 'Arial', sans-serif;
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    padding: 20px;
+    color: white;
+}
+
+/* Header styles */
+div:first-child {
+    text-align: center;
+    margin-bottom: 30px;
+}
+
+h1 {
+    font-size: 3rem;
+    font-weight: bold;
+    text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.3);
+}
+
+/* Text styles */
+.text {
+    font-size: 1.5rem;
+    margin-bottom: 40px;
+    text-align: center;
+    font-weight: 300;
+}
+
+/* Container styles */
+.container {
+    display: flex;
+    justify-content: center;
+    gap: 40px;
+    flex-wrap: wrap;
+    max-width: 1200px;
+}
+
+/* Block styles */
+.block {
+    background: rgba(255, 255, 255, 0.1);
+    backdrop-filter: blur(10px);
+    border-radius: 20px;
+    padding: 30px;
+    width: 280px;
+    text-align: center;
+    transition: all 0.3s ease;
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    cursor: pointer;
+}
+
+.block:hover {
+    transform: translateY(-10px);
+    background: rgba(255, 255, 255, 0.2);
+    box-shadow: 0 15px 35px rgba(0, 0, 0, 0.2);
+}
+
+/* Item styles */
+.item {
+    margin-bottom: 20px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 120px;
+}
+
+.space {
+    height: 10px;
+}
+
+/* SVG styles */
+svg {
+    transition: transform 0.3s ease;
+}
+
+.block:hover svg {
+    transform: scale(1.1);
+}
+
+/* Title styles */
+.title {
+    font-size: 1.4rem;
+    font-weight: 600;
+    color: white;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    transition: color 0.3s ease;
+}
+
+.title b {
+    font-weight: 700;
+}
+
+.block:hover .title {
+    color: #ffd700;
+}
+
+/* Responsive design */
+@media (max-width: 768px) {
+    .container {
+        flex-direction: column;
+        align-items: center;
+        gap: 30px;
+    }
+    
+    .block {
+        width: 100%;
+        max-width: 320px;
+    }
+    
+    h1 {
+        font-size: 2.5rem;
+    }
+    
+    .text {
+        font-size: 1.2rem;
+    }
+}
+
+@media (max-width: 480px) {
+    h1 {
+        font-size: 2rem;
+    }
+    
+    .text {
+        font-size: 1.1rem;
+    }
+    
+    .title {
+        font-size: 1.2rem;
+    }
+    
+    .block {
+        padding: 20px;
+    }
+}
