@@ -34,7 +34,7 @@ if (isset($_SESSION['user_id'])) {
         header('Location: ../profile.html'); 
         exit();
     } else {
-        header('Location: test-folder/index.html'); 
+        header('Location: ../test-folder/index.html'); 
         exit();
     }
 } 
