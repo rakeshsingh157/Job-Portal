@@ -4,10 +4,15 @@ require_once 'config2.php';
 
 header('Content-Type: application/json');
 
+// Helper function to handle a graceful exit with a JSON error message.
+function jsonError($message) {
+    echo json_encode(['error' => $message]);
+    exit;
+}
+
 $currentUser = getCurrentUser();
 if (!$currentUser) {
-    echo json_encode(['error' => 'Not authenticated']);
-    exit;
+    jsonError('Not authenticated');
 }
 
 $action = $_GET['action'] ?? '';
@@ -18,6 +23,9 @@ switch ($action) {
         break;
     case 'get_messages':
         $conversationId = $_GET['conversation_id'] ?? 0;
+        if (!$conversationId) {
+            jsonError('Conversation ID is required');
+        }
         getMessages($conversationId, $currentUser);
         break;
     case 'send_message':
@@ -31,13 +39,13 @@ switch ($action) {
     case 'get_current_user':
         getCurrentUserDetailsAPI();
         break;
-    case 'get_user_details': // New case for fetching single user details
+    case 'get_user_details':
         $id = $_GET['id'] ?? 0;
         $type = $_GET['type'] ?? '';
         getUserDetailsAPI($id, $type);
         break;
     default:
-        echo json_encode(['error' => 'Invalid action']);
+        jsonError('Invalid action');
         break;
 }
 
@@ -48,7 +56,7 @@ function getCurrentUserDetailsAPI() {
         $currentUser['is_verified'] = (bool)$currentUser['is_verified'];
         echo json_encode($currentUser);
     } else {
-        echo json_encode(['error' => 'User not found']);
+        jsonError('User not found');
     }
 }
 
@@ -61,78 +69,132 @@ function getUserDetailsAPI($id, $type) {
         $userDetails['type'] = $type;
         echo json_encode($userDetails);
     } else {
-        echo json_encode(['error' => 'User not found']);
+        jsonError('User not found');
     }
 }
 
-
 function getConversations($currentUser) {
     global $conn;
-    
     $conversations = [];
-    
+
     if ($currentUser['type'] === 'user') {
         $stmt = $conn->prepare("
-            SELECT c.id, c.company_id as other_id, 'company' as other_type, 
-                   MAX(m.timestamp) as last_message_time
+            SELECT c.id, c.conversation_type, c.user1_id, c.user2_id, c.company1_id, c.company2_id, MAX(m.timestamp) as last_message_time
             FROM conversations c
             LEFT JOIN messages m ON m.conversation_id = c.id
-            WHERE c.user_id = ?
+            WHERE (
+                (c.conversation_type = 'user_to_user' AND (c.user1_id = ? OR c.user2_id = ?)) OR
+                (c.conversation_type = 'user_to_company' AND c.user1_id = ?)
+            )
             GROUP BY c.id
             ORDER BY last_message_time DESC
         ");
-        $stmt->bind_param("i", $currentUser['id']);
-    } else {
+        $stmt->bind_param("iii", $currentUser['id'], $currentUser['id'], $currentUser['id']);
+    } else if ($currentUser['type'] === 'company') {
         $stmt = $conn->prepare("
-            SELECT c.id, c.user_id as other_id, 'user' as other_type, 
-                   MAX(m.timestamp) as last_message_time
+            SELECT c.id, c.conversation_type, c.user1_id, c.user2_id, c.company1_id, c.company2_id, MAX(m.timestamp) as last_message_time
             FROM conversations c
             LEFT JOIN messages m ON m.conversation_id = c.id
-            WHERE c.company_id = ?
+            WHERE (
+                (c.conversation_type = 'company_to_company' AND (c.company1_id = ? OR c.company2_id = ?)) OR
+                (c.conversation_type = 'user_to_company' AND c.company1_id = ?)
+            )
             GROUP BY c.id
             ORDER BY last_message_time DESC
         ");
-        $stmt->bind_param("i", $currentUser['id']);
+        $stmt->bind_param("iii", $currentUser['id'], $currentUser['id'], $currentUser['id']);
+    } else {
+        echo json_encode([]);
+        return;
     }
-    
+
     $stmt->execute();
     $result = $stmt->get_result();
-    
+
     while ($row = $result->fetch_assoc()) {
-        $otherUser = getUserDetails($row['other_id'], $row['other_type']);
-        if ($otherUser) {
-            $conversations[] = [
-                'conversation_id' => $row['id'],
-                'other_user' => [
-                    'id' => $otherUser['id'],
-                    'name' => $otherUser['name'],
-                    'photo' => $otherUser['photo'] ?: 'https://placehold.co/45x45/7A69FF/FFFFFF?text=' . substr($otherUser['name'], 0, 1),
-                    'is_verified' => (bool)$otherUser['is_verified'],
-                    'type' => $row['other_type']
-                ],
-                'last_message_time' => $row['last_message_time']
-            ];
+        $otherId = null;
+        $otherType = '';
+        switch ($row['conversation_type']) {
+            case 'user_to_user':
+                $otherId = ($row['user1_id'] == $currentUser['id']) ? $row['user2_id'] : $row['user1_id'];
+                $otherType = 'user';
+                break;
+            case 'user_to_company':
+                if ($currentUser['type'] === 'user') {
+                    $otherId = $row['company1_id'];
+                    $otherType = 'company';
+                } else {
+                    $otherId = $row['user1_id'];
+                    $otherType = 'user';
+                }
+                break;
+            case 'company_to_company':
+                $otherId = ($row['company1_id'] == $currentUser['id']) ? $row['company2_id'] : $row['company1_id'];
+                $otherType = 'company';
+                break;
+        }
+        if ($otherId && $otherType) {
+            $otherUser = getUserDetails($otherId, $otherType);
+            if ($otherUser) {
+                $conversations[] = [
+                    'conversation_id' => $row['id'],
+                    'other_user' => [
+                        'id' => $otherUser['id'],
+                        'name' => $otherUser['name'],
+                        'photo' => $otherUser['photo'] ?: 'https://placehold.co/45x45/7A69FF/FFFFFF?text=' . substr($otherUser['name'], 0, 1),
+                        'is_verified' => (bool)$otherUser['is_verified'],
+                        'type' => $otherType
+                    ],
+                    'last_message_time' => $row['last_message_time']
+                ];
+            }
         }
     }
-    
     echo json_encode($conversations);
 }
 
 function getMessages($conversationId, $currentUser) {
     global $conn;
     
-    // Verify user has access to this conversation
+    // Check if the current user has access to this conversation
+    $conversationAccess = false;
     $stmt = $conn->prepare("
-        SELECT id FROM conversations 
-        WHERE id = ? AND (user_id = ? OR company_id = ?)
+        SELECT id, conversation_type, user1_id, user2_id, company1_id, company2_id 
+        FROM conversations 
+        WHERE id = ?
     ");
-    $stmt->bind_param("iii", $conversationId, $currentUser['id'], $currentUser['id']);
+    $stmt->bind_param("i", $conversationId);
     $stmt->execute();
     $result = $stmt->get_result();
     
-    if ($result->num_rows === 0) {
-        echo json_encode(['error' => 'Conversation not found']);
-        return;
+    if ($result->num_rows > 0) {
+        $row = $result->fetch_assoc();
+        
+        // Check access based on conversation type and user type
+        switch ($row['conversation_type']) {
+            case 'user_to_user':
+                if ($currentUser['type'] === 'user' && 
+                    ($row['user1_id'] == $currentUser['id'] || $row['user2_id'] == $currentUser['id'])) {
+                    $conversationAccess = true;
+                }
+                break;
+            case 'user_to_company':
+                if (($currentUser['type'] === 'user' && $row['user1_id'] == $currentUser['id']) ||
+                    ($currentUser['type'] === 'company' && $row['company1_id'] == $currentUser['id'])) {
+                    $conversationAccess = true;
+                }
+                break;
+            case 'company_to_company':
+                if ($currentUser['type'] === 'company' && 
+                    ($row['company1_id'] == $currentUser['id'] || $row['company2_id'] == $currentUser['id'])) {
+                    $conversationAccess = true;
+                }
+                break;
+        }
+    }
+    
+    if (!$conversationAccess) {
+        jsonError('Conversation not found or access denied');
     }
     
     // Get messages
@@ -183,15 +245,14 @@ function getMessages($conversationId, $currentUser) {
         ];
     }
     
-    // Mark messages as read
+    // Mark messages as read for the current user in this conversation
     $stmt = $conn->prepare("
         UPDATE messages SET is_read = TRUE 
         WHERE conversation_id = ? 
         AND sender_type != ? 
         AND sender_id != ?
     ");
-    $otherType = $currentUser['type'] === 'user' ? 'company' : 'user';
-    $stmt->bind_param("isi", $conversationId, $otherType, $currentUser['id']);
+    $stmt->bind_param("isi", $conversationId, $currentUser['type'], $currentUser['id']);
     $stmt->execute();
     
     echo json_encode($messages);
@@ -204,24 +265,58 @@ function sendMessage($data, $currentUser) {
     $receiverType = $data['receiver_type'] ?? '';
     $message = trim($data['message'] ?? '');
     
-    if (empty($message) ){
-        echo json_encode(['error' => 'Message cannot be empty']);
-        return;
+    if (empty($message) || !$receiverId) {
+        jsonError('Message or receiver ID is empty');
     }
     
     // Find or create conversation
-    if ($currentUser['type'] === 'user') {
-        $stmt = $conn->prepare("
-            SELECT id FROM conversations 
-            WHERE user_id = ? AND company_id = ?
-        ");
-        $stmt->bind_param("ii", $currentUser['id'], $receiverId);
+    $conversationId = null;
+    $stmt = null;
+    
+    // Determine the type of conversation
+    $conversationType = '';
+    if ($currentUser['type'] === 'user' && $receiverType === 'user') {
+        $conversationType = 'user_to_user';
+    } elseif ($currentUser['type'] === 'company' && $receiverType === 'company') {
+        $conversationType = 'company_to_company';
     } else {
+        $conversationType = 'user_to_company';
+    }
+    
+    // Find existing conversation
+    if ($conversationType === 'user_to_user') {
+        // Find existing conversation, order of users doesn't matter
         $stmt = $conn->prepare("
             SELECT id FROM conversations 
-            WHERE company_id = ? AND user_id = ?
+            WHERE conversation_type = 'user_to_user' 
+            AND ((user1_id = ? AND user2_id = ?) OR (user1_id = ? AND user2_id = ?))
         ");
-        $stmt->bind_param("ii", $currentUser['id'], $receiverId);
+        $stmt->bind_param("iiii", $currentUser['id'], $receiverId, $receiverId, $currentUser['id']);
+    } elseif ($conversationType === 'company_to_company') {
+        // Find existing conversation, order of companies doesn't matter
+        $stmt = $conn->prepare("
+            SELECT id FROM conversations 
+            WHERE conversation_type = 'company_to_company' 
+            AND ((company1_id = ? AND company2_id = ?) OR (company1_id = ? AND company2_id = ?))
+        ");
+        $stmt->bind_param("iiii", $currentUser['id'], $receiverId, $receiverId, $currentUser['id']);
+    } else {
+        // user_to_company
+        if ($currentUser['type'] === 'user') {
+            $stmt = $conn->prepare("
+                SELECT id FROM conversations 
+                WHERE conversation_type = 'user_to_company' 
+                AND user1_id = ? AND company1_id = ?
+            ");
+            $stmt->bind_param("ii", $currentUser['id'], $receiverId);
+        } else {
+            $stmt = $conn->prepare("
+                SELECT id FROM conversations 
+                WHERE conversation_type = 'user_to_company' 
+                AND user1_id = ? AND company1_id = ?
+            ");
+            $stmt->bind_param("ii", $receiverId, $currentUser['id']);
+        }
     }
     
     $stmt->execute();
@@ -232,22 +327,44 @@ function sendMessage($data, $currentUser) {
         $conversationId = $row['id'];
     } else {
         // Create new conversation
-        if ($currentUser['type'] === 'user') {
+        if ($conversationType === 'user_to_user') {
             $stmt = $conn->prepare("
-                INSERT INTO conversations (user_id, company_id) 
-                VALUES (?, ?)
+                INSERT INTO conversations (user1_id, user2_id, conversation_type) 
+                VALUES (?, ?, 'user_to_user')
             ");
-            $stmt->bind_param("ii", $currentUser['id'], $receiverId);
+            if ($currentUser['id'] < $receiverId) {
+                $stmt->bind_param("ii", $currentUser['id'], $receiverId);
+            } else {
+                $stmt->bind_param("ii", $receiverId, $currentUser['id']);
+            }
+        } elseif ($conversationType === 'company_to_company') {
+            $stmt = $conn->prepare("
+                INSERT INTO conversations (company1_id, company2_id, conversation_type) 
+                VALUES (?, ?, 'company_to_company')
+            ");
+            if ($currentUser['id'] < $receiverId) {
+                $stmt->bind_param("ii", $currentUser['id'], $receiverId);
+            } else {
+                $stmt->bind_param("ii", $receiverId, $currentUser['id']);
+            }
         } else {
+            // user_to_company
             $stmt = $conn->prepare("
-                INSERT INTO conversations (user_id, company_id) 
-                VALUES (?, ?)
+                INSERT INTO conversations (user1_id, company1_id, conversation_type) 
+                VALUES (?, ?, 'user_to_company')
             ");
-            $stmt->bind_param("ii", $receiverId, $currentUser['id']);
+            if ($currentUser['type'] === 'user') {
+                $stmt->bind_param("ii", $currentUser['id'], $receiverId);
+            } else {
+                $stmt->bind_param("ii", $receiverId, $currentUser['id']);
+            }
         }
         
-        $stmt->execute();
-        $conversationId = $conn->insert_id;
+        if ($stmt->execute()) {
+            $conversationId = $conn->insert_id;
+        } else {
+            jsonError('Failed to create a new conversation');
+        }
     }
     
     // Insert message
@@ -256,9 +373,12 @@ function sendMessage($data, $currentUser) {
         VALUES (?, ?, ?, ?)
     ");
     $stmt->bind_param("isis", $conversationId, $currentUser['type'], $currentUser['id'], $message);
-    $stmt->execute();
     
-    echo json_encode(['success' => true, 'message_id' => $conn->insert_id]);
+    if ($stmt->execute()) {
+        echo json_encode(['success' => true, 'message_id' => $conn->insert_id]);
+    } else {
+        jsonError('Failed to insert message');
+    }
 }
 
 function searchUsers($query, $currentUser) {
@@ -267,32 +387,27 @@ function searchUsers($query, $currentUser) {
     $searchTerm = "%$query%";
     $results = [];
     
-    if ($currentUser['type'] === 'user') {
-        // Search companies
-        $stmt = $conn->prepare("
-            SELECT id, company_name as name, profile_photo as photo, cverified as is_verified, 'company' as type
-            FROM cuser 
-            WHERE company_name LIKE ? OR email LIKE ?
-        ");
-    } else {
-        // Search users
-        $stmt = $conn->prepare("
-            SELECT id, CONCAT(first_name, ' ', last_name) as name, profile_url as photo, is_verified, 'user' as type
-            FROM users 
-            WHERE first_name LIKE ? OR last_name LIKE ? OR email LIKE ?
-        ");
-    }
+    // Search both users and companies regardless of current user type
+    $stmt = $conn->prepare("
+        (SELECT id, CONCAT(first_name, ' ', last_name) as name, profile_url as photo, is_verified, 'user' as type
+        FROM users 
+        WHERE first_name LIKE ? OR last_name LIKE ? OR email LIKE ?)
+        UNION
+        (SELECT id, company_name as name, profile_photo as photo, cverified as is_verified, 'company' as type
+        FROM cuser 
+        WHERE company_name LIKE ? OR email LIKE ?)
+    ");
     
-    if ($currentUser['type'] === 'user') {
-        $stmt->bind_param("ss", $searchTerm, $searchTerm);
-    } else {
-        $stmt->bind_param("sss", $searchTerm, $searchTerm, $searchTerm);
-    }
-    
+    $stmt->bind_param("sssss", $searchTerm, $searchTerm, $searchTerm, $searchTerm, $searchTerm);
     $stmt->execute();
     $result = $stmt->get_result();
     
     while ($row = $result->fetch_assoc()) {
+        // Don't show the current user in search results
+        if ($row['type'] === $currentUser['type'] && $row['id'] == $currentUser['id']) {
+            continue;
+        }
+        
         $results[] = [
             'id' => $row['id'],
             'name' => $row['name'],
@@ -304,4 +419,8 @@ function searchUsers($query, $currentUser) {
     
     echo json_encode($results);
 }
+
+// Helper function to get current user details
+
+// Remove the duplicate getCurrentUser() and getUserDetails() functions since they're already defined in config2.php
 ?>

@@ -106,6 +106,45 @@
     align-items: flex-start;
 }
     </style>
+    <style>
+        /* Custom modal for alerts */
+        .modal {
+            display: none;
+            position: fixed;
+            z-index: 1001;
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: 100%;
+            overflow: auto;
+            background-color: rgba(0,0,0,0.4);
+        }
+        .modal-content {
+            background-color: #fefefe;
+            margin: 15% auto;
+            padding: 20px;
+            border: 1px solid #888;
+            width: 80%;
+            max-width: 400px;
+            text-align: center;
+            border-radius: 10px;
+            box-shadow: 0 4px 8px 0 rgba(0,0,0,0.2);
+            font-family: 'Inter', sans-serif;
+        }
+        .modal-content p {
+            margin: 0 0 20px 0;
+            font-size: 16px;
+        }
+        .modal-content button {
+            background-color: var(--primary-blue);
+            color: white;
+            padding: 10px 20px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 14px;
+        }
+    </style>
 </head>
 <body>
        
@@ -154,6 +193,14 @@
         </div>
     </div>
 
+    <!-- Custom Modal for Alerts -->
+    <div id="custom-alert-modal" class="modal">
+        <div class="modal-content">
+            <p id="alert-message"></p>
+            <button id="alert-ok-button">OK</button>
+        </div>
+    </div>
+
     <script>
         const messageArea = document.getElementById('message-area');
         const receiverIdInput = document.getElementById('receiver-id');
@@ -169,12 +216,33 @@
         const userList = document.getElementById('user-list');
         const chatHeaderImg = document.querySelector('#chat-header img');
         const chatHeaderH2 = document.querySelector('#chat-header h2');
+        const alertModal = document.getElementById('custom-alert-modal');
+        const alertMessage = document.getElementById('alert-message');
+        const alertOkButton = document.getElementById('alert-ok-button');
 
         let messageInterval;
         let myProfilePhoto = "https://placehold.co/38x38/0000FF/FFFFFF?text=Me";
         let myUserType = "";
         let myUserId = "";
 
+        // Function to show custom alert modal
+        function showCustomAlert(message) {
+            alertMessage.textContent = message;
+            alertModal.style.display = 'block';
+        }
+
+        // Close custom alert modal
+        alertOkButton.addEventListener('click', () => {
+            alertModal.style.display = 'none';
+        });
+
+        // Close modal if user clicks outside of it
+        window.addEventListener('click', (event) => {
+            if (event.target === alertModal) {
+                alertModal.style.display = 'none';
+            }
+        });
+        
         function escapeHtml(text) {
             var map = {
                 '&': '&amp;',
@@ -219,6 +287,7 @@
                                  data-receiver-id="${otherUser.id}" data-receiver-type="${otherUser.type}">
                                 <img src="${otherUser.photo}" alt="Profile Photo">
                                 <span>${escapeHtml(otherUser.name)} ${otherUser.is_verified ? '<i class="fas fa-check-circle verified-badge"></i>' : ''}</span>
+                                <small>(${otherUser.type})</small>
                             </div>
                         `;
                     });
@@ -240,8 +309,9 @@
                             
                             const img = this.querySelector('img');
                             const name = this.querySelector('span').innerHTML;
+                            const type = this.querySelector('small').textContent;
                             chatHeaderImg.src = img.src;
-                            chatHeaderH2.innerHTML = name;
+                            chatHeaderH2.innerHTML = name + ' ' + type;
                             
                             chatHeaderImg.onclick = function() {
                                 if (receiverType === 'user') {
@@ -321,7 +391,7 @@
             const message = messageInput.value.trim();
 
             if (message === '' || !receiverId) {
-                alert('Please type a message and select a user.');
+                showCustomAlert('Please type a message and select a user.');
                 return;
             }
 
@@ -343,25 +413,45 @@
             .then(data => {
                 sendButton.disabled = false;
                 sendButton.innerHTML = '<i class="fas fa-paper-plane"></i>';
-
-                const tempMessageElement = messageArea.querySelector('.temporary-sending');
-                if (tempMessageElement) {
-                    tempMessageElement.classList.remove('temporary-sending');
-                    const sendingIndicator = tempMessageElement.querySelector('.sending-indicator');
-                    if (sendingIndicator) {
-                        sendingIndicator.remove();
-                    }
-                }
                 
-                if (!conversationId) {
-                    loadConversations();
+                if (data.success) {
+                    messageInput.value = '';
+                    
+                    // Add message to UI immediately for better UX
+                    const messageClass = 'sent-message';
+                    const currentTime = new Date().toLocaleTimeString('en-US', { hour: '2-digit', minute: '2-digit', hour12: true });
+                    
+                    const messageElement = `
+                        <div class="message-container ${messageClass}">
+                            <img src="${myProfilePhoto}" alt="Profile" class="profile-photo">
+                            <div class="message-content-wrapper">
+                                <span class="message-body">${escapeHtml(message)}</span>
+                                <small class="message-timestamp">${currentTime}</small>
+                            </div>
+                        </div>
+                    `;
+                    
+                    if (messageArea.querySelector('.no-messages')) {
+                        messageArea.innerHTML = messageElement;
+                    } else {
+                        messageArea.innerHTML += messageElement;
+                    }
+                    
+                    messageArea.scrollTop = messageArea.scrollHeight;
+                    
+                    if (!conversationId) {
+                        // Reload conversations if this was a new conversation
+                        setTimeout(loadConversations, 500);
+                    }
+                } else {
+                    showCustomAlert('Failed to send message: ' + (data.error || 'Unknown error'));
                 }
             })
             .catch(error => {
                 console.error('Error sending message:', error);
                 sendButton.disabled = false;
                 sendButton.innerHTML = '<i class="fas fa-paper-plane"></i>';
-                alert('Failed to send message. Please try again.');
+                showCustomAlert('Failed to send message. Please try again.');
             });
         }
 
@@ -386,13 +476,18 @@
                         const urlParams = new URLSearchParams(window.location.search);
                         const initialUserId = urlParams.get('user_id');
                         const initialCompanyId = urlParams.get('company_id');
+                        const initialReceiverType = urlParams.get('type');
 
                         if (initialUserId || initialCompanyId) {
                             const receiverId = initialUserId || initialCompanyId;
-                            const receiverType = initialUserId ? 'user' : 'company';
+                            // Determine receiver type from URL parameters
+                            let receiverType = initialReceiverType;
+                            if (!receiverType) {
+                                receiverType = initialUserId ? 'user' : 'company';
+                            }
 
                             fetch(`PHP/chat_api.php?action=get_user_details&id=${receiverId}&type=${receiverType}`)
-                                .then(response => response.json())
+                                .then(res => res.json())
                                 .then(userToChatWith => {
                                     if (!userToChatWith.error) {
                                         // Update header and receiver info
@@ -404,16 +499,33 @@
                                         fetch('PHP/chat_api.php?action=get_conversations')
                                             .then(res => res.json())
                                             .then(convs => {
-                                                const existingConv = convs.find(c => c.other_user.id == userToChatWith.id && c.other_user.type === userToChatWith.type);
+                                                // Find conversation by both ID and type
+                                                const existingConv = convs.find(c => 
+                                                    c.other_user.id == userToChatWith.id && 
+                                                    c.other_user.type === userToChatWith.type
+                                                );
+                                                
                                                 if (existingConv) {
                                                     conversationIdInput.value = existingConv.conversation_id;
                                                     loadMessages(existingConv.conversation_id);
                                                     messageInterval = setInterval(() => loadMessages(existingConv.conversation_id), 1000);
+                                                    
+                                                    // Highlight the conversation in the sidebar
+                                                    setTimeout(() => {
+                                                        const userItem = document.querySelector(`.user-item[data-receiver-id="${userToChatWith.id}"][data-receiver-type="${userToChatWith.type}"]`);
+                                                        if (userItem) {
+                                                            userItem.classList.add('active');
+                                                        }
+                                                    }, 500);
                                                 } else {
                                                     conversationIdInput.value = '';
                                                     messageArea.innerHTML = '<center><p class="no-messages"><i class="fas fa-comment-dots"></i> No messages yet. Start the conversation!</p></center>';
                                                 }
                                                 // Load all conversations in the sidebar
+                                                loadConversations();
+                                            })
+                                            .catch(error => {
+                                                console.error('Error fetching conversations:', error);
                                                 loadConversations();
                                             });
                                     } else {
@@ -442,7 +554,7 @@
         
         function updateChatHeader(user) {
             chatHeaderImg.src = user.photo;
-            chatHeaderH2.innerHTML = user.name + (user.is_verified ? ' <i class="fas fa-check-circle verified-badge"></i>' : '');
+            chatHeaderH2.innerHTML = user.name + (user.is_verified ? ' <i class="fas fa-check-circle verified-badge"></i>' : '') + ` <small>(${user.type})</small>`;
             chatHeaderImg.onclick = function() {
                 if (user.type === 'user') {
                     window.open(`Public/profile.html?user_id=${user.id}`, '_blank');
@@ -493,9 +605,11 @@
                         userDiv.innerHTML = `
                             <img src="${user.photo}" alt="Profile Photo">
                             <span>${escapeHtml(user.name)} ${user.is_verified ? '<i class="fas fa-check-circle verified-badge"></i>' : ''}</span>
+                            <small>(${user.type})</small>
                         `;
                         
                         userDiv.addEventListener('click', () => {
+                            // Check if this user/company already exists in conversations
                             const existingConversation = document.querySelector(`.user-item[data-receiver-id="${user.id}"][data-receiver-type="${user.type}"]`);
                             
                             if (existingConversation) {
