@@ -84,7 +84,7 @@ function sendSmsOtp($phoneNumber, $otp) {
 header('Content-Type: application/json');
 
 
-if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+if(isset($_SERVER["REQUEST_METHOD"]) && $_SERVER["REQUEST_METHOD"] === "POST")  {
     $input = file_get_contents('php://input');
     $data = json_decode($input, true);
     
