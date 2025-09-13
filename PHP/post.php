@@ -523,7 +523,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['create_post'])) {
 <body>
     <header class="navbar">
         <div class="navbar-left">
-            <h1 class="logo">JOBconnect.</h1>
+            <h1 class="logo">JobKaro</h1>
         </div>
         <nav class="navbar-center">
             <ul>

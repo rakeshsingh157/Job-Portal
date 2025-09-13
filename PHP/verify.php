@@ -57,7 +57,7 @@ else if (isset($_SESSION['cuser_id'])) {
         exit();
     }
 } else {
-    header('Location: login.php'); 
+    header('Location: ../index.php'); 
     exit();
 }
 ?>
