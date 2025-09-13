@@ -3,8 +3,8 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Register Page</title>
-  <link rel="stylesheet" href="CSS/sign.css">
+  <title>ADMIN</title>
+  <link rel="stylesheet" href="../CSS/sign.css">
   <style>
     body{
         padding: 30px;
@@ -28,19 +28,19 @@
         opacity: 0;
         transition: visibility 0s 0.5s, opacity 0.5s linear;
     }
-    
+
     #loading-overlay.visible {
         visibility: visible;
         opacity: 1;
         transition-delay: 0s;
     }
-    
+
     .spinner {
         animation: rotate 1s infinite;
         height: 50px;
         width: 50px;
     }
-    
+
     .spinner:before,
     .spinner:after {
         border-radius: 50%;
@@ -49,20 +49,20 @@
         height: 20px;
         width: 20px;
     }
-    
+
     .spinner:before {
         animation: ball1 1s infinite;
         background-color: #cb2025;
         box-shadow: 30px 0 0 #f8b334;
         margin-bottom: 10px;
     }
-    
+
     .spinner:after {
         animation: ball2 1s infinite;
         background-color: #00a096;
         box-shadow: 30px 0 0 #97bf0d;
     }
-    
+
     @keyframes rotate {
         0% {
             transform: rotate(0deg) scale(0.8);
@@ -74,7 +74,7 @@
             transform: rotate(720deg) scale(0.8);
         }
     }
-    
+
     @keyframes ball1 {
         0% {
             box-shadow: 30px 0 0 #f8b334;
@@ -89,7 +89,7 @@
             margin-bottom: 10px;
         }
     }
-    
+
     @keyframes ball2 {
         0% {
             box-shadow: 30px 0 0 #97bf0d;
@@ -105,85 +105,67 @@
         }
     }
 
-     .right-text{
-      float: right;
-      position: absolute;
-      top: 40%;
-      left: 50%;
-      font-size: 50px;
-      font-weight: 600;
-      z-index: 10;
+    .right-text {
+        font-family: 'Poppins', sans-serif;
+        font-size: 50px;
+        color: #333;
+        white-space: nowrap;
+        position: relative;
     }
-
-    
 
   </style>
   <link rel="preconnect" href="https://fonts.googleapis.com">
 </head>
 <body style="background-image: url('wokersingup.jpg'); no-repeat; background-size: cover;">
-       <div style="font-size: 30px; font-weight: 700; margin: -30px; position: relative; z-index: 100; ">JOBconnect</div>
+    <div style="font-size: 30px; font-weight: 700; margin: -30px; position: relative; z-index: 100; ">JOBconnect</div>
     <div style="font-size: 30px; font-weight: 600; margin: 0px; float: right; position: relative; z-index: 10; "><span >Sign in</span></div>
 
     <div class="container" id="main-login-container">
         <div class="left">
         </div>
 
-        <div class="right active-step" id="login-section">
+        <div  class="right active-step" id="login-section">
             <div class="form-box">
                 <form id="login-form">
                     <input type="email" id="login-email" name="email" autocomplete="email" placeholder="Email" required>
                     <input type="password" id="login-password" name="password" autocomplete="current-password" placeholder="Password" required>
                     <button type="submit">Sign In</button>
-                    <p class="signin">Don't have an account?<a href="recruitersignup.html" id="signup-link">Sign Up</a> <br> <br> <a href="#" id="forgot-password-link">Forget password?</a></p>
                 </form>
             </div>
         </div>
 
-        <div class="right" id="recover-email-section">
-            <div class="form-box">
-                <form id="recover-email-form">
-                    <input type="email" id="recover-email" name="email" autocomplete="email" placeholder="Email" required>
-                    <button type="submit">Sent- OTP</button>
-                    <p class="signin"><a href="#" id="recover-back-to-login">Back to Sign In</a></p>
-                </form>
-            </div>
-        </div>
-
-        <div class="right" id="verify-otp-section">
-            <div class="form-box">
-                <form id="verify-otp-form">
-                    <input type="text" id="email-otp" name="otp" autocomplete="off" placeholder="Email OTP" required>
-                    <button type="submit">Verify</button>
-                    <p class="signin"><a href="#" id="verify-back-to-recover">Back</a></p>
-                </form>
-            </div>
-        </div>
-
-        <div class="right" id="reset-password-section">
+        <div style="display: none;" class="right" id="reset-password-section">
             <div class="form-box">
                 <form id="reset-password-form">
-                    <input type="password" id="new-password" name="password" autocomplete="new-password" placeholder="New Password" required>
-                    <input type="password" id="confirm-new-password" name="confirm_password" autocomplete="new-password" placeholder="Confirm Password" required>
-                    <button type="submit">Change Password</button>
-                    <p class="signin"><a href="#" id="reset-back-to-login">Back to Sign In</a></p>
                 </form>
             </div>
         </div>
     </div>
 
-    <div class="right-text">Let’s get you connected to the right talent.</div>
+    <div class="right-text">
+        <span class="animated-word">Let’s</span>
+        <span class="animated-word">get</span>
+        <span class="animated-word">you</span>
+        <span class="animated-word">signed</span>
+        <span class="animated-word">in</span>
+        <span class="animated-word">to</span>
+        <span class="animated-word">continue</span>
+        <span class="animated-word">your</span>
+        <span class="animated-word">journey.</span>
+    </div>
 
     <div id="loading-overlay">
         <div class="spinner"></div>
     </div>
     <div id="form-message"></div>
-     <img class="white" src="IMAGES/white.png" alt="" style="">
+    <img class="white" src="../IMAGES/white.png" alt="" style="">
     <div class="c1"></div>
     <div class="c2"></div>
     <div class="c4"></div>
     <div class="c3"></div>
-    <img class="img" src="IMAGES/back.jpg" alt="">
+    <img class="img" src="../IMAGES/back.jpg" alt="">
+    
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+    <script src="login.js"></script>
 </body>
-
-<script src="JS/scriptsigninR.js"></script>
 </html>

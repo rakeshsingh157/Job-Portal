@@ -1,15 +1,13 @@
 <?php
 require("../PHP/config.php");
 
-// Check if form ID and action are provided
 if (isset($_POST['id']) && is_numeric($_POST['id']) && isset($_POST['action'])) {
     $form_id = $_POST['id'];
-    $action = $_POST['action']; // Expected values: 'done', 'rejected', or 'pending'
+    $action = $_POST['action'];
 
     $sql = "";
     $message = "";
     
-    // Set the SQL query and message based on the action
     if ($action === 'done') {
         $sql = "UPDATE companies SET status = 'done' WHERE id = ?";
         $message = "Form ID " . $form_id . " has been verified.";
@@ -36,7 +34,6 @@ if (isset($_POST['id']) && is_numeric($_POST['id']) && isset($_POST['action'])) 
     $stmt->bind_param("i", $form_id);
 
     if ($stmt->execute()) {
-        // Handle updates to the cuser table
         $sql_get_cuser = "SELECT cuser_id FROM companies WHERE id = ?";
         $stmt_get_cuser = $conn->prepare($sql_get_cuser);
         $stmt_get_cuser->bind_param("i", $form_id);

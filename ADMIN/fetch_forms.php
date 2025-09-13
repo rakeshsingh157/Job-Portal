@@ -1,7 +1,5 @@
 <?php
-// Database credentials
 require("../PHP/config.php");
-
 
 $sql = "SELECT id, cuser_id, company_name, created_at, status FROM companies ORDER BY created_at DESC";
 $result = $conn->query($sql);
@@ -13,12 +11,8 @@ if ($result->num_rows > 0) {
     }
 }
 
-// Return data as JSON
 header('Content-Type: application/json');
 echo json_encode($forms);
 
 $conn->close();
 ?>
-
-
-

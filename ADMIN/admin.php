@@ -1,3 +1,11 @@
+<?php
+session_start();
+
+if (!isset($_SESSION['admin_logged_in']) || $_SESSION['admin_logged_in'] !== true) {
+    header("Location: index.html");
+    exit;
+}
+?>
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -31,7 +39,6 @@
 
         <div class="dashboard-content">
             <div class="stats-container">
-                <!-- These stats will be dynamically updated by JavaScript -->
                 <div class="stat-card pending">
                     <div class="stat-icon pending">
                         <i class="fas fa-hourglass-half"></i>
@@ -90,33 +97,28 @@
                     </tr>
                 </thead>
                 <tbody>
-                    <!-- Table rows will be loaded here by admin.js -->
                     <tr>
                         <td colspan="5">Loading forms...</td>
                     </tr>
                 </tbody>
             </table>
-
+            
             <div class="pagination">
-                <!-- Pagination buttons will be dynamically added by JavaScript if needed -->
-            </div>
+                </div>
         </div>
     </div>
 
-    <!-- Modal -->
     <div id="detailsModal" class="modal">
         <div class="modal-content">
             <span class="close-btn">&times;</span>
             <div class="modal-header">
                 <h2>Company Details</h2>
                 <div class="action-buttons">
-                    <!-- These buttons can be functional if you implement their logic later -->
                     <button class="action-button download-btn"><i class="fas fa-download"></i> Export</button>
                     <button class="action-button edit-btn"><i class="fas fa-print"></i> Print</button>
                 </div>
             </div>
             <div class="modal-body" id="modalBody">
-                <!-- Details will be populated here by admin.js -->
                 <div class="detail-card">
                     <h3>Company Information</h3>
                     <div class="detail-item">
@@ -214,9 +216,7 @@
         </div>
     </div>
 
-    <!-- Include jQuery -->
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
-    <!-- Your custom admin.js -->
     <script src="admin.js"></script>
 </body>
 </html>

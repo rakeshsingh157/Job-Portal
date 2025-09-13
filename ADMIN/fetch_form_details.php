@@ -1,11 +1,9 @@
 <?php
 require("../PHP/config.php");
 
-// Check if form ID is provided and is a valid number
 if (isset($_GET['id']) && is_numeric($_GET['id'])) {
     $form_id = $_GET['id'];
 
-    // Fetch all details for the given form ID
     $sql = "SELECT * FROM companies WHERE id = ?";
     $stmt = $conn->prepare($sql);
     $stmt->bind_param("i", $form_id);
