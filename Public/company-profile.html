@@ -204,12 +204,58 @@
                 <li><a href="../view-post.html">Posts</a></li>
     </nav>
      <div class="location-info">
-            <i class="fas fa-map-marker-alt"></i> <span id="location-text"></span>
+            <i class="fas fa-map-marker-alt"></i> <span id="userLocation"></span>
         </div>
-    <div onclick="location.href='../PHP/redirect.php'" class="profile-icon"> <img id="profile-image2" style="display: none;" src="" alt="Profile Picture"> </div>
-  </header>
-  <script src="JS/header.js"></script>
-  
+    <div onclick="location.href='../PHP/redirect.php'" class="profile-icon"> <img id="navbarProfilePicture"  src="../IMAGES/choose.jpg" alt="Profile Picture"> </div>
+  </header> 
+  <script >
+
+
+
+document.addEventListener('DOMContentLoaded', () => {
+    const profileImage = document.getElementById('navbarProfilePicture');
+    const locationElement = document.getElementById('userLocation');
+
+    fetch('PHP/get_logged_in_user_data.php')
+        .then(response => {
+            if (!response.ok) {
+                throw new Error('Network response was not ok');
+            }
+            return response.json();
+        })
+        .then(data => {
+            if (data.success) {
+              
+                if (data.profile_url) {
+                    profileImage.src = data.profile_url;
+                   
+                } else {
+                    console.log('No profile URL found');
+                }
+
+               
+                if (data.location && locationElement) {
+                    locationElement.textContent = data.location;
+                }
+            }
+        })
+        .catch(error => {
+            console.error('There was a problem with the fetch operation:', error);
+        });
+});
+
+
+console.log("Header script loaded");
+
+
+
+
+  </script>
+  <span id="profile-image2" style="display:none;"></span>
+<span id="location-text" style="display:none;"></span>
+
+
+
   <div class="container">
     <div class="card profile-card">
       <div class="profile-avatar" id="avatar-container">

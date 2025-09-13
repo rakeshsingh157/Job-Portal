@@ -1,4 +1,37 @@
 document.addEventListener('DOMContentLoaded', () => {
+    // Function to fetch and display data for the currently logged-in user in the header
+    function loadLoggedInUserData() {
+        // Fetch data from the PHP script that gets session user data
+        fetch('../PHP/get_logged_in_user_data.php')
+            .then(response => response.json())
+            .then(data => {
+                // Check if the request was successful
+                if (data.success) {
+                    const locationText = document.getElementById('location-text');
+                    const profileImage = document.getElementById('profile-image2');
+
+                    // Update the location text
+                    if (locationText) {
+                        locationText.textContent = data.location;
+                    }
+                    // Update the profile image source and make it visible
+                    if (profileImage) {
+                        profileImage.src = data.profile_url;
+                        profileImage.style.display = 'block';
+                    }
+                } else {
+                    console.error('Could not get logged-in user data:', data.error);
+                }
+            })
+            .catch(error => {
+                console.error('Error fetching logged-in user data:', error);
+            });
+    }
+
+    // Call the function to load header data as soon as the page is ready
+    loadLoggedInUserData();
+
+    // --- Existing code for loading the company profile ---
     const getUrlParameter = (name) => {
         const urlParams = new URLSearchParams(window.location.search);
         return urlParams.get(name);
@@ -11,7 +44,7 @@ document.addEventListener('DOMContentLoaded', () => {
         document.getElementById('loading-overlay').classList.add('visible');
         
         // Fetch company data
-        fetch(`PHP/company-profile.php?cuser_id=${cuserId}`)
+        fetch(`../PHP/company-profile.php?cuser_id=${cuserId}`)
             .then(response => {
                 if (!response.ok) {
                     throw new Error('Network response was not ok');
@@ -81,11 +114,6 @@ document.addEventListener('DOMContentLoaded', () => {
             profileImg.src = data.profile_photo;
             profileImg.style.display = 'block';
             document.getElementById('avatar-placeholder').style.display = 'none';
-            
-            // Header image
-            const headerImg = document.getElementById('profile-image2');
-            headerImg.src = data.profile_photo;
-            headerImg.style.display = 'block';
         }
 
         // Render Job Posts
