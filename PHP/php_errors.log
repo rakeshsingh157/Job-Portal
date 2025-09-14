@@ -58,3 +58,9 @@ Stack trace:
 #0 C:\xampp\htdocs\SyWD\PHP\search.php(78): mysqli->prepare('SELECT p.*, u.f...')
 #1 {main}
   thrown in C:\xampp\htdocs\SyWD\PHP\search.php on line 78
+[14-Sep-2025 18:19:38 Europe/Berlin] PHP Warning:  Packets out of order. Expected 2 received 1. Packet size=50 in C:\xampp\htdocs\SyWD\PHP\fetch_posts.php on line 17
+[14-Sep-2025 18:19:38 Europe/Berlin] PHP Fatal error:  Uncaught mysqli_sql_exception: MySQL server has gone away in C:\xampp\htdocs\SyWD\PHP\fetch_posts.php:17
+Stack trace:
+#0 C:\xampp\htdocs\SyWD\PHP\fetch_posts.php(17): mysqli->__construct('photostore.ct0g...', 'admin', Object(SensitiveParameterValue), 'jobp_db')
+#1 {main}
+  thrown in C:\xampp\htdocs\SyWD\PHP\fetch_posts.php on line 17

@@ -59,22 +59,34 @@ document.addEventListener('DOMContentLoaded', () => {
  * @param {string} searchTerm - The term to filter posts by content.
  */
 async function fetchPosts(searchTerm = '') {
+    // Abort controller for fetch timeout
+    const controller = new AbortController();
+    const timeoutId = setTimeout(() => controller.abort(), 15000); // 15-second timeout
+
     try {
         let baseUrl = 'PHP/fetch_posts.php';
         let url = searchTerm ? `${baseUrl}?post_search=${encodeURIComponent(searchTerm)}` : baseUrl;
         
         const response = await fetch(url, {
-            headers: { 'X-Requested-With': 'XMLHttpRequest' }
+            headers: { 'X-Requested-With': 'XMLHttpRequest' },
+            signal: controller.signal // Add signal to fetch
         });
         
+        clearTimeout(timeoutId); // Clear timeout if fetch is successful
+
         if (!response.ok) {
-            // Attempt fetch from an alternative path if the first fails
+            // This fallback logic might not be necessary, but retained from original code.
             let altUrl = `../PHP/fetch_posts.php`;
             altUrl = searchTerm ? `${altUrl}?post_search=${encodeURIComponent(searchTerm)}` : altUrl;
             
+            const altController = new AbortController();
+            const altTimeoutId = setTimeout(() => altController.abort(), 15000);
+
             const altResponse = await fetch(altUrl, {
-                 headers: { 'X-Requested-With': 'XMLHttpRequest' }
+                 headers: { 'X-Requested-With': 'XMLHttpRequest' },
+                 signal: altController.signal
             });
+            clearTimeout(altTimeoutId);
 
             if (!altResponse.ok) {
                 throw new Error(`HTTP error! status: ${response.status} and ${altResponse.status}`);
@@ -95,10 +107,17 @@ async function fetchPosts(searchTerm = '') {
         processPostData(data);
         
     } catch (error) {
-        console.error('Error fetching data:', error);
-        showMessage('Failed to load posts. ' + error.message, 'error');
+        clearTimeout(timeoutId); // Also clear timeout on error
+        if (error.name === 'AbortError') {
+            console.error('Fetch request timed out.');
+            showMessage('Server is not responding. Please try again later.', 'error');
+        } else {
+            console.error('Error fetching data:', error);
+            showMessage('Failed to load posts. ' + error.message, 'error');
+        }
     }
 }
+
 
 /**
  * Fetches user or company results for the search dropdown.
@@ -139,7 +158,6 @@ function displaySearchResults(results, container) {
         const resultItem = document.createElement('a');
         resultItem.className = 'search-result-item';
         
-        // --- THIS IS THE ONLY PART THAT HAS BEEN CHANGED ---
         let profileUrl = '#'; // Default fallback URL
         if (item.type === 'user') {
             profileUrl = `Public/profile.html?user_id=${item.id}`;
@@ -147,7 +165,6 @@ function displaySearchResults(results, container) {
             profileUrl = `Public/company-profile.html?cuser_id=${item.id}`;
         }
         resultItem.href = profileUrl;
-        // --- END OF CHANGE ---
         
         resultItem.innerHTML = `
             <img src="${profileImage}" alt="${item.name}" onerror="this.src='https://via.placeholder.com/40'">
@@ -237,11 +254,6 @@ function handleFormResponse(data, form) {
     if (form.id === 'deleteForm') {
         closeModal();
     } else if (form.id === 'commentForm') {
-        const postId = form.querySelector('input[name="post_id"]').value;
-        const post = postsData.find(p => p.id == postId);
-        if(post) {
-            // This part is for instant UI update, but a full refetch is simpler and safer
-        }
         form.querySelector('input[name="comment_text"]').value = '';
     }
 }
@@ -293,7 +305,6 @@ function renderPosts() {
     }
 }
 
-// --- MODAL AND UTILITY FUNCTIONS (Unchanged) ---
 
 function openModal(postId) {
     currentPost = postsData.find(post => post.id == postId);
@@ -337,6 +348,7 @@ function updateModal() {
     const modalImage = document.getElementById('modalImage');
     const modalDots = document.getElementById('modalDots');
     const modalUsername = document.getElementById('modalUsername');
+    const modalUsernameLink = document.getElementById('modalUsernameLink');
     const modalAvatar = document.getElementById('modalAvatar');
     const modalImageCount = document.getElementById('modalImageCount');
     const modalText = document.getElementById('modalText');
@@ -358,6 +370,16 @@ function updateModal() {
         }
     }
     
+    // --- DYNAMIC LINK LOGIC ---
+    let profileUrl = '#'; // Default fallback URL
+    if (currentPost.user_type === 'user' && currentPost.user_id) {
+        profileUrl = `Public/profile.html?user_id=${currentPost.user_id}`;
+    } else if (currentPost.user_type === 'company' && currentPost.company_id) {
+        profileUrl = `Public/company-profile.html?cuser_id=${currentPost.company_id}`;
+    }
+    modalUsernameLink.href = profileUrl;
+    // --- END DYNAMIC LINK LOGIC ---
+
     modalUsername.textContent = currentPost.user_type === 'user' ? `${currentPost.first_name} ${currentPost.last_name}` : currentPost.company_name;
     
     const avatarUrl = currentPost.user_type === 'user' ? currentPost.user_profile : currentPost.company_profile;
@@ -424,3 +446,4 @@ document.addEventListener('keydown', function(e) {
         else if (e.key === 'ArrowRight') navigateImage(1);
     }
 });
+

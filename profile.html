@@ -3,7 +3,9 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>JobKaro - Profile</title>
+    <title>JobKaro</title>
+    <link rel="icon" type="image/png" sizes="32x32" href="IMAGES/icon.png">
+
     <link rel="stylesheet" href="CSS/profile.css">
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
@@ -61,6 +63,11 @@
     </style>
 </head>
 <body>
+    <!-- Loading Overlay -->
+    <div id="loading-overlay" class="visible">
+        <div class="loader"></div>
+    </div>
+
     <header class="navbar">
         <div class="navbar-left">
             <h1 class="logo">JobKaro</h1>
@@ -209,37 +216,21 @@
                     <input type="email" id="email" name="email"  disabled>
                 </div>
                <div class="form-group">
-  <label for="employment_type">Employment Type</label><br>
-  <input type="radio" id="employment_type" name="employment_type" value="Full Time"> Full Time
-  <input type="radio" id="employment_type" name="employment_type" value="Part Time"> Part Time
-</div>
+                  <label for="employment_type">Employment Type</label><br>
+                  <input type="radio" id="employment_type_full" name="employment_type" value="Full Time"> Full Time
+                  <input type="radio" id="employment_type_part" name="employment_type" value="Part Time"> Part Time
+                </div>
 
-<div class="form-group" id="shift_type" style="display: none;">
-  <label for="shift_type">Shift Type</label><br>
-  <input type="radio" id="shift_type" name="shift_type" value="Night"> Night
-  <input type="radio" id="shift_type" name="shift_type" value="Day"> Day
-</div>
+                <div class="form-group" id="shift_type_container" style="display: none;">
+                  <label>Shift Type</label><br>
+                  <input type="radio" id="shift_type_night" name="shift_type" value="Night"> Night
+                  <input type="radio" id="shift_type_day" name="shift_type" value="Day"> Day
+                </div>
 
-<div class="form-group" id="part_time" style="display: none;">
-  <label for="part_time_hours">Part Time Hours</label>
-  <input type="text" id="part_time_hours" name="part_time_hours" value="">
-</div>
-
-<script>
-  const typeRadios = document.querySelectorAll('input[name="employment_type"]');
-
-  typeRadios.forEach(radio => {
-    radio.addEventListener("change", function () {
-      if (this.value === "Full Time") {
-        document.getElementById('shift_type').style.display = 'block';
-        document.getElementById('part_time').style.display = 'none';
-      } else if (this.value === "Part Time") {
-        document.getElementById('shift_type').style.display = 'none';
-        document.getElementById('part_time').style.display = 'block';
-      }
-    });
-  });
-</script>
+                <div class="form-group" id="part_time_container" style="display: none;">
+                  <label for="part_time_hours">Part Time Hours</label>
+                  <input type="text" id="part_time_hours" name="part_time_hours" value="">
+                </div>
 
                 <div class="form-actions">
                     <button type="submit">Save Changes</button>
@@ -348,17 +339,7 @@
         </div>
     </div>
     
-    <div id="loader-overlay" class="loader-overlay">
-        <div class="loader"></div>
-        <p class="loader-text">Loading...</p>
-    </div>
-
-    <script src="JS/profile.js">
-    
-  
-
-    </script>
-
+    <script src="JS/profile.js"></script>
 
 </body>
 </html>

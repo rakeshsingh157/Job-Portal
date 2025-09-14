@@ -149,7 +149,9 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['create_post'])) {
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Create Post with Photos</title>
+    <title>JobKaro</title>
+    <link rel="icon" type="image/png" sizes="32x32" href="IMAGES/icon.png">
+
     <style>
         * {
             box-sizing: border-box;
