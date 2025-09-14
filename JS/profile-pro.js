@@ -151,7 +151,7 @@ function updateProfileUI(profileData, experienceData, educationData) {
                         <p class="company">${exp.company_name}</p>
                         <p class="duration">${exp.date}</p>
                     </div>
-                    <button class="delete-btn" onclick="deleteEntry('experience', ${exp.id})" title="Delete Experience">
+                    <button class="delete-btn" style="cursor: pointer; float: right;  border: 2px solid black; height: 30px; width: 30px; border-radius: 100px; align-items: center; text-align: center; justify-content: center; justify-items: center; font-size: 15px; font-weight: 700;"  onclick="deleteEntry('experience', ${exp.id})" title="Delete Experience">
                         <i class="fas fa-trash"></i>
                     </button>
                 </div>`;
@@ -174,7 +174,7 @@ function updateProfileUI(profileData, experienceData, educationData) {
                         <p class="duration">${edu.years}</p>
                         <p class="duration">Grade: ${edu.percentage || 'N/A'}</p>
                     </div>
-                    <button class="delete-btn" onclick="deleteEntry('education', ${edu.id})" title="Delete Education">
+                    <button style="cursor: pointer; float: right;  border: 2px solid black; height: 30px; width: 30px; border-radius: 100px; align-items: center; text-align: center; justify-content: center; justify-items: center; font-size: 15px; font-weight: 700;"  class="delete-btn" onclick="deleteEntry('education', ${edu.id})" title="Delete Education">
                         <i class="fas fa-trash"></i>
                     </button>
                 </div>`;
