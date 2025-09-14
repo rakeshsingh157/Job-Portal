@@ -1,4 +1,4 @@
-// Custom alert function to replace window.alert
+// Custom alert function
 function showCustomAlert(title, message) {
     const modalOverlay = document.getElementById('custom-modal-overlay');
     const modalTitle = document.getElementById('custom-modal-title');
@@ -14,228 +14,150 @@ function showCustomAlert(title, message) {
     };
 }
 
-// Function to show and hide the loading screen
+// Loading screen functions
 function showLoader() {
-    const loadingOverlay = document.getElementById('loading-overlay');
-    if (loadingOverlay) {
-        loadingOverlay.classList.add('visible');
-    }
+    document.getElementById('loading-overlay')?.classList.add('visible');
 }
 
 function hideLoader() {
-    const loadingOverlay = document.getElementById('loading-overlay');
-    if (loadingOverlay) {
-        loadingOverlay.classList.remove('visible');
-    }
+    document.getElementById('loading-overlay')?.classList.remove('visible');
 }
 
-document.addEventListener('DOMContentLoaded', () => {
-    fetchProfileData();
-    document.getElementById('exp-btn').addEventListener('click', openAddexpModal);
-    document.getElementById('edu-btn').addEventListener('click', openAddeduModal);
-    document.getElementById('lang-btn').addEventListener('click', openAddlangModal); // Add event listener for language button
-    
-    // Event listeners for employment type radio buttons
-    const employmentTypeRadios = document.querySelectorAll('input[name="employment_type"]');
-    employmentTypeRadios.forEach(radio => {
-        radio.addEventListener('change', function() {
-            const shiftContainer = document.getElementById('shift_type_container');
-            const partTimeContainer = document.getElementById('part_time_container');
-            if (this.value === 'Full Time') {
-                shiftContainer.style.display = 'block';
-                partTimeContainer.style.display = 'none';
-            } else if (this.value === 'Part Time') {
-                shiftContainer.style.display = 'none';
-                partTimeContainer.style.display = 'block';
-            }
-        });
-    });
-});
-
+// Main function to fetch all profile data
 async function fetchProfileData(showSpinner = true) {
     if (showSpinner) showLoader();
 
-    // Set a timeout for the fetch requests.
-    // This prevents the loader from spinning forever if the server is unresponsive.
     const controller = new AbortController();
-    const timeoutId = setTimeout(() => {
-        controller.abort();
-    }, 15000); // 15-second timeout
+    const timeoutId = setTimeout(() => controller.abort(), 15000); // 15-second timeout
 
     try {
+        // Restored paths to include the "PHP/" prefix
         const [profileResponse, updateResponse] = await Promise.all([
             fetch('PHP/profile.php', { method: 'GET', signal: controller.signal }),
             fetch('PHP/profile_update.php', { method: 'GET', signal: controller.signal })
         ]);
 
-        // If the fetches complete successfully, clear the timeout.
         clearTimeout(timeoutId);
 
         if (!profileResponse.ok || !updateResponse.ok) {
-           throw new Error('Failed to fetch profile data.');
+           throw new Error(`Server responded with status: ${profileResponse.status}, ${updateResponse.status}`);
         }
 
-        const [profileResult, updateResult] = await Promise.all([
-            profileResponse.json(),
-            updateResponse.json()
-        ]);
+        const profileResult = await profileResponse.json();
+        const updateResult = await updateResponse.json();
+        
+        if (!profileResult.success || !updateResult.success) {
+            throw new Error(profileResult.error || updateResult.error || 'Failed to get data from server.');
+        }
         
         const profileData = profileResult.profile_data;
         const experienceData = updateResult.data.experience;
         const educationData = updateResult.data.education;
 
         if (!profileData || !updateResult.data) {
-             throw new Error('Incomplete profile data received from server.');
+             throw new Error('Incomplete profile data received.');
         }
 
         updateProfileUI(profileData, experienceData, educationData);
 
     } catch (error) {
-        // Also clear the timeout in case of an error.
         clearTimeout(timeoutId);
-        
-        if (error.name === 'AbortError') {
-             console.error('Fetch request timed out.');
-             showCustomAlert('Error', 'Server is not responding. Please try again later.');
-        } else {
-            console.error('Error fetching profile data:', error);
-            showCustomAlert('Error', error.message || 'Failed to connect to the server.');
-        }
+        console.error('Error fetching profile data:', error);
+        const errorMessage = error.name === 'AbortError' 
+            ? 'Server is not responding. Please try again later.'
+            : error.message || 'Failed to connect to the server.';
+        showCustomAlert('Error', errorMessage);
     } finally {
-        // This block will always run, ensuring the loader is hidden.
         if (showSpinner) hideLoader();
     }
 }
 
+// Function to update the entire UI with new data
 function updateProfileUI(profileData, experienceData, educationData) {
-    // Update basic profile info on the main page
-    document.getElementById('profileName').textContent = `${profileData.first_name} ${profileData.last_name}`;
+    // Basic Info
+    document.getElementById('profileName').textContent = profileData.name || 'N/A';
     document.getElementById('profilePosition').textContent = profileData.job_field;
     document.getElementById('profileBio').textContent = profileData.bio;
-    document.getElementById('profileAge').textContent = `${profileData.age} years`;
+    document.getElementById('profileAge').textContent = profileData.age;
     document.getElementById('profileLocation').textContent = profileData.address;
     document.getElementById('profileEmail').textContent = profileData.email;
     document.getElementById('navbarLocation').textContent = profileData.address;
-    
-    // Display gender on the main profile page
-    document.getElementById('profilegender').textContent = profileData.gender; 
+    document.getElementById('profilegender').textContent = profileData.gender;
 
     const profilePictureUrl = profileData.profile_url || 'https://placehold.co/150x150/png?text=P';
     document.getElementById('mainProfilePicture').src = profilePictureUrl;
     document.getElementById('navbarProfilePicture').src = profilePictureUrl;
     
-    // Populate form inputs in the modal
-    document.getElementById('first_name').value = profileData.first_name;
-    document.getElementById('last_name').value = profileData.last_name;
-    document.getElementById('job_field').value = profileData.job_field;
-    document.getElementById('age').value = profileData.age;
-    document.getElementById('bio').value = profileData.bio;
-    document.getElementById('address').value = profileData.address;
-    document.getElementById('phone_number').value = profileData.phone_number;
-    document.getElementById('email').value = profileData.email;
-    document.getElementById('part_time_hours').value = profileData.part_time_hours;
+    // Populate Edit Profile Modal
+    document.getElementById('first_name').value = profileData.first_name || '';
+    document.getElementById('last_name').value = profileData.last_name || '';
+    document.getElementById('job_field').value = profileData.job_field || '';
+    document.getElementById('age').value = profileData.age || '';
+    document.getElementById('bio').value = profileData.bio || '';
+    document.getElementById('address').value = profileData.address || '';
+    document.getElementById('phone_number').value = profileData.phone_number || '';
+    document.getElementById('email').value = profileData.email || '';
+    document.getElementById('part_time_hours').value = profileData.part_time_hours || '';
     
-    const genderSelector = `input[name="gender"][value="${profileData.gender}"]`;
-    const selectedGenderRadio = document.querySelector(genderSelector);
-    if (selectedGenderRadio) {
-        selectedGenderRadio.checked = true;
-    }
+    // Set radio buttons
+    setCheckedValue('gender', profileData.gender);
+    setCheckedValue('employment_type', profileData.employment_type);
+    setCheckedValue('shift_type', profileData.shift_type);
 
-    // Select Employment Type radio button based on value
-    const employmentTypeSelector = `input[name="employment_type"][value="${profileData.employment_type}"]`;
-    const selectedEmploymentRadio = document.querySelector(employmentTypeSelector);
-    if (selectedEmploymentRadio) {
-        selectedEmploymentRadio.checked = true;
-    }
-
-    // Select Shift Type radio button based on value
-    const shiftTypeSelector = `input[name="shift_type"][value="${profileData.shift_type}"]`;
-    const selectedShiftRadio = document.querySelector(shiftTypeSelector);
-    if (selectedShiftRadio) {
-        selectedShiftRadio.checked = true;
-    }
-
-    // Also ensure the correct dependent fields are shown/hidden on load
-    const shiftContainer = document.getElementById('shift_type_container');
-    const partTimeContainer = document.getElementById('part_time_container');
-    if (profileData.employment_type === 'Full Time') {
-        shiftContainer.style.display = 'block';
-        partTimeContainer.style.display = 'none';
-    } else if (profileData.employment_type === 'Part Time') {
-        shiftContainer.style.display = 'none';
-        partTimeContainer.style.display = 'block';
-    } else {
-        // Hide both if no selection is made
-        shiftContainer.style.display = 'none';
-        partTimeContainer.style.display = 'none';
-    }
+    // Show/hide conditional fields for employment type
+    toggleEmploymentFields(profileData.employment_type);
     
-    // Populate skills
+    // Populate Skills
     const skillTagsContainer = document.getElementById('skillTagsContainer');
-    skillTagsContainer.innerHTML = '';
-    if (profileData.skills && Array.isArray(profileData.skills)) {
-        profileData.skills.forEach(skill => {
-            const tag = document.createElement('span');
-            tag.className = 'skill-tag';
-            tag.textContent = skill;
-            skillTagsContainer.appendChild(tag);
-        });
-    }
-
-    // Populate skills in the new modal
     const currentSkillsDiv = document.getElementById('currentSkills');
+    skillTagsContainer.innerHTML = '';
     currentSkillsDiv.innerHTML = '';
-    if (profileData.skills && Array.isArray(profileData.skills)) {
+    if (profileData.skills && profileData.skills.length > 0) {
         profileData.skills.forEach(skill => {
-            const newSkillTag = document.createElement('span');
-            newSkillTag.classList.add('skill-tag');
-            newSkillTag.innerHTML = `${skill} <span class="remove-skill" onclick="removeSkill(this, '${skill}')">&times;</span>`;
-            currentSkillsDiv.appendChild(newSkillTag);
+            const tag = `<span class="skill-tag">${skill}</span>`;
+            skillTagsContainer.innerHTML += tag;
+            const editTag = `<span class="skill-tag">${skill} <span class="remove-skill" onclick="removeSkill(this, '${skill}')" title="This is a demo, does not delete from DB">&times;</span></span>`;
+            currentSkillsDiv.innerHTML += editTag;
         });
+    } else {
+        skillTagsContainer.innerHTML = '<p class="empty-state">No skills added yet.</p>';
     }
 
-    // Populate languages
+    // Populate Languages
     const languagesList = document.getElementById('languagesList');
+    const currentLangDiv = document.getElementById('currentlang');
     languagesList.innerHTML = '';
-    const currentLangDiv = document.getElementById('currentlang'); 
     currentLangDiv.innerHTML = '';
-    if (profileData.languages && Array.isArray(profileData.languages)) {
+    if (profileData.languages && profileData.languages.length > 0) {
         profileData.languages.forEach(language => {
-            
-            const li = document.createElement('li');
-            li.textContent = language;
-            languagesList.appendChild(li);
-
-            const newLangTag = document.createElement('span');
-            newLangTag.classList.add('lang-tag');
-            newLangTag.innerHTML = `${language} <span class="remove-lang"  onclick="deleteLanguage(this, '${language}')">&times;</span>`;
-            currentLangDiv.appendChild(newLangTag);
+            languagesList.innerHTML += `<li>${language}</li>`;
+            const langTag = `<span class="lang-tag">${language} <span class="remove-lang" onclick="deleteLanguage('${language}')" title="Delete Language">&times;</span></span>`;
+            currentLangDiv.innerHTML += langTag;
         });
+    } else {
+        languagesList.innerHTML = '<p class="empty-state">No languages added yet.</p>';
     }
-
 
     // Populate Experience
     const experienceContainer = document.getElementById('experienceContainer');
     experienceContainer.innerHTML = '';
     if (experienceData && experienceData.length > 0) {
         experienceData.forEach(exp => {
-            const expItem = document.createElement('div');
-            expItem.className = 'experience-item';
-            expItem.innerHTML = `
-                <i class="fas fa-briefcase icon"></i>
-                <div class="details">
-                    <p class="position">${exp.postion}</p>
-                    <p class="company">${exp.company_name}</p>
-                    <p class="duration">${exp.date}</p>
-                </div>
-                <button style="cursor: pointer; float: right;  border: 2px solid black; height: 30px; width: 30px; border-radius: 100px; align-items: center; text-align: center; justify-content: center; justify-items: center; font-size: 15px; font-weight: 700;" class="delete-btn" onclick="deleteEntry('experience', ${exp.id})">
-                    <i class="fas fa-trash"></i>
-                </button>
-            `;
-            experienceContainer.appendChild(expItem);
+            experienceContainer.innerHTML += `
+                <div class="experience-item">
+                    <i class="fas fa-briefcase icon"></i>
+                    <div class="details">
+                        <p class="position">${exp.postion}</p>
+                        <p class="company">${exp.company_name}</p>
+                        <p class="duration">${exp.date}</p>
+                    </div>
+                    <button class="delete-btn" onclick="deleteEntry('experience', ${exp.id})" title="Delete Experience">
+                        <i class="fas fa-trash"></i>
+                    </button>
+                </div>`;
         });
     } else {
-         experienceContainer.innerHTML = '<p>No experience added yet.</p>';
+         experienceContainer.innerHTML = '<p class="empty-state">No experience added yet.</p>';
     }
 
     // Populate Education
@@ -243,376 +165,204 @@ function updateProfileUI(profileData, experienceData, educationData) {
     educationContainer.innerHTML = '';
     if (educationData && educationData.length > 0) {
          educationData.forEach(edu => {
-            const eduItem = document.createElement('div');
-            eduItem.className = 'education-item';
-            eduItem.innerHTML = `
-                <i class="fas fa-graduation-cap icon"></i>
-                <div class="details">
-                    <p class="degree">${edu.class}</p>
-                    <p class="college">${edu.instude_name}</p>
-                    <p class="duration">${edu.years}</p>
-                    <p class="duration">${edu.percentage}</p>
-                </div>
-                <button style="cursor: pointer; float: right;  border: 2px solid black; height: 30px; width: 30px; border-radius: 100px; align-items: center; text-align: center; justify-content: center; justify-items: center; font-size: 15px; font-weight: 700;" class="delete-btn" onclick="deleteEntry('education', ${edu.id})">
-                    <i class="fas fa-trash"></i>
-                </button>
-            `;
-            educationContainer.appendChild(eduItem);
+            educationContainer.innerHTML += `
+                <div class="education-item">
+                    <i class="fas fa-graduation-cap icon"></i>
+                    <div class="details">
+                        <p class="degree">${edu.class}</p>
+                        <p class="college">${edu.instude_name}</p>
+                        <p class="duration">${edu.years}</p>
+                        <p class="duration">Grade: ${edu.percentage || 'N/A'}</p>
+                    </div>
+                    <button class="delete-btn" onclick="deleteEntry('education', ${edu.id})" title="Delete Education">
+                        <i class="fas fa-trash"></i>
+                    </button>
+                </div>`;
         });
     } else {
-         educationContainer.innerHTML = '<p>No education added yet.</p>';
+         educationContainer.innerHTML = '<p class="empty-state">No education added yet.</p>';
     }
 }
 
-// Handle profile photo change
+// Helper to set checked value for radio buttons
+function setCheckedValue(name, value) {
+    const selector = `input[name="${name}"][value="${value}"]`;
+    const radio = document.querySelector(selector);
+    if (radio) radio.checked = true;
+}
+
+// Helper to toggle employment fields display
+function toggleEmploymentFields(value) {
+    const shiftContainer = document.getElementById('shift_type_container');
+    const partTimeContainer = document.getElementById('part_time_container');
+    shiftContainer.style.display = value === 'Full Time' ? 'block' : 'none';
+    partTimeContainer.style.display = value === 'Part Time' ? 'block' : 'none';
+}
+
+// Generic function to handle form submissions
+async function handleFormSubmit(form, actionUrl, additionalData = {}) {
+    showLoader();
+    try {
+        const formData = form ? new FormData(form) : new FormData();
+        for (const key in additionalData) {
+            formData.append(key, additionalData[key]);
+        }
+
+        const response = await fetch(actionUrl, { method: 'POST', body: formData });
+        const result = await response.json();
+
+        if (result.success) {
+            showCustomAlert('Success', result.message || 'Action completed successfully.');
+            fetchProfileData(false); // Refresh all data
+            return true; // Indicate success
+        } else {
+            throw new Error(result.error || 'An unknown error occurred.');
+        }
+    } catch (error) {
+        console.error('Form submission error:', error);
+        showCustomAlert('Error', error.message);
+        return false; // Indicate failure
+    } finally {
+        hideLoader();
+    }
+}
+
+
+// EVENT LISTENERS
+document.addEventListener('DOMContentLoaded', () => {
+    fetchProfileData();
+
+    // Modal Triggers
+    document.getElementById('exp-btn').addEventListener('click', () => openModal('addexp'));
+    document.getElementById('edu-btn').addEventListener('click', () => openModal('addedu'));
+    document.getElementById('lang-btn').addEventListener('click', () => openModal('addlangModal'));
+    document.getElementById('skill-btn').addEventListener('click', () => openModal('addSkillModal'));
+
+    // Employment type change listener
+    document.querySelectorAll('input[name="employment_type"]').forEach(radio => {
+        radio.addEventListener('change', e => toggleEmploymentFields(e.target.value));
+    });
+
+    // Form Submissions
+    document.getElementById('editProfileForm').addEventListener('submit', async function(e) {
+        e.preventDefault();
+        const success = await handleFormSubmit(this, 'PHP/profile.php');
+        if (success) closeModal('editProfileModal');
+    });
+
+    document.getElementById('addexpForm').addEventListener('submit', async function(e) {
+        e.preventDefault();
+        const success = await handleFormSubmit(this, 'PHP/profile_update.php', { action: 'add_experience' });
+        if (success) {
+            this.reset();
+            closeModal('addexp');
+        }
+    });
+
+    document.getElementById('addeduForm').addEventListener('submit', async function(e) {
+        e.preventDefault();
+        const success = await handleFormSubmit(this, 'PHP/profile_update.php', { action: 'add_education' });
+        if (success) {
+            this.reset();
+            closeModal('addedu');
+        }
+    });
+    
+    document.getElementById('addlangForm').addEventListener('submit', async function(e) {
+        e.preventDefault();
+        const languageInput = document.getElementById('newlangInput');
+        const newLanguage = languageInput.value.trim();
+        if (newLanguage) {
+             const success = await handleFormSubmit(this, 'PHP/profile.php', { action: 'add_language', newLanguage });
+             if (success) {
+                languageInput.value = ''; // Clear input on success
+             }
+        } else {
+            showCustomAlert('Input Error', 'Please enter a language.');
+        }
+    });
+
+    document.getElementById('addSkillForm').addEventListener('submit', async function(e) {
+        e.preventDefault();
+        showLoader();
+        try {
+            const skillName = document.getElementById('newSkillInput').value.trim();
+            if (!skillName) {
+                showCustomAlert('Invalid Input', 'Skill name cannot be empty.');
+                hideLoader();
+                return;
+            }
+            
+            const formData = new FormData();
+            formData.append('field', skillName);
+
+            const response = await fetch('PHP/generate_quiz.php', { method: 'POST', body: formData });
+            const result = await response.json();
+            
+            if (result.success) {
+                sessionStorage.setItem('userField', skillName);
+                sessionStorage.setItem('generatedQuestions', JSON.stringify(result.questions));
+                closeModal('addSkillModal');
+                window.location.href = 'quiz_page.html';
+            } else {
+                showCustomAlert('Quiz Failed', result.error || 'Error generating quiz.');
+            }
+        } catch (error) {
+            showCustomAlert('Network Error', 'Could not connect to the server.');
+        } finally {
+            hideLoader();
+        }
+    });
+
+    // Profile photo change
+    document.getElementById('profilePhotoInput').addEventListener('change', async function(e) {
+        const file = e.target.files[0];
+        if (file) {
+            await handleFormSubmit(null, 'PHP/profile.php', { profile_photo: file });
+        }
+    });
+});
+
 function changeProfilePhoto() {
     document.getElementById('profilePhotoInput').click();
 }
 
-document.getElementById('profilePhotoInput').addEventListener('change', handleProfilePhotoChange);
-
-async function handleProfilePhotoChange(event) {
-    const file = event.target.files[0];
-    if (file) {
-        showLoader();
-        try {
-            const formData = new FormData();
-            formData.append('profile_photo', file);
-
-            const response = await fetch('PHP/profile.php', {
-                method: 'POST',
-                body: formData
-            });
-
-            const result = await response.json();
-            if (result.success) {
-                
-                document.getElementById('mainProfilePicture').src = result.photo_url;
-                document.getElementById('navbarProfilePicture').src = result.photo_url;
-                showCustomAlert('Success', 'Profile photo updated successfully!');
-            } else {
-                showCustomAlert('Upload Failed', result.error || 'An unknown error occurred during upload.');
-            }
-        } catch (error) {
-            console.error('Error uploading photo:', error);
-            showCustomAlert('Network Error', 'Failed to upload photo. Please check your connection.');
-        } finally {
-            hideLoader();
-        }
-    }
-}
-
-// Handle form submission for editing profile
-document.getElementById('editProfileForm').addEventListener('submit', async function(event) {
-    event.preventDefault();
-    showLoader();
-    try {
-        const formData = new FormData(this);
-
-        const response = await fetch('PHP/profile.php', {
-            method: 'POST',
-            body: formData
-        });
-        const result = await response.json();
-
-        if (result.success) {
-            showCustomAlert('Success', result.message);
-            closeEditProfileModal();
-            fetchProfileData(false); 
-        } else {
-            showCustomAlert('Error', result.error || 'Failed to update profile.');
-        }
-    } catch (error) {
-        console.error('Error saving profile:', error);
-        showCustomAlert('Network Error', 'Failed to save profile. Please check your connection.');
-    } finally {
-        hideLoader();
-    }
-});
-
-// New event listener for adding experience
-document.getElementById('addexpForm').addEventListener('submit', async function(event) {
-    event.preventDefault();
-    showLoader();
-    try {
-        const formData = new FormData(this);
-        formData.append('action', 'add_experience');
-
-        const response = await fetch('PHP/profile_update.php', {
-            method: 'POST',
-            body: formData
-        });
-        const result = await response.json();
-
-        if (result.success) {
-            showCustomAlert('Success', result.message);
-            closeAddexpModal();
-            fetchProfileData(false); // Refresh the profile data
-            document.getElementById('addexpForm').reset();
-        } else {
-            showCustomAlert('Error', result.error || 'Failed to add experience.');
-        }
-    } catch (error) {
-        console.error('Error adding experience:', error);
-        showCustomAlert('Network Error', 'Failed to add experience. Please check your connection.');
-    } finally {
-        hideLoader();
-    }
-});
-
-// New event listener for adding education
-document.getElementById('addeduForm').addEventListener('submit', async function(event) {
-    event.preventDefault();
-    showLoader();
-    try {
-        const formData = new FormData(this);
-        formData.append('action', 'add_education');
-
-        const response = await fetch('PHP/profile_update.php', {
-            method: 'POST',
-            body: formData
-        });
-        const result = await response.json();
-
-        if (result.success) {
-            showCustomAlert('Success', result.message);
-            closeAddeduModal();
-            fetchProfileData(false); // Refresh the profile data
-            document.getElementById('addeduForm').reset();
-        } else {
-            showCustomAlert('Error', result.error || 'Failed to add education.');
-        }
-    } catch (error) {
-        console.error('Error adding education:', error);
-        showCustomAlert('Network Error', 'Could not connect to the server. Please check your internet connection.');
-    } finally {
-        hideLoader();
-    }
-});
-
-// New function to handle deleting an entry
 async function deleteEntry(type, id) {
-    showLoader();
-    try {
-        const action = type === 'experience' ? 'delete_experience' : 'delete_education';
-
-        const formData = new FormData();
-        formData.append('action', action);
-        formData.append('id', id);
-
-        const response = await fetch('PHP/profile_update.php', {
-            method: 'POST',
-            body: formData
-        });
-        const result = await response.json();
-
-        if (result.success) {
-            showCustomAlert('Success', result.message);
-            fetchProfileData(false); // Refresh the profile data
-        } else {
-            showCustomAlert('Error', result.error || `Failed to delete ${type}.`);
-        }
-    } catch (error) {
-        console.error(`Error deleting ${type}:`, error);
-        showCustomAlert('Network Error', `Failed to delete ${type}. Please check your connection.`);
-    } finally {
-        hideLoader();
-    }
+    if (!confirm(`Are you sure you want to delete this ${type} entry?`)) return;
+    const action = type === 'experience' ? 'delete_experience' : 'delete_education';
+    await handleFormSubmit(null, 'PHP/profile_update.php', { action, id });
 }
 
-// Function to handle adding a language
-document.getElementById('addlangForm').addEventListener('submit', async function(event) {
-    event.preventDefault();
-    showLoader();
-    try {
-        const languageInput = document.getElementById('newlangInput');
-        const newLanguage = languageInput.value.trim();
-
-        if (!newLanguage) {
-            showCustomAlert('Invalid Input', 'Please enter a language name.');
-            return;
-        }
-
-        const formData = new FormData();
-        formData.append('action', 'add_language');
-        formData.append('newLanguage', newLanguage);
-
-        const response = await fetch('PHP/profile.php', {
-            method: 'POST',
-            body: formData
-        });
-        const result = await response.json();
-
-        if (result.success) {
-            showCustomAlert('Success', result.message);
-            languageInput.value = ''; // Clear the input field
-            fetchProfileData(false); // Refresh the profile data to show the new language
-        } else {
-            showCustomAlert('Error', result.error || 'Failed to add language.');
-        }
-    } catch (error) {
-        console.error('Error adding language:', error);
-        showCustomAlert('Network Error', 'Failed to add language. Please check your connection.');
-    } finally {
-        hideLoader();
-    }
-});
-
-// Function to handle deleting a language
-async function deleteLanguage(element, languageName) {
-    if (confirm(`Are you sure you want to remove "${languageName}"?`)) {
-        showLoader();
-        try {
-            const formData = new FormData();
-            formData.append('action', 'delete_language');
-            formData.append('languageName', languageName);
-
-            const response = await fetch('PHP/profile.php', {
-                method: 'POST',
-                body: formData
-            });
-            const result = await response.json();
-
-            if (result.success) {
-                showCustomAlert('Success', result.message);
-                fetchProfileData(false); // Refresh the profile data to remove the language from the UI
-            } else {
-                showCustomAlert('Error', result.error || `Failed to delete ${languageName}.`);
-            }
-        } catch (error) {
-            console.error(`Error deleting ${languageName}:`, error);
-            showCustomAlert('Network Error', `Failed to delete ${languageName}. Please check your connection.`);
-        } finally {
-            hideLoader();
-        }
-    }
+async function deleteLanguage(languageName) {
+    if (!confirm(`Are you sure you want to remove "${languageName}"?`)) return;
+    await handleFormSubmit(null, 'PHP/profile.php', { action: 'delete_language', languageName });
 }
 
-function openEditProfileModal() {
-    document.getElementById('editProfileModal').style.display = 'flex';
-}
-
-function closeEditProfileModal() {
-    document.getElementById('editProfileModal').style.display = 'none';
-}
-
-function openAddSkillModal() {
-    document.getElementById('addSkillModal').style.display = 'flex';
-    fetchProfileData(false); // Refresh skills in modal just in case
-}
-
-function closeAddSkillModal() {
-    document.getElementById('addSkillModal').style.display = 'none';
-}
-
-function openAddexpModal() {
-    document.getElementById('addexp').style.display = 'flex';
-}
-
-function closeAddexpModal() {
-    document.getElementById('addexp').style.display = 'none';
-}
-function openAddeduModal() {
-    document.getElementById('addedu').style.display = 'flex';
-}
-
-function closeAddeduModal() {
-    document.getElementById('addedu').style.display = 'none';
-}
-
-function openAddlangModal() {
-    document.getElementById('addlangModal').style.display = 'flex';
-    fetchProfileData(false); // Refresh languages in modal
-}
-
-function closeAddlangModal() {
-    document.getElementById('addlangModal').style.display = 'none';
-}
-// Function to remove a skill
+// This is a demo function as there's no backend logic for skill deletion provided.
 async function removeSkill(element, skillName) {
-    if (confirm(`Are you sure you want to remove "${skillName}"?`)) {
-        showLoader();
-        try {
-            // In a real app, you would make an API call here.
-            // Simulating API call with a timeout.
-            await new Promise(resolve => setTimeout(resolve, 500));
-            element.parentNode.remove();
-            showCustomAlert('Skill Removed', `The skill "${skillName}" has been removed.`);
-            fetchProfileData(false);
-        } catch (error) {
-            showCustomAlert('Error', 'Could not remove skill.');
-        } finally {
-            hideLoader();
-        }
-    }
+    showCustomAlert('Demo', `This would normally delete "${skillName}" from the database.`);
+    element.parentElement.remove();
 }
 
-document.getElementById('addSkillForm').addEventListener('submit', async function(event) {
-    event.preventDefault();
-    showLoader();
-    try {
-        const skillName = document.getElementById('newSkillInput').value.trim();
 
-        if (skillName === "") {
-            showCustomAlert('Invalid Input', 'Skill name cannot be empty.');
-            return;
-        }
-        
-        closeAddSkillModal(); 
-        
-        const formData = new FormData();
-        formData.append('field', skillName);
+// Modal handling
+function openModal(modalId) { document.getElementById(modalId).style.display = 'flex'; }
+function closeModal(modalId) { document.getElementById(modalId).style.display = 'none'; }
+function openEditProfileModal() { openModal('editProfileModal'); }
+function closeEditProfileModal() { closeModal('editProfileModal'); }
+function closeAddSkillModal() { closeModal('addSkillModal'); }
+function openAddexpModal() { openModal('addexp'); }
+function closeAddexpModal() { closeModal('addexp'); }
+function openAddeduModal() { openModal('addedu'); }
+function closeAddeduModal() { closeModal('addedu'); }
+function openAddlangModal() { openModal('addlangModal'); }
+function closeAddlangModal() { closeModal('addlangModal'); }
 
-        const response = await fetch('PHP/generate_quiz.php', {
-            method: 'POST',
-            body: formData
-        });
-        
-        const result = await response.json();
-        
-        if (result.success) {
-            
-            sessionStorage.setItem('userField', skillName);
-            sessionStorage.setItem('generatedQuestions', JSON.stringify(result.questions));
-            sessionStorage.setItem('userName', 'Demo User'); 
-            
-          
-            window.location.href = 'quiz_page.html';
-        } else {
-            showCustomAlert('Quiz Generation Failed', result.error || 'An unexpected error occurred while generating the quiz. Please try again.');
-        }
-    } catch (error) {
-        console.error('Error generating quiz:', error);
-        showCustomAlert('Network Error', 'Could not connect to the server. Please check your internet connection.');
-    } finally {
-        hideLoader();
-    }
-});
 
-// Modal close behavior
+// Close modals when clicking outside
 window.onclick = function(event) {
-    const profileModal = document.getElementById('editProfileModal');
-    const addSkillModal = document.getElementById('addSkillModal');
-    const addExpModal = document.getElementById('addexp');
-    const addEduModal = document.getElementById('addedu');
-    const addLangModal = document.getElementById('addlangModal'); // Added language modal
-
-    if (event.target == profileModal) {
-        profileModal.style.display = "none";
-    }
-    if (event.target == addSkillModal) {
-        addSkillModal.style.display = "none";
-    }
-    if (event.target == addExpModal) {
-        addExpModal.style.display = "none";
-    }
-    if (event.target == addEduModal) {
-        addEduModal.style.display = "none";
-    }
-    if (event.target == addLangModal) { // Added language modal
-        addLangModal.style.display = "none";
+    if (event.target.classList.contains('modal')) {
+        event.target.style.display = "none";
     }
 };
-
-
 

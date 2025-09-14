@@ -6,6 +6,7 @@
     <title>JobKaro</title>
     <link rel="icon" type="image/png" sizes="32x32" href="IMAGES/icon.png">
 
+    <!-- Corrected CSS path -->
     <link rel="stylesheet" href="CSS/profile.css">
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
@@ -63,7 +64,7 @@
     </style>
 </head>
 <body>
-    <!-- Loading Overlay -->
+    <!-- Loading Overlay - Starts visible -->
     <div id="loading-overlay" class="visible">
         <div class="loader"></div>
     </div>
@@ -81,7 +82,7 @@
         </nav>
         <div class="navbar-right">
             <div class="location">
-                <span id="navbarLocation">City, District </span> ㅤ<i class="fas fa-map-marker-alt"></i>
+                <span id="navbarLocation">City, District </span> &nbsp;<i class="fas fa-map-marker-alt"></i>
             </div>
             <div class="profile-avatar">
                 <img src="https://placehold.co/150x150/png?text=P" alt="Profile Picture" id="navbarProfilePicture">
@@ -92,28 +93,27 @@
     <main class="profile-container">
         <aside class="profile-sidebar">
             <div class="profile-header">
-                <img src="https://placehold.co/150x150/png?text=P" alt="Profile Picture" class="profile-picture" id="mainProfilePicture" onclick="changeProfilePhoto()">
+                <img src="https://placehold.co/150x150/png?text=P" alt="Profile Picture" class="profile-picture" id="mainProfilePicture" onclick="changeProfilePhoto()" title="Click to change photo">
                 <input type="file" id="profilePhotoInput" accept="image/*" style="display: none;">
 
-                <h2 id="profileName"></h2>
+                <h2 id="profileName">Loading...</h2>
                 <p class="position-name" id="profilePosition"></p>
                 <button class="status-button">open to work</button>
             </div>
             <div class="bio-section">
-                <p id="profileBio">something about yourself or something you would write for your bio or experience.</p>
+                <p id="profileBio">Loading bio...</p>
                 <button class="edit-profile-button" onclick="openEditProfileModal()">Edit Profile</button>
             </div>
             <div class="skills-section">
-                <h3>Skills <button id="skill-btn" onclick="openAddSkillModal()" style="cursor: pointer; float: right;  border: 2px solid black; height: 30px; width: 30px; border-radius: 100px; align-items: center; text-align: center; justify-content: center; justify-items: center; font-size: 15px; font-weight: 700;">+</button></h3> 
-                
+                <h3>Skills <button id="skill-btn" onclick="openAddSkillModal()" class="add-button" title="Add Skill">+</button></h3> 
                 <div class="skill-tags" id="skillTagsContainer">
-                   
+                   <!-- Skills will be loaded here -->
                 </div>
             </div>
             <div class="languages-section">
-                <h3>Languages <button  id="lang-btn" onclick="openAddlangModal()" style="cursor: pointer; float: right;  border: 2px solid black; height: 30px; width: 30px; border-radius: 100px; align-items: center; text-align: center; justify-content: center; justify-items: center; font-size: 15px; font-weight: 700;">+</button></h3>
+                <h3>Languages <button id="lang-btn" onclick="openAddlangModal()" class="add-button" title="Add Language">+</button></h3>
                 <ul id="languagesList">
-                   
+                   <!-- Languages will be loaded here -->
                 </ul>
             </div>
         </aside>
@@ -121,44 +121,43 @@
         <section class="profile-content">
             <div class="basic-information-card card">
                 <h3>Basic Information</h3>
-                <!-- Added Go to Posts button container -->
                 <div class="posts-button-container">
                     <a href="my_photos.html" class="posts-button">
-                        <i class="fas fa-sticky-note"></i>
-                        Go to Posts
+                        <i class="fas fa-images"></i>
+                        My Posts
                     </a>
                 </div>
                 <div class="info-grid">
                     <div class="info-item">
                         <span class="label">AGE</span>
-                        <span class="value" id="profileAge"></span>
+                        <span class="value" id="profileAge">--</span>
                     </div>
                     <div class="info-item">
                         <span class="label">GENDER</span>
-                        <span class="value" id="profilegender"></span>
+                        <span class="value" id="profilegender">--</span>
                     </div>
                     <div class="info-item">
                         <span class="label">LOCATION</span>
-                        <span class="value" id="profileLocation"></span>
+                        <span class="value" id="profileLocation">--</span>
                     </div>
                     <div class="info-item">
                         <span class="label">EMAIL</span>
-                        <span class="value" id="profileEmail"></span>
+                        <span class="value" id="profileEmail">--</span>
                     </div>
                 </div>
             </div>
 
-            <div class="experience-card card " >
-                <h3>Experience <button id="exp-btn" style="cursor: pointer; float: right;  border: 2px solid black; height: 30px; width: 30px; border-radius: 100px; align-items: center; text-align: center; justify-content: center; justify-items: center; font-size: 15px; font-weight: 700;">+</button></h3>
+            <div class="experience-card card">
+                <h3>Experience <button id="exp-btn" class="add-button" title="Add Experience">+</button></h3>
                 <div id="experienceContainer" class="experience-container">
-                   
+                   <!-- Experience will be loaded here -->
                 </div>
             </div>
 
             <div class="education-card card">
-                <h3>Education <button id="edu-btn" style="cursor: pointer; float: right;  border: 2px solid black; height: 30px; width: 30px; border-radius: 100px; align-items: center; text-align: center; justify-content: center; justify-items: center; font-size: 15px; font-weight: 700;">+</button></h3>
+                <h3>Education <button id="edu-btn" class="add-button" title="Add Education">+</button></h3>
                 <div id="educationContainer" class="education-container">
-                  
+                  <!-- Education will be loaded here -->
                 </div>
             </div>
         </section>
@@ -172,30 +171,27 @@
             <form id="editProfileForm">
                 <div class="form-group">
                     <label for="first_name">First Name</label>
-                    <input type="text" id="first_name" name="first_name" value="">
+                    <input type="text" id="first_name" name="first_name" required>
                 </div>
                 <div class="form-group">
                     <label for="last_name">Last Name</label>
-                    <input type="text" id="last_name" name="last_name" value="">
+                    <input type="text" id="last_name" name="last_name" required>
                 </div>
                 <div class="form-group">
-                   <label for="age">Age:</label>
-                    <input type="number" id="age" name="age" min="18" max="60" >
-
+                   <label for="age">Age</label>
+                    <input type="number" id="age" name="age" min="18" max="99">
                 </div>
                 <div class="form-group">
                     <label for="job_field">Job Field</label>
-                    <input type="text" id="job_field" name="job_field"  disabled>
+                    <input type="text" id="job_field" name="job_field" disabled>
                 </div>
                  <div class="form-group">
-                    <label>Gender:</label>
+                    <label>Gender</label>
                     <div class="radio-group">
-                        <input type="radio" id="gender-male" name="gender" value="Male" title="Select Male">
-                        Male
-                        <input type="radio" id="gender-female" name="gender" value="Female" title="Select Female">
-                        Female
+                        <label><input type="radio" name="gender" value="Male"> Male</label>
+                        <label><input type="radio" name="gender" value="Female"> Female</label>
+                        <label><input type="radio" name="gender" value="Other"> Other</label>
                     </div>
-                   
                 </div>
                 
                 <div class="form-group">
@@ -205,31 +201,35 @@
                 
                 <div class="form-group">
                     <label for="address">Address</label>
-                    <input type="text" id="address" name="address" value="">
+                    <input type="text" id="address" name="address">
                 </div>
                 <div class="form-group">
                     <label for="phone_number">Phone Number</label>
-                    <input type="tel" id="phone_number" name="phone_number"  disabled>
+                    <input type="tel" id="phone_number" name="phone_number" disabled>
                 </div>
                 <div class="form-group">
                     <label for="email">Email</label>
-                    <input type="email" id="email" name="email"  disabled>
+                    <input type="email" id="email" name="email" disabled>
                 </div>
                <div class="form-group">
-                  <label for="employment_type">Employment Type</label><br>
-                  <input type="radio" id="employment_type_full" name="employment_type" value="Full Time"> Full Time
-                  <input type="radio" id="employment_type_part" name="employment_type" value="Part Time"> Part Time
+                  <label>Employment Type</label>
+                  <div class="radio-group">
+                    <label><input type="radio" name="employment_type" value="Full Time"> Full Time</label>
+                    <label><input type="radio" name="employment_type" value="Part Time"> Part Time</label>
+                  </div>
                 </div>
 
                 <div class="form-group" id="shift_type_container" style="display: none;">
-                  <label>Shift Type</label><br>
-                  <input type="radio" id="shift_type_night" name="shift_type" value="Night"> Night
-                  <input type="radio" id="shift_type_day" name="shift_type" value="Day"> Day
+                  <label>Shift Type</label>
+                   <div class="radio-group">
+                    <label><input type="radio" name="shift_type" value="Night"> Night</label>
+                    <label><input type="radio" name="shift_type" value="Day"> Day</label>
+                  </div>
                 </div>
 
                 <div class="form-group" id="part_time_container" style="display: none;">
                   <label for="part_time_hours">Part Time Hours</label>
-                  <input type="text" id="part_time_hours" name="part_time_hours" value="">
+                  <input type="text" id="part_time_hours" name="part_time_hours" placeholder="e.g., 20 hours/week">
                 </div>
 
                 <div class="form-actions">
@@ -245,9 +245,8 @@
         <div class="modal-content">
             <span class="close-button" onclick="closeAddSkillModal()">&times;</span>
             <h2>Manage Skills</h2>
-            <div id="currentSkills" class="skill-tags edit-skills">
-                </div>
-            <h3>Add New Skill</h3>
+            <div id="currentSkills" class="skill-tags edit-skills"></div>
+            <h3>Take Skill Assessment</h3>
             <form id="addSkillForm">
                 <div class="form-group add-skill-group">
                     <input type="text" id="newSkillInput" name="newSkillInput" placeholder="e.g., Python, Figma, React" required>
@@ -260,77 +259,79 @@
         </div>
     </div>
 
-
-
-<div id="addlangModal" class="modal" >
+    <div id="addlangModal" class="modal">
         <div class="modal-content">
             <span class="close-button" onclick="closeAddlangModal()">&times;</span>
-            <h2>Manage Language</h2>
-            <div id="currentlang" class="lang-tags  lang-skills"  >
-                
-            </div>
+            <h2>Manage Languages</h2>
+            <div id="currentlang" class="lang-tags lang-skills"></div>
             <h3>Add Language</h3>
             <form id="addlangForm">
                 <div class="form-group add-lang-group">
-                    <input type="text" id="newlangInput" name="newlangInput" placeholder="e.g., English, Hindi , Marathi" required>
-                    
+                    <input type="text" id="newlangInput" name="newlangInput" placeholder="e.g., English, Hindi, Marathi" required>
                 </div>
-            
-            <div class="form-actions">
-                <button type="submit">Save</button>
-                <button type="button" class="cancel-button" onclick="closeAddlangModal()">Close</button>
-            </div>
+                <div class="form-actions">
+                    <button type="submit">Save</button>
+                    <button type="button" class="cancel-button" onclick="closeAddlangModal()">Close</button>
+                </div>
             </form>
         </div>
     </div>
 
-
-
-
-
-
-    <div id="addexp" class="modal"  style="line-height: 20px;">
+    <div id="addexp" class="modal">
         <div class="modal-content">
             <span class="close-button" onclick="closeAddexpModal()">&times;</span>
             <h3>Add Experience</h3>
             <form id="addexpForm">
-                <div class="form-group add-exp-group ">
-                   <div class="padding">
-                        <input style="margin-bottom: 5px;" type="text" id="expPosition" name="postion" placeholder="Position" required>
-                        <input style="margin-bottom: 10px;" type="text" id="expCompany" name="company_name" placeholder="Company Name" required>
-                        <label>Enter Duration (e.g., 2020-2023 or Present)</label>
-                        <input style="margin-bottom: 10px;" type="text" id="expDate" name="date" placeholder="e.g., 2020-2023 or Present" required>
-                   </div>
+                <div class="form-group">
+                    <label for="expPosition">Position</label>
+                    <input type="text" id="expPosition" name="postion" required>
+                </div>
+                <div class="form-group">
+                    <label for="expCompany">Company Name</label>
+                    <input type="text" id="expCompany" name="company_name" required>
+                </div>
+                <div class="form-group">
+                    <label for="expDate">Duration</label>
+                    <input type="text" id="expDate" name="date" placeholder="e.g., 2020 - 2023 or 2024 - Present" required>
                 </div>
                 <div class="form-actions">
-                    <button type="submit" >Save</button>
+                    <button type="submit">Save</button>
                     <button type="button" class="cancel-button" onclick="closeAddexpModal()">Close</button>
                 </div>
             </form>
         </div>
     </div>
 
-    <div id="addedu" class="modal"  style="line-height: 20px;">
+    <div id="addedu" class="modal">
         <div class="modal-content">
             <span class="close-button" onclick="closeAddeduModal()">&times;</span>
             <h3>Add Education</h3>
             <form id="addeduForm">
-                <div class="form-group add-edu-group ">
-                   <div class="padding">
-                        <input style="margin-bottom: 5px;" type="text" id="eduInstitute" name="instude_name" placeholder="Institute Name" required>
-                        <input style="margin-bottom: 10px;" type="text" id="eduClass" name="class" placeholder="Degree / Class" required>
-                        <input style="margin-bottom: 10px;" type="text" id="eduYears" name="years" placeholder="Years (e.g., 2022 - 2025)" required>
-                        <input style="margin-bottom: 10px;" type="text" id="eduPercentage" name="percentage" placeholder="Percentage / CGPA (leave blank if pursuing)">
-                   </div>
+                <div class="form-group">
+                    <label for="eduInstitute">Institute Name</label>
+                    <input type="text" id="eduInstitute" name="instude_name" required>
+                </div>
+                 <div class="form-group">
+                    <label for="eduClass">Degree / Class</label>
+                    <input type="text" id="eduClass" name="class" required>
+                </div>
+                <div class="form-group">
+                    <label for="eduYears">Years</label>
+                    <input type="text" id="eduYears" name="years" placeholder="e.g., 2022 - 2025" required>
+                </div>
+                <div class="form-group">
+                    <label for="eduPercentage">Percentage / CGPA</label>
+                    <input type="text" id="eduPercentage" name="percentage" placeholder="Leave blank if pursuing">
                 </div>
                 <div class="form-actions">
-                    <button type="submit" >Save</button>
+                    <button type="submit">Save</button>
                     <button type="button" class="cancel-button" onclick="closeAddeduModal()">Close</button>
                 </div>
             </form>
         </div>
     </div>
 
+    <!-- Custom Alert Modal -->
     <div id="custom-modal-overlay" class="custom-modal-overlay">
         <div class="custom-modal-content">
             <h3 id="custom-modal-title"></h3>
@@ -339,6 +340,7 @@
         </div>
     </div>
     
+    <!-- Corrected JS path -->
     <script src="JS/profile.js"></script>
 
 </body>

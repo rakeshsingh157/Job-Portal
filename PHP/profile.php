@@ -1,207 +1,175 @@
 <?php
+// profile.php
 ini_set('display_errors', 1);
-ini_set('display_startup_errors', 1);
 error_reporting(E_ALL);
+header('Content-Type: application/json');
 
 session_start();
-require('config.php');
+require('config.php'); // Your database connection
 
-if (!isset($_SESSION['user_id']))
-{
-   header('Location: wokersignin.html');
-    exit();
+// Make sure a user is logged in
+if (!isset($_SESSION['user_id'])) {
+   http_response_code(401);
+   echo json_encode(['success' => false, 'error' => 'User not authenticated.']);
+   exit();
 }
-
 $user_id = $_SESSION['user_id'];
 
-// Handle language-related actions
-if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['action'])) {
-    $action = $_POST['action'];
+// --- HANDLE POST REQUESTS (Updating data) ---
+if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+    
+    // Check for a specific action (e.g., add/delete language)
+    if (isset($_POST['action'])) {
+        $action = $_POST['action'];
 
-    if ($action === 'add_language' && isset($_POST['newLanguage'])) {
-        $new_language = htmlspecialchars($_POST['newLanguage']);
-        
-        $stmt_select = $conn->prepare("SELECT language FROM users WHERE id = ?");
-        $stmt_select->bind_param("i", $user_id);
-        $stmt_select->execute();
-        $result = $stmt_select->get_result();
-        $user_data = $result->fetch_assoc();
-        $stmt_select->close();
+        if ($action === 'add_language' && isset($_POST['newLanguage'])) {
+            $new_language = trim(htmlspecialchars($_POST['newLanguage']));
+            if (empty($new_language)) {
+                http_response_code(400);
+                echo json_encode(['success' => false, 'error' => 'Language cannot be empty.']);
+                exit;
+            }
 
-        $current_languages = !empty($user_data['language']) ? explode(',', $user_data['language']) : [];
-        if (!in_array($new_language, $current_languages)) {
-            $current_languages[] = $new_language;
+            $stmt = $conn->prepare("SELECT language FROM users WHERE id = ?");
+            $stmt->bind_param("i", $user_id);
+            $stmt->execute();
+            $current_languages = explode(',', $stmt->get_result()->fetch_assoc()['language'] ?? '');
+            $stmt->close();
+            
+            if (!in_array($new_language, $current_languages)) {
+                $current_languages[] = $new_language;
+            }
+            // Filter out empty values and join
+            $updated_languages = implode(',', array_filter($current_languages));
+
+            $stmt = $conn->prepare("UPDATE users SET language = ? WHERE id = ?");
+            $stmt->bind_param("si", $updated_languages, $user_id);
+            if ($stmt->execute()) {
+                echo json_encode(['success' => true, 'message' => 'Language added successfully.']);
+            } else {
+                http_response_code(500);
+                echo json_encode(['success' => false, 'error' => 'Database update failed.']);
+            }
+            $stmt->close();
+            exit;
         }
 
-        $updated_languages = implode(',', $current_languages);
+        if ($action === 'delete_language' && isset($_POST['languageName'])) {
+            $language_to_delete = trim(htmlspecialchars($_POST['languageName']));
+            
+            $stmt = $conn->prepare("SELECT language FROM users WHERE id = ?");
+            $stmt->bind_param("i", $user_id);
+            $stmt->execute();
+            $current_languages = explode(',', $stmt->get_result()->fetch_assoc()['language'] ?? '');
+            $stmt->close();
+            
+            // Remove the specified language
+            $updated_languages = array_diff($current_languages, [$language_to_delete]);
+            $updated_languages_string = implode(',', array_filter($updated_languages));
 
-        $stmt_update = $conn->prepare("UPDATE users SET language = ? WHERE id = ?");
-        $stmt_update->bind_param("si", $updated_languages, $user_id);
-
-        if ($stmt_update->execute()) {
-            echo json_encode(['success' => true, 'message' => 'Language added successfully.']);
-        } else {
-            http_response_code(500);
-            echo json_encode(['error' => 'Database update failed: ' . $stmt_update->error]);
+            $stmt = $conn->prepare("UPDATE users SET language = ? WHERE id = ?");
+            $stmt->bind_param("si", $updated_languages_string, $user_id);
+            if ($stmt->execute()) {
+                echo json_encode(['success' => true, 'message' => 'Language deleted successfully.']);
+            } else {
+                http_response_code(500);
+                echo json_encode(['success' => false, 'error' => 'Database update failed.']);
+            }
+            $stmt->close();
+            exit;
         }
-        $stmt_update->close();
-        $conn->close();
-        exit;
     }
 
-    if ($action === 'delete_language' && isset($_POST['languageName'])) {
-        $language_to_delete = htmlspecialchars($_POST['languageName']);
-        
-        $stmt_select = $conn->prepare("SELECT language FROM users WHERE id = ?");
-        $stmt_select->bind_param("i", $user_id);
-        $stmt_select->execute();
-        $result = $stmt_select->get_result();
-        $user_data = $result->fetch_assoc();
-        $stmt_select->close();
+    // Handle profile photo upload
+    if (isset($_FILES['profile_photo'])) {
+        // ImgBB API Key - It's better to store this in an environment variable
+        define('IMGBB_API_KEY', '8f23d9f5d1b5960647ba5942af8a1523'); 
+        $file = $_FILES['profile_photo'];
 
-        $current_languages = !empty($user_data['language']) ? explode(',', $user_data['language']) : [];
-        $updated_languages = array_diff($current_languages, [$language_to_delete]);
+        if ($file['error'] === UPLOAD_ERR_OK) {
+            $ch = curl_init();
+            curl_setopt($ch, CURLOPT_URL, "https://api.imgbb.com/1/upload?key=" . IMGBB_API_KEY);
+            curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1);
+            curl_setopt($ch, CURLOPT_POST, 1);
+            curl_setopt($ch, CURLOPT_POSTFIELDS, ['image' => base64_encode(file_get_contents($file['tmp_name']))]);
 
-        $updated_languages_string = implode(',', $updated_languages);
-
-        $stmt_update = $conn->prepare("UPDATE users SET language = ? WHERE id = ?");
-        $stmt_update->bind_param("si", $updated_languages_string, $user_id);
-
-        if ($stmt_update->execute()) {
-            echo json_encode(['success' => true, 'message' => 'Language deleted successfully.']);
-        } else {
-            http_response_code(500);
-            echo json_encode(['error' => 'Database update failed: ' . $stmt_update->error]);
-        }
-        $stmt_update->close();
-        $conn->close();
-        exit;
-    }
-}
-
-
-const IMGBB_API_KEY = '8f23d9f5d1b5960647ba5942af8a1523'; 
-if (isset($_FILES['profile_photo'])) {
-    $file = $_FILES['profile_photo'];
-
-    if ($file['error'] === UPLOAD_ERR_OK) {
-        $file_path = $file['tmp_name'];
-        $file_data = file_get_contents($file_path);
-        
-        $ch = curl_init();
-        curl_setopt($ch, CURLOPT_URL, "https://api.imgbb.com/1/upload?key=" . IMGBB_API_KEY);
-        curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1);
-        curl_setopt($ch, CURLOPT_POST, 1);
-        curl_setopt($ch, CURLOPT_POSTFIELDS, ['image' => base64_encode($file_data)]);
-
-        $response = curl_exec($ch);
-        $http_code = curl_getinfo($ch, CURLINFO_HTTP_CODE);
-        $curl_error = curl_error($ch);
-        curl_close($ch);
-
-        if ($http_code === 200) {
+            $response = curl_exec($ch);
+            curl_close($ch);
             $data = json_decode($response, true);
-            if (isset($data['data']['url'])) {
+
+            if ($data && $data['success']) {
                 $photo_url = $data['data']['url'];
-                
-                // Update the profile_url in the database
                 $stmt = $conn->prepare("UPDATE users SET profile_url = ? WHERE id = ?");
                 $stmt->bind_param("si", $photo_url, $user_id);
                 if ($stmt->execute()) {
-                    echo json_encode(['success' => true, 'photo_url' => $photo_url]);
+                    echo json_encode(['success' => true, 'message' => 'Photo updated!', 'photo_url' => $photo_url]);
                 } else {
                     http_response_code(500);
-                    echo json_encode(['error' => 'Database update failed: ' . $stmt->error]);
+                    echo json_encode(['success' => false, 'error' => 'Database update failed.']);
                 }
                 $stmt->close();
-                $conn->close();
-                exit;
             } else {
                 http_response_code(500);
-                echo json_encode(['error' => 'ImgBB upload failed: ' . ($data['error']['message'] ?? 'Unknown error.')]);
-                exit;
+                echo json_encode(['success' => false, 'error' => 'Image upload to external service failed.']);
             }
         } else {
-            http_response_code(500);
-            echo json_encode(['error' => 'ImgBB API call failed: ' . ($curl_error ?: 'HTTP Code ' . $http_code)]);
-            exit;
+            http_response_code(400);
+            echo json_encode(['success' => false, 'error' => 'File upload error code: ' . $file['error']]);
         }
-    } else {
-        http_response_code(400);
-        echo json_encode(['error' => 'File upload error: ' . $file['error']]);
         exit;
     }
-}
 
-if ($_SERVER['REQUEST_METHOD'] === 'POST') {
-    
-    $first_name = isset($_POST['first_name']) ? htmlspecialchars($_POST['first_name']) : '';
-    $last_name = isset($_POST['last_name']) ? htmlspecialchars($_POST['last_name']) : '';
-    $address = isset($_POST['address']) ? htmlspecialchars($_POST['address']) : '';
-    $education = isset($_POST['education']) ? htmlspecialchars($_POST['education']) : '';
-    $work_experience = isset($_POST['work_experience']) ? htmlspecialchars($_POST['work_experience']) : '';
-   
-    $employment_type = isset($_POST['employment_type']) ? htmlspecialchars($_POST['employment_type']) : '';
-    $shift_type = isset($_POST['shift_type']) ? htmlspecialchars($_POST['shift_type']) : '';
-    $part_time_hours = isset($_POST['part_time_hours']) ? htmlspecialchars($_POST['part_time_hours']) : '';
-    $gender = isset($_POST['gender']) ? htmlspecialchars($_POST['gender']) : '' ;
-    $bio = isset($_POST['bio']) ? htmlspecialchars($_POST['bio']) : '';
-    $age = isset($_POST['age']) ? intval($_POST['age']) : null;
-    
+    // Handle general profile update from edit form
+    $first_name = htmlspecialchars($_POST['first_name'] ?? '');
+    $last_name = htmlspecialchars($_POST['last_name'] ?? '');
+    $address = htmlspecialchars($_POST['address'] ?? '');
+    $employment_type = htmlspecialchars($_POST['employment_type'] ?? '');
+    $shift_type = $employment_type === 'Full Time' ? htmlspecialchars($_POST['shift_type'] ?? '') : null;
+    $part_time_hours = $employment_type === 'Part Time' ? htmlspecialchars($_POST['part_time_hours'] ?? '') : null;
+    $gender = htmlspecialchars($_POST['gender'] ?? '');
+    $bio = htmlspecialchars($_POST['bio'] ?? '');
+    $age = !empty($_POST['age']) ? intval($_POST['age']) : null;
 
-    $stmt = $conn->prepare("UPDATE users SET first_name = ?, last_name = ?, education = ?, work_experience = ?, address = ?, gender = ? ,employment_type = ?, shift_type = ?, part_time_hours = ?, bio = ?, age = ? WHERE id = ?");
-    $stmt->bind_param("sssssssssssi", $first_name, $last_name, $education, $work_experience, $address, $gender, $employment_type, $shift_type, $part_time_hours, $bio, $age, $user_id);
+    $stmt = $conn->prepare("UPDATE users SET first_name = ?, last_name = ?, address = ?, gender = ?, employment_type = ?, shift_type = ?, part_time_hours = ?, bio = ?, age = ? WHERE id = ?");
+    $stmt->bind_param("ssssssssii", $first_name, $last_name, $address, $gender, $employment_type, $shift_type, $part_time_hours, $bio, $age, $user_id);
     
     if ($stmt->execute()) {
         echo json_encode(['success' => true, 'message' => 'Profile updated successfully.']);
     } else {
         http_response_code(500);
-        echo json_encode(['error' => 'Database update failed: ' . $stmt->error]);
+        echo json_encode(['success' => false, 'error' => 'Database update failed: ' . $stmt->error]);
     }
-    
     $stmt->close();
-    $conn->close();
     exit;
 }
+
+// --- HANDLE GET REQUEST (Fetching data) ---
 $stmt = $conn->prepare("SELECT * FROM users WHERE id = ?");
 $stmt->bind_param("i", $user_id);
 $stmt->execute();
 $result = $stmt->get_result();
 $profile_data = $result->fetch_assoc();
+$stmt->close();
 
 if ($profile_data) {
-    $profile_data['bio'] = $profile_data['bio'] ?? 'something about yourself or something you would write for your bio or experience.';
-    $profile_data['age'] = $profile_data['age'] ?? "none"; 
-    $profile_data['experience_years'] = $profile_data['work_experience'] ?? "No Experience"; 
-    $profile_data['skills'] = !empty($profile_data['skills']) ? explode(',', $profile_data['skills']) : ['No Skills']; 
-    $profile_data['languages'] = !empty($profile_data['language']) ? explode(',', $profile_data['language']) : ['No Language']; 
-    $profile_data['profile_picture_url'] = $profile_data['profile_url'] ?? 'https://placehold.co/150x150/png?text=P';
-    $profile_data['email'] = $profile_data['email'] ?? "none";
-$profile_data['phone_number'] = $profile_data['phone_number'] ?? "none";
-$profile_data['education'] = $profile_data['education'] ?? "none";
-$profile_data['work_experience'] = $profile_data['work_experience'] ?? "none";
-$profile_data['is_verified'] = $profile_data['is_verified'] ?? false;
-$profile_data['job_field'] = $profile_data['job_field'] ?? "none";
-$profile_data['employment_type'] = $profile_data['employment_type'] ?? "none";
-$profile_data['shift_type'] = $profile_data['shift_type'] ?? "none";
-$profile_data['part_time_hours'] = $profile_data['part_time_hours'] ?? "none";
-$profile_data['profile_url'] = $profile_data['profile_url'] ?? "none";
-$profile_data['address'] = $profile_data['address'] ?? "none";
-$profile_data['skills'] = $profile_data['skills'] ?? "none";
-$profile_data['language'] = $profile_data['language'] ?? "none";
-$profile_data['bio'] = $profile_data['bio'] ?? "none";
-$profile_data['test_pass'] = $profile_data['test_pass'] ?? "none";
-$profile_data['gender'] = $profile_data['gender'] ?? "none";
+    // Sanitize and set defaults for display
+    $profile_data['name'] = trim(($profile_data['first_name'] ?? '') . ' ' . ($profile_data['last_name'] ?? ''));
+    $profile_data['bio'] = $profile_data['bio'] ?: 'No bio available. Click "Edit Profile" to add one.';
+    $profile_data['age'] = $profile_data['age'] ?: 'N/A';
+    $profile_data['address'] = $profile_data['address'] ?: 'N/A';
+    $profile_data['job_field'] = $profile_data['job_field'] ?: 'N/A';
+    $profile_data['gender'] = $profile_data['gender'] ?: 'N/A';
+    $profile_data['profile_url'] = $profile_data['profile_url'] ?: 'https://placehold.co/150x150/png?text=P';
 
-
-    $profile_data['name'] = $profile_data['first_name'] . ' ' . $profile_data['last_name'];
-
+    // Ensure skills and languages are always arrays for consistent frontend handling
+    $profile_data['skills'] = !empty($profile_data['skills']) ? explode(',', $profile_data['skills']) : [];
+    $profile_data['languages'] = !empty($profile_data['language']) ? explode(',', $profile_data['language']) : [];
+    
     echo json_encode(['success' => true, 'profile_data' => $profile_data]);
-}else {
+} else {
     http_response_code(404);
-    echo json_encode(['error' => 'User not found.']);
+    echo json_encode(['success' => false, 'error' => 'User not found.']);
 }
 
-$stmt->close();
 $conn->close();
 ?>
