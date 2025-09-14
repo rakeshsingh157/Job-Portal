@@ -7,23 +7,26 @@
     <link rel="icon" type="image/png" sizes="32x32" href="IMAGES/icon.png">
 
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
     <style>
         * {
             margin: 0;
             padding: 0;
             box-sizing: border-box;
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            font-family: 'Poppins', sans-serif;
         }
         
         body {
-            background: linear-gradient(135deg, #6a11cb 0%, #2575fc 100%);
+            background: linear-gradient(135deg, #1f2937 0%, #111827 100%);
             min-height: 100vh;
             display: flex;
             flex-direction: column;
             align-items: center;
             justify-content: center;
             padding: 20px;
-            color: white;
+            color: #f9fafb;
         }
         
         .header {
@@ -34,20 +37,20 @@
         
         .logo {
             font-size: 3.5rem;
-            font-weight: 800;
+            font-weight: 700;
             margin-bottom: 10px;
-            background: linear-gradient(to right, #ffdd00, #fbb034);
+            background: linear-gradient(to right, #38bdf8, #6366f1);
             -webkit-background-clip: text;
             -webkit-text-fill-color: transparent;
-            text-shadow: 0 2px 10px rgba(0, 0, 0, 0.2);
         }
         
         .tagline {
             font-size: 1.2rem;
-            opacity: 0.9;
+            color: #d1d5db;
             max-width: 600px;
             margin: 0 auto;
             line-height: 1.6;
+            font-weight: 300;
         }
         
         .text {
@@ -55,6 +58,7 @@
             margin: 30px 0;
             text-align: center;
             font-weight: 500;
+            color: #f9fafb;
             text-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
             animation: slideUp 1s ease-out;
         }
@@ -69,16 +73,16 @@
         }
         
         .block {
-            background: rgba(255, 255, 255, 0.1);
+            background: rgba(31, 41, 55, 0.5);
             backdrop-filter: blur(10px);
             border-radius: 20px;
             padding: 30px 25px;
             width: 300px;
             text-align: center;
             transition: all 0.3s ease;
-            border: 1px solid rgba(255, 255, 255, 0.2);
+            border: 1px solid rgba(255, 255, 255, 0.1);
             cursor: pointer;
-            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+            box-shadow: 0 8px 30px rgba(0, 0, 0, 0.2);
             animation: fadeIn 1s ease-out;
             animation-fill-mode: backwards;
         }
@@ -97,13 +101,13 @@
         
         .block:hover {
             transform: translateY(-10px) scale(1.03);
-            background: rgba(255, 255, 255, 0.15);
-            box-shadow: 0 15px 35px rgba(0, 0, 0, 0.3);
+            border-color: #38bdf8;
+            box-shadow: 0 0 25px rgba(56, 189, 248, 0.3), 0 15px 35px rgba(0, 0, 0, 0.4);
         }
         
         .icon-container {
-            width: 120px;
-            height: 120px;
+            width: 100px;
+            height: 100px;
             border-radius: 50%;
             display: flex;
             align-items: center;
@@ -113,18 +117,18 @@
         }
         
         .worker .icon-container {
-            background: linear-gradient(135deg, #ff7e5f, #feb47b);
-            box-shadow: 0 10px 20px rgba(255, 126, 95, 0.3);
+            background: linear-gradient(135deg, #38bdf8, #0ea5e9); /* Sky Blue */
+            box-shadow: 0 10px 20px rgba(56, 189, 248, 0.2);
         }
         
         .recruiter .icon-container {
-            background: linear-gradient(135deg, #00cdac, #02aab0);
-            box-shadow: 0 10px 20px rgba(0, 205, 172, 0.3);
+            background: linear-gradient(135deg, #2dd4bf, #14b8a6); /* Teal */
+            box-shadow: 0 10px 20px rgba(45, 212, 191, 0.2);
         }
         
         .admin .icon-container {
-            background: linear-gradient(135deg, #8e44ad, #9b59b6);
-            box-shadow: 0 10px 20px rgba(142, 68, 173, 0.3);
+            background: linear-gradient(135deg, #818cf8, #6366f1); /* Indigo */
+            box-shadow: 0 10px 20px rgba(129, 140, 248, 0.2);
         }
         
         .block:hover .icon-container {
@@ -132,37 +136,38 @@
         }
         
         .icon {
-            font-size: 50px;
+            font-size: 45px;
             color: white;
         }
         
         .title {
-            font-size: 1.6rem;
-            font-weight: 700;
+            font-size: 1.5rem;
+            font-weight: 600;
             margin: 15px 0;
-            color: white;
+            color: #f9fafb;
             text-transform: uppercase;
             letter-spacing: 1px;
         }
         
         .description {
-            font-size: 1rem;
+            font-size: 0.95rem;
             line-height: 1.6;
-            color: rgba(255, 255, 255, 0.8);
+            color: #d1d5db;
             margin-bottom: 20px;
+            font-weight: 300;
         }
         
         .divider {
-            height: 2px;
+            height: 1px;
             width: 50px;
-            background: linear-gradient(to right, transparent, rgba(255, 255, 255, 0.5), transparent);
+            background: linear-gradient(to right, transparent, rgba(255, 255, 255, 0.2), transparent);
             margin: 15px auto;
         }
         
         .btn {
-            background: rgba(255, 255, 255, 0.2);
-            color: white;
-            border: none;
+            background: transparent;
+            color: #38bdf8;
+            border: 2px solid #38bdf8;
             padding: 12px 30px;
             border-radius: 50px;
             font-weight: 600;
@@ -170,20 +175,20 @@
             cursor: pointer;
             transition: all 0.3s ease;
             margin-top: 10px;
-            backdrop-filter: blur(5px);
         }
         
         .btn:hover {
-            background: rgba(255, 255, 255, 0.3);
+            background: #38bdf8;
+            color: #111827;
             transform: translateY(-3px);
-            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
+            box-shadow: 0 5px 15px rgba(56, 189, 248, 0.3);
         }
         
         .footer {
             margin-top: 50px;
             text-align: center;
             font-size: 0.9rem;
-            opacity: 0.7;
+            color: #9ca3af;
         }
         
         /* Animations */
@@ -208,30 +213,69 @@
                 transform: translateY(0);
             }
         }
+
+        /* Mobile Blocker Styles */
+        #mobile-blocker {
+            display: none; /* Hidden by default on desktop */
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: #111827;
+            color: #f9fafb;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            text-align: center;
+            z-index: 1000;
+            padding: 20px;
+        }
+
+        #mobile-blocker .message-content {
+            max-width: 90%;
+        }
+
+        #mobile-blocker i {
+            font-size: 4rem;
+            margin-bottom: 25px;
+            color: #38bdf8;
+        }
+
+        #mobile-blocker h2 {
+            font-size: 1.8rem;
+            margin-bottom: 15px;
+        }
+
+        #mobile-blocker p {
+            font-size: 1.1rem;
+            line-height: 1.6;
+            color: #d1d5db;
+        }
         
-        /* Responsive design */
+        /* Responsive design: Block on mobile devices */
         @media (max-width: 768px) {
-            .container {
-                flex-direction: column;
-                align-items: center;
+            /* Hide all direct children of body except the blocker */
+            body > *:not(#mobile-blocker) {
+                display: none;
             }
             
-            .block {
-                width: 100%;
-                max-width: 350px;
-            }
-            
-            .logo {
-                font-size: 2.8rem;
-            }
-            
-            .text {
-                font-size: 1.5rem;
+            /* Show the mobile blocker message */
+            #mobile-blocker {
+                display: flex;
             }
         }
     </style>
 </head>
 <body>
+    <div id="mobile-blocker">
+        <div class="message-content">
+            <i class="fas fa-desktop"></i>
+            <h2>Unsupported Device</h2>
+            <p>This application is not supported on mobile devices. Please use a desktop or tablet for the full experience.</p>
+        </div>
+    </div>
+
     <div class="header">
         <div class="logo">JobP</div>
         <p class="tagline">Connect with opportunities that match your skills and ambitions. Your next career move starts here.</p>
@@ -273,9 +317,7 @@
         </div>
     </div>
     
-    <div class="footer">
-        <p>© 2023 JobP. All rights reserved. | Privacy Policy | Terms of Service</p>
-    </div>
+    
 
     <script>
         document.addEventListener('DOMContentLoaded', function() {
@@ -294,7 +336,7 @@
                     
                     // Reset after a short time
                     setTimeout(() => {
-                        this.style.transform = '';
+                        this.style.transform = 'translateY(-10px) scale(1.03)';
                     }, 300);
                     
                     // For demonstration purposes - would navigate to appropriate page
