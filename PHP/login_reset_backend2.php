@@ -16,7 +16,7 @@ use PHPMailer\PHPMailer\Exception;
 
 // Database Configuration
 // IMPORTANT: Replace with your actual database credentials.
-define('DB_HOST', 'photostore.ct0go6um6tj0.ap-south-1.rds.amazonaws.com'); // Your database host
+define('DB_HOST', 'database-1.chcyc88wcx2l.eu-north-1.rds.amazonaws.com'); // Your database host
 define('DB_USER', 'admin');     // Your database username
 define('DB_PASS', 'DBpicshot');         // Your database password
 define('DB_NAME', 'jobp_db');  // Your database name

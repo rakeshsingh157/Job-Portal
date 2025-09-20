@@ -2,57 +2,57 @@ let currentPost = null;
 let currentImageIndex = 0;
 let postsData = [];
 let currentUser = { id: null, company_id: null, type: null };
-let debounceTimer; // To prevent excessive requests while typing for post search
+let debounceTimer;
 
 document.addEventListener('DOMContentLoaded', () => {
-    // Initial fetch of all posts
+
     fetchPosts();
     
-    // Attach event listeners for forms
+
     document.getElementById('deleteForm').addEventListener('submit', handleFormSubmit);
     document.getElementById('commentForm').addEventListener('submit', handleFormSubmit);
 
-    // --- START: Search Functionality (Corrected) ---
+
     const searchInput = document.getElementById('headerSearchInput');
     const searchResultsContainer = document.getElementById('searchResults');
 
     if (searchInput && searchResultsContainer) {
         searchInput.addEventListener('input', (e) => {
             const query = e.target.value.trim();
-            clearTimeout(debounceTimer); // Clear previous timer on new input
+            clearTimeout(debounceTimer);
 
             if (query.startsWith('@')) {
-                // --- Handle User/Company Dropdown Search ---
-                if (query.length > 1) { // A query like '@a' is enough to start
-                    // This was the missing part: actually calling the search function
+
+                if (query.length > 1) {
+
                     fetchUserOrCompanyResults(query, searchResultsContainer);
                 } else {
-                    // If query is just "@" or empty, hide the dropdown
+
                     searchResultsContainer.innerHTML = '';
                     searchResultsContainer.style.display = 'none';
                 }
 
             } else {
-                // --- Handle Post Grid Filtering ---
-                // Hide and clear the user/company dropdown
+
+
                 searchResultsContainer.style.display = 'none';
                 searchResultsContainer.innerHTML = '';
 
-                // Use a debounce timer to wait until the user stops typing
+
                 debounceTimer = setTimeout(() => {
-                    fetchPosts(query); // Refetch posts with the search term
-                }, 400); // Wait 400ms after last keystroke
+                    fetchPosts(query);
+                }, 400);
             }
         });
 
-        // Hide search results dropdown when clicking outside the search input
+
         document.addEventListener('click', (e) => {
             if (!searchInput.contains(e.target)) {
                 searchResultsContainer.style.display = 'none';
             }
         });
     }
-    // --- END: Search Functionality ---
+
 });
 
 /**
@@ -70,7 +70,7 @@ async function fetchPosts(searchTerm = '') {
         });
         
         if (!response.ok) {
-            // Attempt fetch from an alternative path if the first fails
+
             let altUrl = `../PHP/fetch_posts.php`;
             altUrl = searchTerm ? `${altUrl}?post_search=${encodeURIComponent(searchTerm)}` : altUrl;
             
@@ -140,7 +140,7 @@ function displaySearchResults(results, container) {
 
         const resultItem = document.createElement('a');
         resultItem.className = 'search-result-item';
-        // You should update href to point to actual profile pages
+
         resultItem.href = `#`; 
         
         resultItem.innerHTML = `
@@ -156,7 +156,7 @@ function displaySearchResults(results, container) {
     container.style.display = 'block';
 }
 
-// Process post data after successful fetch
+
 function processPostData(data) {
     console.log('Data received:', data);
 
@@ -182,7 +182,7 @@ function processPostData(data) {
     }
 }
 
-// Function to handle form submissions (delete and comment)
+
 async function handleFormSubmit(event) {
     event.preventDefault();
     const form = event.target;
@@ -214,34 +214,34 @@ async function handleFormSubmit(event) {
     }
 }
 
-// Handle form response
+
 function handleFormResponse(data, form) {
     if (data.message) {
         showMessage(data.message.text, data.message.type);
     }
     
-    // Re-fetch posts to update the UI, maintaining current search filter if any
+
     const currentSearch = document.getElementById('headerSearchInput').value.trim();
     if (!currentSearch.startsWith('@')) {
         fetchPosts(currentSearch);
     } else {
-        fetchPosts(); // If a user search was active, just refresh all posts
+        fetchPosts();
     }
     
     if (form.id === 'deleteForm') {
         closeModal();
     } else if (form.id === 'commentForm') {
-        // Find the post in local data and update its comments for instant feedback
+
         const postId = form.querySelector('input[name="post_id"]').value;
         const post = postsData.find(p => p.id == postId);
         if(post) {
-            // This part is for instant UI update, but a full refetch is simpler and safer
+
         }
         form.querySelector('input[name="comment_text"]').value = '';
     }
 }
 
-// Function to render the posts on the page
+
 function renderPosts() {
     const postsGrid = document.getElementById('postsGrid');
     postsGrid.innerHTML = '';
@@ -288,7 +288,7 @@ function renderPosts() {
     }
 }
 
-// --- MODAL AND UTILITY FUNCTIONS (Unchanged) ---
+
 
 function openModal(postId) {
     currentPost = postsData.find(post => post.id == postId);

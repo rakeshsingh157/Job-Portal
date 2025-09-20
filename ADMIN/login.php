@@ -27,7 +27,7 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
     if ($result->num_rows > 0) {
         $admin = $result->fetch_assoc();
         
-        // This is a simplified check. Use password_hash() and password_verify() for production.
+
         if ($password === $admin['password']) {
             $_SESSION['admin_logged_in'] = true;
             $_SESSION['admin_id'] = $admin['userid'];

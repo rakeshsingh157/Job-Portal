@@ -1,7 +1,7 @@
 <?php
-// config.php
+
 session_start();
-define('DB_SERVER', 'photostore.ct0go6um6tj0.ap-south-1.rds.amazonaws.com');
+define('DB_SERVER', 'database-1.chcyc88wcx2l.eu-north-1.rds.amazonaws.com');
 define('DB_USERNAME', 'admin'); 
 define('DB_PASSWORD', 'DBpicshot'); 
 define('DB_NAME', 'jobp_db');
@@ -12,7 +12,7 @@ if ($conn->connect_error) {
     die("Connection failed: " . $conn->connect_error);
 }
 
-// Function to get current user ID and type
+
 function getCurrentUser() {
     if (isset($_SESSION['user_id'])) {
         return ['id' => $_SESSION['user_id'], 'type' => 'user'];
@@ -22,7 +22,7 @@ function getCurrentUser() {
     return null;
 }
 
-// Function to get user/company details
+
 function getUserDetails($id, $type) {
     global $conn;
     
@@ -38,7 +38,7 @@ function getUserDetails($id, $type) {
     return $result->fetch_assoc();
 }
 
-// Function to get current user details with profile photo
+
 function getCurrentUserDetails() {
     global $conn;
     $currentUser = getCurrentUser();
@@ -65,7 +65,7 @@ function getCurrentUserDetails() {
     return $user;
 }
 
-// Function to escape HTML output
+
 function escapeHtml($text) {
     return htmlspecialchars($text, ENT_QUOTES, 'UTF-8');
 }

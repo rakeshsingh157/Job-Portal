@@ -13,10 +13,10 @@ require_once __DIR__ . '/../vendor/autoload.php';
 use PHPMailer\PHPMailer\PHPMailer;
 use PHPMailer\PHPMailer\Exception;
 
-define('DB_HOST', 'photostore.ct0go6um6tj0.ap-south-1.rds.amazonaws.com'); // Your database host
-define('DB_USER', 'admin');  
-define('DB_PASS', 'DBpicshot');      
-define('DB_NAME', 'jobp_db'); 
+define('DB_HOST', 'database-1.chcyc88wcx2l.eu-north-1.rds.amazonaws.com'); 
+define('DB_USER', 'admin');    
+define('DB_PASS', 'DBpicshot');        
+define('DB_NAME', 'jobp_db');
 
 
 define('FAST2SMS_API_KEY', 'j7PzBgITwA49QlS3iyXrqskCaYME08HvtfbLUGFhxD1VJmZ6ucjrFg5SVfye7NbH1Umlc80TKvZW6tLd'); 
@@ -44,81 +44,81 @@ function sendSmsOtp($phoneNumber, $otp) {
 
     $smsApiUrl = "https://www.fast2sms.com/dev/bulkV2";
     $fields = array(
-        "variables_values" => $otp, // The OTP value to send
-        "route" => "otp",           // Specifies the OTP route
-        "numbers" => $phoneNumber,  // Recipient phone number(s)
-        "flash" => "0"              // Non-flash SMS
+        "variables_values" => $otp,
+        "route" => "otp",
+        "numbers" => $phoneNumber,
+        "flash" => "0"
     );
 
-    // Build the complete URL with query parameters including the authorization key
+
     $url = $smsApiUrl . '?' . http_build_query(array_merge($fields, ['authorization' => FAST2SMS_API_KEY]));
 
-    // Initialize cURL session
+
     $ch = curl_init();
     curl_setopt($ch, CURLOPT_URL, $url);
-    curl_setopt($ch, CURLOPT_RETURNTRANSFER, true); 
-    curl_setopt($ch, CURLOPT_FOLLOWLOCATION, true); 
-    curl_setopt($ch, CURLOPT_TIMEOUT, 30);      
+    curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+    curl_setopt($ch, CURLOPT_FOLLOWLOCATION, true);
+    curl_setopt($ch, CURLOPT_TIMEOUT, 30);
 
-    curl_setopt($ch, CURLOPT_SSL_VERIFYHOST, 0); 
-    curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, 0); 
-    curl_setopt($ch, CURLOPT_CUSTOMREQUEST, "GET"); 
+    curl_setopt($ch, CURLOPT_SSL_VERIFYHOST, 0);
+    curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, 0);
+    curl_setopt($ch, CURLOPT_CUSTOMREQUEST, "GET");
 
 
     $response = curl_exec($ch);
-    $err = curl_error($ch); 
+    $err = curl_error($ch);
     curl_close($ch);
 
-    // Handle cURL errors
+
     if ($err) {
         error_log("cURL Error (Fast2SMS): " . $err);
         return ['success' => false, 'message' => 'Failed to connect to SMS service (cURL error).'];
     }
 
-    // Decode the JSON response from Fast2SMS
+
     $responseData = json_decode($response, true);
 
-    // Check Fast2SMS API response for success
+
     if (isset($responseData['return']) && $responseData['return'] === true) {
         return ['success' => true, 'message' => 'SMS OTP sent successfully.'];
     } else {
-        // Log the full response for debugging if the API call was not successful
+
         error_log("Fast2SMS API Error Response: " . ($response ?: "Empty response"));
         return ['success' => false, 'message' => 'SMS service returned an error.'];
     }
 }
 
-// Set the content type header for JSON responses for all AJAX requests
+
 header('Content-Type: application/json');
 
-// Process only POST requests from the frontend
+
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
-    // Get the raw POST data and decode it from JSON
+
     $input = file_get_contents('php://input');
     $data = json_decode($input, true);
 
-    // Extract common data from the request payload
-    $action = $data['action'] ?? null; // Determines the specific backend action to perform
-    $email = $data['email'] ?? null;
-    $otpCodeEmail = $data['otpCodeEmail'] ?? null; // Email OTP provided by user
-    $otpCodePhone = $data['otpCodePhone'] ?? null; // Phone OTP provided by user
 
-    // Data specific to 'send_otp' action (user registration details for cuser)
+    $action = $data['action'] ?? null;
+    $email = $data['email'] ?? null;
+    $otpCodeEmail = $data['otpCodeEmail'] ?? null;
+    $otpCodePhone = $data['otpCodePhone'] ?? null;
+
+
     $companyName = $data['companyName'] ?? null; 
     $password = $data['password'] ?? null;
-    $countryCode = $data['countryCode'] ?? '+91'; // Default to +91 for India
+    $countryCode = $data['countryCode'] ?? '+91';
     $phoneNumber = $data['phoneNumber'] ?? null;
 
-    // Gmail SMTP Credentials for PHPMailer
-    // IMPORTANT: Replace with your actual Gmail address and 16-character App Password.
-    // An App Password is required if you have 2-Factor Authentication enabled on your Gmail.
+
+
+
     $smtpUsername = 'jobportal00000@gmail.com';
     $smtpPassword = 'gztykeykurgggklb';
 
 
-    // --- SIGNUP ACTIONS (for 'cuser' table) ---
 
-    // Action to send OTPs (email and SMS) for new user registration
+
+
     if ($action === 'send_otp') {
         // Validate required input fields
         if (empty($email) || !filter_var($email, FILTER_VALIDATE_EMAIL)) {
@@ -126,62 +126,62 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             echo json_encode(['message' => 'Valid email address is required.']);
             exit();
         }
-        if (empty($phoneNumber) || !preg_match('/^[0-9]{10,15}$/', $phoneNumber)) { // Basic regex for 10-15 digits
+        if (empty($phoneNumber) || !preg_match('/^[0-9]{10,15}$/', $phoneNumber)) {
             http_response_code(400);
             echo json_encode(['message' => 'Valid phone number is required.']);
             exit();
         }
-        // Validate companyName, assuming it's a NOT NULL field in 'cuser' table
+
         if (empty($companyName)) { 
             http_response_code(400);
             echo json_encode(['message' => 'Company name is required.']);
             exit();
         }
 
-        // Check if email or phone number already exists in the 'cuser' table
+
         $conn = getDbConnection();
         $stmt_check = $conn->prepare("SELECT id FROM cuser WHERE email = ? OR phone_number = ? LIMIT 1");
         $stmt_check->bind_param("ss", $email, $phoneNumber);
         $stmt_check->execute();
         $stmt_check->store_result();
         if ($stmt_check->num_rows > 0) {
-            http_response_code(409); // Conflict status code (resource already exists)
+            http_response_code(409);
             echo json_encode(['message' => 'Email or Phone Number is already registered. Please sign in or use a different one.']);
             $stmt_check->close();
             $conn->close();
             exit();
         }
         $stmt_check->close();
-        $conn->close(); // Close connection after check to free up resources
+        $conn->close();
 
-        // Generate random OTPs for email and phone
-        $email_otp = str_pad(mt_rand(100000, 999999), 6, '0', STR_PAD_LEFT); // 6-digit email OTP
-        $phone_otp = str_pad(mt_rand(1000, 9999), 4, '0', STR_PAD_LEFT);     // 4-digit phone OTP
 
-        // Store OTPs and their expiry times in the session
+        $email_otp = str_pad(mt_rand(100000, 999999), 6, '0', STR_PAD_LEFT);
+        $phone_otp = str_pad(mt_rand(1000, 9999), 4, '0', STR_PAD_LEFT);
+
+
         $_SESSION['email_otp'] = $email_otp;
         $_SESSION['email_otp_email'] = $email;
-        $_SESSION['email_otp_expiry'] = time() + (5 * 60); // OTP valid for 5 minutes
+        $_SESSION['email_otp_expiry'] = time() + (5 * 60);
 
         $_SESSION['phone_otp'] = $phone_otp;
         $_SESSION['phone_otp_phone'] = $phoneNumber;
         $_SESSION['phone_otp_expiry'] = time() + (5 * 60);
 
-        // Store all user registration data temporarily in session
-        // This data will be used to insert into the database AFTER successful OTP verification.
+
+
         $_SESSION['temp_user_data'] = [
             'company_name' => $companyName, 
-            'password' => $password, // Plain password (to be hashed before DB insert)
+            'password' => $password,
             'country_code' => $countryCode,
             'phone_number' => $phoneNumber,
-            'cverified_value' => null // Default value for 'cverified' column
+            'cverified_value' => null
         ];
 
         $emailSent = false;
         $smsSent = false;
-        $messages = []; // Array to collect messages for the frontend
+        $messages = [];
 
-        // --- Send Email OTP using PHPMailer ---
+
         $mail = new PHPMailer(true);
         try {
             $mail->isSMTP();
@@ -189,13 +189,13 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             $mail->SMTPAuth   = true;
             $mail->Username   = $smtpUsername;
             $mail->Password   = $smtpPassword;
-            $mail->SMTPSecure = PHPMailer::ENCRYPTION_SMTPS; // Use SMTPS for port 465
+            $mail->SMTPSecure = PHPMailer::ENCRYPTION_SMTPS;
             $mail->Port       = 465;
 
-            $mail->setFrom($smtpUsername, 'JobP OTP'); // Sender email and name
-            $mail->addAddress($email); // Recipient email
+            $mail->setFrom($smtpUsername, 'JobP OTP');
+            $mail->addAddress($email);
 
-            $mail->isHTML(true); // Set email format to HTML
+            $mail->isHTML(true);
             $mail->Subject = 'Your JobP Email OTP';
             $mail->Body    = "Your Email One-Time Password (OTP) for JobP is: <b>" . $email_otp . "</b>.<br>It is valid for 5 minutes. Do not share this code.";
             $mail->AltBody = "Your Email One-Time Password (OTP) for JobP is: " . $email_otp . ". It is valid for 5 minutes. Do not share this code.";
@@ -204,25 +204,25 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             $emailSent = true;
             $messages[] = 'Email OTP sent.';
         } catch (Exception $e) {
-            error_log('Mailer Error: ' . $mail->ErrorInfo); // Log detailed PHPMailer error
+            error_log('Mailer Error: ' . $mail->ErrorInfo);
             $messages[] = 'Error sending email OTP.';
         }
 
-        // --- Send Phone OTP using Fast2SMS API ---
-        $fullPhoneNumberForSMS = ltrim($countryCode, '+') . $phoneNumber; // Remove '+' from country code if API requires
+
+        $fullPhoneNumberForSMS = ltrim($countryCode, '+') . $phoneNumber;
         $smsResult = sendSmsOtp($fullPhoneNumberForSMS, $phone_otp);
         if ($smsResult['success']) {
             $smsSent = true;
             $messages[] = 'SMS OTP sent.';
         } else {
-            error_log('SMS Error: ' . $smsResult['message']); // Log detailed SMS error
+            error_log('SMS Error: ' . $smsResult['message']);
             $messages[] = 'Error sending SMS OTP.';
         }
 
-        // Respond to the frontend based on whether at least one OTP was sent successfully
+
         if ($emailSent || $smsSent) {
             http_response_code(200);
-            echo json_encode(['message' => implode(' ', $messages)]); // Combine messages for the user
+            echo json_encode(['message' => implode(' ', $messages)]);
         } else {
             http_response_code(500);
             echo json_encode(['message' => 'Failed to send any OTP. Please try again.']);

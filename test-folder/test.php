@@ -1,6 +1,6 @@
 <?php
-//  Step 1: Your Filestack API key
-$filestack_key = "A3xfbwhHOSe25uFyU1V9Lz"; // replace with actual key
+
+$filestack_key = "A3xfbwhHOSe25uFyU1V9Lz";
 
 $error       = null;
 $uploadLink  = null;
@@ -16,7 +16,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_FILES['pdf_file'])) {
         $tmpPath = $_FILES['pdf_file']['tmp_name'];
         $fileName = $_FILES['pdf_file']['name'];
 
-        // Filestack upload endpoint
+
         $endpoint = "https://www.filestackapi.com/api/store/S3?key={$filestack_key}&filename=" . urlencode($fileName);
 
         $ch = curl_init($endpoint);

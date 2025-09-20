@@ -1,5 +1,5 @@
 $(document).ready(function() {
-    let allFormsData = []; 
+    let allFormsData = [];
 
 
     function loadForms() {
@@ -134,7 +134,7 @@ $(document).ready(function() {
                             let docLinksHtml = '';
                             if (docUrls.length > 0) {
                                 docUrls.forEach((docUrl, index) => {
-                                    const label = documentLabels[index] || `Document ${index + 1}`; // Fallback label
+                                    const label = documentLabels[index] || `Document ${index + 1}`;
                                     docLinksHtml += `
                                         <div>
                                             <strong>${label}:</strong> 

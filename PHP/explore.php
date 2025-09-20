@@ -2,7 +2,7 @@
 <?php
 header('Content-Type: application/json');
 
-// Database connection
+
 require_once('config.php');
 
 $response = ['success' => false, 'message' => ''];
@@ -13,7 +13,7 @@ if ($conn->connect_error) {
     exit();
 }
 
-// Start building the SQL query
+
 $sql = "SELECT Jobs.*, cuser.company_name, cuser.profile_photo 
         FROM Jobs 
         JOIN cuser ON Jobs.cuser_id = cuser.id";
@@ -22,7 +22,7 @@ $conditions = [];
 $params = [];
 $types = '';
 
-// Handle keyword/job title search across multiple fields
+
 if (!empty($_GET['job_title'])) {
     $keyword = '%' . $_GET['job_title'] . '%';
     $conditions[] = "(Jobs.job_title LIKE ? OR Jobs.job_desc LIKE ? OR Jobs.location LIKE ? OR Jobs.work_mode LIKE ? OR Jobs.experience LIKE ? OR Jobs.time LIKE ? OR Jobs.salary LIKE ? OR Jobs.skills LIKE ? OR cuser.company_name LIKE ?)";
@@ -38,7 +38,7 @@ if (!empty($_GET['job_title'])) {
     $types .= 'sssssssss';
 }
 
-// Handle location search/filter
+
 if (!empty($_GET['location'])) {
     $keyword = '%' . $_GET['location'] . '%';
     $conditions[] = "(Jobs.location LIKE ?)";
@@ -46,12 +46,12 @@ if (!empty($_GET['location'])) {
     $types .= 's';
 }
 
-// Handle checkbox filters for 'experience' with a flexible mapping
+
 if (!empty($_GET['experience'])) {
     $experiences = explode(',', $_GET['experience']);
     $experience_conditions = [];
     foreach ($experiences as $exp) {
-        // Map checkbox value to a pattern that matches your data
+
         if ($exp === 'Student') {
             $experience_conditions[] = "Jobs.experience LIKE ?";
             $params[] = '%Fresher%';
@@ -73,7 +73,7 @@ if (!empty($_GET['experience'])) {
             $params[] = '%10+%';
             $types .= 's';
         } else {
-            // Fallback for direct match if the mapping doesn't exist
+
             $experience_conditions[] = "Jobs.experience LIKE ?";
             $params[] = '%' . $exp . '%';
             $types .= 's';
@@ -84,7 +84,7 @@ if (!empty($_GET['experience'])) {
     }
 }
 
-// Handle checkbox filters for 'job type' (time)
+
 if (!empty($_GET['time'])) {
     $job_types = explode(',', $_GET['time']);
     $job_type_placeholders = implode(',', array_fill(0, count($job_types), '?'));
@@ -95,7 +95,7 @@ if (!empty($_GET['time'])) {
     }
 }
 
-// Handle checkbox filters for 'salary' with a flexible LIKE search
+
 if (!empty($_GET['salary'])) {
     $salaries = explode(',', $_GET['salary']);
     $salary_conditions = [];
@@ -109,7 +109,7 @@ if (!empty($_GET['salary'])) {
     }
 }
 
-// Handle checkbox filters for 'work_mode'
+
 if (!empty($_GET['work_mode'])) {
     $work_modes = explode(',', $_GET['work_mode']);
     $work_mode_placeholders = implode(',', array_fill(0, count($work_modes), '?'));
@@ -120,7 +120,7 @@ if (!empty($_GET['work_mode'])) {
     }
 }
 
-// Append WHERE clause if conditions exist
+
 if (!empty($conditions)) {
     $sql .= " WHERE " . implode(" AND ", $conditions);
 }

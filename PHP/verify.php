@@ -5,7 +5,7 @@ ini_set('display_errors', 1);
 ini_set('display_startup_errors', 1);
 error_reporting(E_ALL);
 
-define('DB_HOST', 'photostore.ct0go6um6tj0.ap-south-1.rds.amazonaws.com');
+define('DB_HOST', 'database-1.chcyc88wcx2l.eu-north-1.rds.amazonaws.com');
 define('DB_USER', 'admin');
 define('DB_PASS', 'DBpicshot');
 define('DB_NAME', 'jobp_db');

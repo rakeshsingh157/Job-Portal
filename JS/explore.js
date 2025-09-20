@@ -19,7 +19,7 @@ function toggleSearchOverlay() {
     searchOverlay.classList.toggle('visible');
 }
 
-// Custom function to replace alert()
+
 function showCustomAlert(message) {
    
 }
@@ -58,7 +58,7 @@ async function fetchJobs(filters = {}) {
                 const card = document.createElement('div');
                 card.className = `job-card ${getRandomColorClass()}`;
 
-                // Split skills string and create tags
+
                 const skillsList = job.skills ? job.skills.split(',').map(skill => `<span class="tag">${skill.trim()}</span>`).join('') : '';
 
                 card.innerHTML = `

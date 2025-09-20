@@ -43,7 +43,7 @@ if ($stmt_job = $conn->prepare($sql_job)) {
                 'salary' => $row_job['salary'],
                 'skills' => $row_job['skills'],
                 'form_link' => $row_job['form_link'],
-                'cuser_id' => $row_job['cuser_id'] // Add this line to include cuser_id
+                'cuser_id' => $row_job['cuser_id']
             ];
             $cuser_id = (int)$row_job['cuser_id'];
 

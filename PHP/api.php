@@ -1,7 +1,7 @@
 <?php
 header('Content-Type: application/json');
 
-// Database connection
+
 require_once('config.php');
 
 $response = ['success' => false, 'message' => ''];
@@ -12,7 +12,7 @@ if ($conn->connect_error) {
     exit();
 }
 
-// Start building the SQL query
+
 $sql = "SELECT Jobs.*, cuser.company_name, cuser.profile_photo 
         FROM Jobs 
         JOIN cuser ON Jobs.cuser_id = cuser.id";
@@ -21,7 +21,7 @@ $conditions = [];
 $params = [];
 $types = '';
 
-// Handle keyword/job title search
+
 if (!empty($_GET['job_title'])) {
     $keyword = '%' . $_GET['job_title'] . '%';
     $conditions[] = "(Jobs.job_title LIKE ? OR Jobs.skills LIKE ? OR cuser.company_name LIKE ?)";
@@ -31,7 +31,7 @@ if (!empty($_GET['job_title'])) {
     $types .= 'sss';
 }
 
-// Handle location search/filter
+
 if (!empty($_GET['location'])) {
     $keyword = '%' . $_GET['location'] . '%';
     $conditions[] = "(Jobs.location LIKE ?)";
@@ -39,7 +39,7 @@ if (!empty($_GET['location'])) {
     $types .= 's';
 }
 
-// Handle checkbox filters for 'experience'
+
 if (!empty($_GET['experience'])) {
     $experiences = explode(',', $_GET['experience']);
     $experience_placeholders = implode(',', array_fill(0, count($experiences), '?'));
@@ -50,7 +50,7 @@ if (!empty($_GET['experience'])) {
     }
 }
 
-// Handle checkbox filters for 'job type' (time)
+
 if (!empty($_GET['time'])) {
     $job_types = explode(',', $_GET['time']);
     $job_type_placeholders = implode(',', array_fill(0, count($job_types), '?'));
@@ -61,7 +61,7 @@ if (!empty($_GET['time'])) {
     }
 }
 
-// Handle checkbox filters for 'salary'
+
 if (!empty($_GET['salary'])) {
     $salaries = explode(',', $_GET['salary']);
     $salary_placeholders = implode(',', array_fill(0, count($salaries), '?'));
@@ -72,7 +72,7 @@ if (!empty($_GET['salary'])) {
     }
 }
 
-// Handle checkbox filters for 'work_mode'
+
 if (!empty($_GET['work_mode'])) {
     $work_modes = explode(',', $_GET['work_mode']);
     $work_mode_placeholders = implode(',', array_fill(0, count($work_modes), '?'));
@@ -83,7 +83,7 @@ if (!empty($_GET['work_mode'])) {
     }
 }
 
-// Append WHERE clause if conditions exist
+
 if (!empty($conditions)) {
     $sql .= " WHERE " . implode(" AND ", $conditions);
 }

@@ -1,8 +1,7 @@
 <?php
-// generate_quiz.php
 
-// This script generates a multiple-choice quiz using the Cohere API
-// based on a user-provided topic.
+
+
 
 ini_set('display_errors', 1);
 ini_set('display_startup_errors', 1);
@@ -12,14 +11,14 @@ session_start();
 
 header('Content-Type: application/json');
 
-// Define the system message content for quiz generation
+
 const QUIZ_SYSTEM_MESSAGE_CONTENT = "You are a quiz master. Your task is to generate exactly 10 multiple-choice questions about a given topic. For each question, provide 4 options (A, B, C, D) and clearly indicate the correct answer. Format the entire output as a JSON array of objects, where each object has 'question' (string), 'options' (an array of 4 strings), and 'correct_answer' (string, e.g., 'A', 'B', 'C', 'D'). Ensure the JSON is valid and only contains the array of questions. DO NOT include any other text or formatting outside the JSON array. The questions should be relevant to the provided job field.";
 
 
 if (isset($_POST['field'])) {
     $userField = $_POST['field'];
 
-    // Construct the prompt for the AI
+
     $prompt = "Generate 10 multiple-choice questions about \"" . $userField . "\".";
 
     $ch = curl_init();
@@ -28,18 +27,18 @@ if (isset($_POST['field'])) {
     curl_setopt($ch, CURLOPT_POST, 1);
     
     $payload = [
-        "model" => "command-r-plus", // Assuming command-r-plus model for Cohere
+        "model" => "command-r-plus",
         "message" => $prompt,
-        "chat_history" => [], // No chat history needed for fresh quiz generation
-        "preamble" => QUIZ_SYSTEM_MESSAGE_CONTENT, // Use quiz-specific preamble
-        "max_tokens" => 2000 // Increased max_tokens to ensure the full JSON response is received.
+        "chat_history" => [],
+        "preamble" => QUIZ_SYSTEM_MESSAGE_CONTENT,
+        "max_tokens" => 2000
     ];
 
     $json_payload = json_encode($payload);
     
     curl_setopt($ch, CURLOPT_POSTFIELDS, $json_payload);
 
-    // IMPORTANT: Replace 'YOUR_COHERE_API_KEY' with your actual key
+
     curl_setopt($ch, CURLOPT_HTTPHEADER, [
         "Authorization: Bearer QHw20MxzRN9JU1VQUKdovICaOXPONYz86DXdUiqy",
         "Content-Type: application/json",
@@ -59,7 +58,7 @@ if (isset($_POST['field'])) {
         if ($http_code !== 200) {
             http_response_code($http_code);
             echo json_encode(['error' => "Error from AI service (HTTP " . $http_code . "): " . (isset($data['message']) ? $data['message'] : $response)]);
-        } elseif (isset($data['text'])) { // Cohere response uses 'text' field
+        } elseif (isset($data['text'])) {
             $quiz_questions_json_string = $data['text'];
             
             $questions = json_decode($quiz_questions_json_string, true);
@@ -67,7 +66,7 @@ if (isset($_POST['field'])) {
             if (json_last_error() === JSON_ERROR_NONE && is_array($questions)) {
                 echo json_encode(['success' => true, 'questions' => $questions]);
             } else {
-                // Attempt to extract JSON from a markdown code block (```json ... ```)
+
                 $parsed_questions = [];
                 if (preg_match('/```json\s*(.*?)\s*```/s', $quiz_questions_json_string, $matches)) {
                     $json_part = $matches[1];

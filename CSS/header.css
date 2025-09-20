@@ -1,7 +1,7 @@
-/* Basic styling for the body to show the header properly */
 
 
-/* CSS variables for consistent theming */
+
+
 :root {
     --card-background: #f8f8f8;
     --shadow-light: rgba(0, 0, 0, 0.1);
@@ -10,7 +10,7 @@
     --border-color: #ddd;
 }
 
-/* The main header container */
+
 .navbar {
     display: flex;
     justify-content: space-between;
@@ -23,14 +23,14 @@
     z-index: 1000;
 }
 
-/* Left section of the navbar (logo) */
+
 .navbar-left .logo {
     font-size: 24px;
     font-weight: 700;
     color: var(--primary-blue);
 }
 
-/* Center section of the navbar (navigation) */
+
 .navbar-center ul {
     list-style: none;
     display: flex;
@@ -39,7 +39,7 @@
     padding: 0;
 }
 
-/* Navigation links */
+
 .navbar-center ul li a {
     text-decoration: none;
     color: var(--text-color-light);
@@ -47,20 +47,20 @@
     transition: color 0.3s ease;
 }
 
-/* Hover and active states for navigation links */
+
 .navbar-center ul li a:hover,
 .navbar-center ul li a.active {
     color: var(--primary-blue);
 }
 
-/* Right section of the navbar (location and profile) */
+
 .navbar-right {
     display: flex;
     align-items: center;
     gap: 20px;
 }
 
-/* Location display */
+
 .location-info {
     display: flex;
     align-items: center;
@@ -73,7 +73,7 @@
     color: var(--primary-blue);
 }
 
-/* Profile image container */
+
 .profile-avatar img {
     width: 36px;
     height: 36px;
@@ -82,11 +82,7 @@
     border: 1px solid var(--border-color);
 }
 
-/* The following CSS was in your provided code but doesn't match the new HTML.
-   I've included it below, but you may need to adjust your HTML to use these classes.
-   For example, the original profile-icon class is now changed to profile-avatar.
-   The .navbar-right .location class is replaced by .location-info.
-*/
+
 .navbar-right .menu-icon {
     color: var(--text-color-light);
     font-size: 18px;

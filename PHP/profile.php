@@ -1,13 +1,13 @@
 <?php
-// profile.php
+
 ini_set('display_errors', 1);
 error_reporting(E_ALL);
 header('Content-Type: application/json');
 
 session_start();
-require('config.php'); // Your database connection
+require('config.php'); 
 
-// Make sure a user is logged in
+
 if (!isset($_SESSION['user_id'])) {
    http_response_code(401);
    echo json_encode(['success' => false, 'error' => 'User not authenticated.']);
@@ -15,10 +15,10 @@ if (!isset($_SESSION['user_id'])) {
 }
 $user_id = $_SESSION['user_id'];
 
-// --- HANDLE POST REQUESTS (Updating data) ---
+
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     
-    // Check for a specific action (e.g., add/delete language)
+
     if (isset($_POST['action'])) {
         $action = $_POST['action'];
 
@@ -39,7 +39,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             if (!in_array($new_language, $current_languages)) {
                 $current_languages[] = $new_language;
             }
-            // Filter out empty values and join
+
             $updated_languages = implode(',', array_filter($current_languages));
 
             $stmt = $conn->prepare("UPDATE users SET language = ? WHERE id = ?");
@@ -63,7 +63,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             $current_languages = explode(',', $stmt->get_result()->fetch_assoc()['language'] ?? '');
             $stmt->close();
             
-            // Remove the specified language
+
             $updated_languages = array_diff($current_languages, [$language_to_delete]);
             $updated_languages_string = implode(',', array_filter($updated_languages));
 
@@ -80,9 +80,9 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         }
     }
 
-    // Handle profile photo upload
+
     if (isset($_FILES['profile_photo'])) {
-        // ImgBB API Key - It's better to store this in an environment variable
+
         define('IMGBB_API_KEY', '8f23d9f5d1b5960647ba5942af8a1523'); 
         $file = $_FILES['profile_photo'];
 
@@ -119,7 +119,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         exit;
     }
 
-    // Handle general profile update from edit form
+
     $first_name = htmlspecialchars($_POST['first_name'] ?? '');
     $last_name = htmlspecialchars($_POST['last_name'] ?? '');
     $address = htmlspecialchars($_POST['address'] ?? '');
@@ -143,7 +143,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     exit;
 }
 
-// --- HANDLE GET REQUEST (Fetching data) ---
+
 $stmt = $conn->prepare("SELECT * FROM users WHERE id = ?");
 $stmt->bind_param("i", $user_id);
 $stmt->execute();
@@ -152,7 +152,7 @@ $profile_data = $result->fetch_assoc();
 $stmt->close();
 
 if ($profile_data) {
-    // Sanitize and set defaults for display
+
     $profile_data['name'] = trim(($profile_data['first_name'] ?? '') . ' ' . ($profile_data['last_name'] ?? ''));
     $profile_data['bio'] = $profile_data['bio'] ?: 'No bio available. Click "Edit Profile" to add one.';
     $profile_data['age'] = $profile_data['age'] ?: 'N/A';
@@ -161,7 +161,7 @@ if ($profile_data) {
     $profile_data['gender'] = $profile_data['gender'] ?: 'N/A';
     $profile_data['profile_url'] = $profile_data['profile_url'] ?: 'https://placehold.co/150x150/png?text=P';
 
-    // Ensure skills and languages are always arrays for consistent frontend handling
+
     $profile_data['skills'] = !empty($profile_data['skills']) ? explode(',', $profile_data['skills']) : [];
     $profile_data['languages'] = !empty($profile_data['language']) ? explode(',', $profile_data['language']) : [];
     

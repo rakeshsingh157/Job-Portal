@@ -1,10 +1,10 @@
 <?php
-// chat_api.php
+
 require_once 'config2.php';
 
 header('Content-Type: application/json');
 
-// Helper function to handle a graceful exit with a JSON error message.
+
 function jsonError($message) {
     echo json_encode(['error' => $message]);
     exit;
@@ -156,7 +156,7 @@ function getConversations($currentUser) {
 function getMessages($conversationId, $currentUser) {
     global $conn;
     
-    // Check if the current user has access to this conversation
+
     $conversationAccess = false;
     $stmt = $conn->prepare("
         SELECT id, conversation_type, user1_id, user2_id, company1_id, company2_id 
@@ -170,7 +170,7 @@ function getMessages($conversationId, $currentUser) {
     if ($result->num_rows > 0) {
         $row = $result->fetch_assoc();
         
-        // Check access based on conversation type and user type
+
         switch ($row['conversation_type']) {
             case 'user_to_user':
                 if ($currentUser['type'] === 'user' && 
@@ -197,7 +197,7 @@ function getMessages($conversationId, $currentUser) {
         jsonError('Conversation not found or access denied');
     }
     
-    // Get messages
+
     $stmt = $conn->prepare("
         SELECT m.*, 
                CASE 
@@ -222,7 +222,7 @@ function getMessages($conversationId, $currentUser) {
     while ($row = $result->fetch_assoc()) {
         $isMe = ($row['sender_type'] === $currentUser['type'] && $row['sender_id'] == $currentUser['id']);
         
-        // Convert the timestamp to IST
+
         try {
             $timestampUTC = new DateTime($row['timestamp'], new DateTimeZone('UTC'));
             $timestampUTC->setTimezone(new DateTimeZone('Asia/Kolkata'));
@@ -245,7 +245,7 @@ function getMessages($conversationId, $currentUser) {
         ];
     }
     
-    // Mark messages as read for the current user in this conversation
+
     $stmt = $conn->prepare("
         UPDATE messages SET is_read = TRUE 
         WHERE conversation_id = ? 
@@ -269,11 +269,11 @@ function sendMessage($data, $currentUser) {
         jsonError('Message or receiver ID is empty');
     }
     
-    // Find or create conversation
+
     $conversationId = null;
     $stmt = null;
     
-    // Determine the type of conversation
+
     $conversationType = '';
     if ($currentUser['type'] === 'user' && $receiverType === 'user') {
         $conversationType = 'user_to_user';
@@ -283,9 +283,7 @@ function sendMessage($data, $currentUser) {
         $conversationType = 'user_to_company';
     }
     
-    // Find existing conversation
     if ($conversationType === 'user_to_user') {
-        // Find existing conversation, order of users doesn't matter
         $stmt = $conn->prepare("
             SELECT id FROM conversations 
             WHERE conversation_type = 'user_to_user' 
@@ -293,7 +291,6 @@ function sendMessage($data, $currentUser) {
         ");
         $stmt->bind_param("iiii", $currentUser['id'], $receiverId, $receiverId, $currentUser['id']);
     } elseif ($conversationType === 'company_to_company') {
-        // Find existing conversation, order of companies doesn't matter
         $stmt = $conn->prepare("
             SELECT id FROM conversations 
             WHERE conversation_type = 'company_to_company' 
@@ -301,7 +298,6 @@ function sendMessage($data, $currentUser) {
         ");
         $stmt->bind_param("iiii", $currentUser['id'], $receiverId, $receiverId, $currentUser['id']);
     } else {
-        // user_to_company
         if ($currentUser['type'] === 'user') {
             $stmt = $conn->prepare("
                 SELECT id FROM conversations 
@@ -326,7 +322,7 @@ function sendMessage($data, $currentUser) {
         $row = $result->fetch_assoc();
         $conversationId = $row['id'];
     } else {
-        // Create new conversation
+
         if ($conversationType === 'user_to_user') {
             $stmt = $conn->prepare("
                 INSERT INTO conversations (user1_id, user2_id, conversation_type) 
@@ -348,7 +344,6 @@ function sendMessage($data, $currentUser) {
                 $stmt->bind_param("ii", $receiverId, $currentUser['id']);
             }
         } else {
-            // user_to_company
             $stmt = $conn->prepare("
                 INSERT INTO conversations (user1_id, company1_id, conversation_type) 
                 VALUES (?, ?, 'user_to_company')
@@ -367,7 +362,7 @@ function sendMessage($data, $currentUser) {
         }
     }
     
-    // Insert message
+
     $stmt = $conn->prepare("
         INSERT INTO messages (conversation_id, sender_type, sender_id, message)
         VALUES (?, ?, ?, ?)
@@ -387,7 +382,7 @@ function searchUsers($query, $currentUser) {
     $searchTerm = "%$query%";
     $results = [];
     
-    // Search both users and companies regardless of current user type
+
     $stmt = $conn->prepare("
         (SELECT id, CONCAT(first_name, ' ', last_name) as name, profile_url as photo, is_verified, 'user' as type
         FROM users 
@@ -403,7 +398,7 @@ function searchUsers($query, $currentUser) {
     $result = $stmt->get_result();
     
     while ($row = $result->fetch_assoc()) {
-        // Don't show the current user in search results
+
         if ($row['type'] === $currentUser['type'] && $row['id'] == $currentUser['id']) {
             continue;
         }
@@ -420,7 +415,7 @@ function searchUsers($query, $currentUser) {
     echo json_encode($results);
 }
 
-// Helper function to get current user details
 
-// Remove the duplicate getCurrentUser() and getUserDetails() functions since they're already defined in config2.php
+
+
 ?>

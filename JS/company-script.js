@@ -1,9 +1,9 @@
-// State management
+
 let isEditing = false;
 let editingJobIndex = -1;
 let jobs = [];
 
-// DOM elements
+
 const editProfileBtn = document.getElementById('edit-profile-btn');
 const saveProfileBtn = document.getElementById('save-profile-btn');
 const profileDisplay = document.getElementById('profile-display');
@@ -20,13 +20,13 @@ const avatarContainer = document.getElementById('avatar-container');
 const avatarInput = document.getElementById('avatar-input');
 const profileImage = document.getElementById('profile-image');
 const avatarPlaceholder = document.getElementById('avatar-placeholder');
-const displayContact = document.getElementById('display-contact'); // Added for the contact information
+const displayContact = document.getElementById('display-contact');
 
-// New DOM element for the header profile image
+
 const profileImageHeader = document.getElementById('profile-image2');
 const loadingOverlay = document.getElementById('loading-overlay');
 
-// Function to show/hide the loading overlay
+
 function toggleLoading(show) {
     if (show) {
         loadingOverlay.classList.add('visible');
@@ -35,7 +35,7 @@ function toggleLoading(show) {
     }
 }
 
-// Custom message box to replace alert and confirm
+
 function showMessage(message, isConfirmation = false, onConfirm = null) {
     const modal = document.createElement('div');
     modal.className = 'custom-modal';
@@ -65,7 +65,7 @@ function showMessage(message, isConfirmation = false, onConfirm = null) {
     }
 }
 
-// Avatar upload functionality
+
 avatarContainer.addEventListener('click', () => {
     avatarInput.click();
 });
@@ -94,11 +94,10 @@ avatarInput.addEventListener('change', (e) => {
 
                 if (result.success) {
                     showMessage('Profile photo uploaded successfully!');
-                    // Update the image source with the URL from the server
+
                     profileImage.src = result.photo_url;
                     profileImage.style.display = 'block';
                     avatarPlaceholder.style.display = 'none';
-                    // Update header image
                     profileImageHeader.src = result.photo_url;
                     profileImageHeader.style.display = 'block';
                 } else {
@@ -111,13 +110,13 @@ avatarInput.addEventListener('change', (e) => {
                 toggleLoading(false);
             }
         };
-        // Read the file as a Data URL (base64 encoded string)
+
         reader.readAsDataURL(file);
     }
 });
 
 
-// Profile editing
+
 async function toggleEditMode() {
     isEditing = !isEditing;
 
@@ -140,7 +139,7 @@ async function toggleEditMode() {
 
 async function saveProfile() {
     toggleLoading(true);
-    // Collect data from the edit fields
+
     const profileData = {
         action: 'update_profile',
         company_name: document.getElementById('edit-name').value.trim(),
@@ -168,9 +167,9 @@ async function saveProfile() {
         if (result.success) {
             console.log(result.message);
             showMessage(result.message);
-            // Fetch the updated data to refresh the display
+
             await fetchProfileAndJobs();
-            // Toggle back to display mode
+
             toggleEditMode();
         } else {
             console.error(result.message);
@@ -184,7 +183,7 @@ async function saveProfile() {
     }
 }
 
-// Job management
+
 function openJobModal(jobIndex = -1) {
     editingJobIndex = jobIndex;
     const isEditMode = jobIndex >= 0;
@@ -324,7 +323,7 @@ function renderJobs() {
             </div>
         `;
 
-        // Add event listeners
+
         jobItem.querySelector('.edit-job').addEventListener('click', () => openJobModal(index));
 
         jobItem.querySelector('.delete-job').addEventListener('click', () => {
@@ -380,10 +379,10 @@ async function fetchProfileAndJobs() {
                 document.getElementById('display-website').href = profile.website;
                 document.getElementById('display-overview').textContent = profile.overview;
                 
-                // Corrected line to display email and phone number
+
                 displayContact.innerHTML = `${profile.email || 'N/A'}<br>Phone: ${profile.phone_number || 'N/A'}`;
                 
-                // Update edit fields
+
                 document.getElementById('edit-name').value = profile.company_name;
                 document.getElementById('edit-email').value = profile.email;
                 document.getElementById('edit-phone').value = profile.phone_number;
@@ -397,13 +396,12 @@ async function fetchProfileAndJobs() {
                 if (profile.profile_photo) {
                     profileImage.style.display = 'block';
                     avatarPlaceholder.style.display = 'none';
-                    // Update header image
                     profileImageHeader.src = profile.profile_photo;
                     profileImageHeader.style.display = 'block';
                 }
             }
 
-            // Update jobs list
+
             jobs = result.jobs;
             renderJobs();
         } else {
@@ -416,7 +414,7 @@ async function fetchProfileAndJobs() {
     }
 }
 
-// Event listeners
+
 editProfileBtn.addEventListener('click', toggleEditMode);
 saveProfileBtn.addEventListener('click', saveProfile);
 addJobBtn.addEventListener('click', () => openJobModal());
@@ -424,17 +422,17 @@ closeModal.addEventListener('click', closeJobModal);
 cancelJob.addEventListener('click', closeJobModal);
 jobForm.addEventListener('submit', saveJob);
 
-// Close modal on outside click
+
 jobModal.addEventListener('click', (e) => {
     if (e.target === jobModal) closeJobModal();
 });
 
-// Keyboard shortcuts
+
 document.addEventListener('keydown', (e) => {
     if (e.key === 'Escape' && jobModal.classList.contains('active')) {
         closeJobModal();
     }
 });
 
-// Initialize by fetching data from the backend
+
 document.addEventListener('DOMContentLoaded', fetchProfileAndJobs);

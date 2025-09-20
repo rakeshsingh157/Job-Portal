@@ -2,7 +2,7 @@
 header('Content-Type: application/json');
 session_start();
 
-// Include the database connection
+
 require_once 'config.php';
 
 $response = [
@@ -12,7 +12,7 @@ $response = [
     'error' => ''
 ];
 
-// Check if a user is logged in
+
 if (isset($_SESSION['user_id'])) {
     $userId = $_SESSION['user_id'];
     $stmt = $conn->prepare("SELECT profile_url, address FROM users WHERE id = ?");

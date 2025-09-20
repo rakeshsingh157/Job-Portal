@@ -1,7 +1,7 @@
 <?php
 session_start();
-// Database connection
-define('DB_SERVER', 'photostore.ct0go6um6tj0.ap-south-1.rds.amazonaws.com');
+
+define('DB_SERVER', 'database-1.chcyc88wcx2l.eu-north-1.rds.amazonaws.com');
 define('DB_USERNAME', 'admin'); 
 define('DB_PASSWORD', 'DBpicshot'); 
 define('DB_NAME', 'jobp_db');
@@ -12,18 +12,18 @@ if ($conn->connect_error) {
     die("Connection failed: " . $conn->connect_error);
 }
 
-// IMGBB API Key
+
 define('IMGBB_API_KEY', '8f23d9f5d1b5960647ba5942af8a1523');
 
-// Check if user is logged in using the correct session variables
+
 $user_id = isset($_SESSION['user_id']) ? $_SESSION['user_id'] : null;
 $company_id = isset($_SESSION['cuser_id']) ? $_SESSION['cuser_id'] : null;
 $user_type = null;
 $user_name = '';
 $profile_photo = '';
-$location_data = ''; // New variable for location
+$location_data = '';
 
-// Determine user type based on which session variable is set and fetch data
+
 if ($user_id) {
     $user_type = 'user';
     $sql = "SELECT first_name, last_name, profile_url, address FROM users WHERE id = '$user_id'";
@@ -46,7 +46,7 @@ if ($user_id) {
     }
 }
 
-// Handle form submission
+
 $message = '';
 $message_type = '';
 
@@ -57,7 +57,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['create_post'])) {
     } else {
         $content = $conn->real_escape_string($_POST['content']);
         
-        // Insert post into database with user_type to distinguish
+
         if ($user_type == 'user') {
             $sql = "INSERT INTO posts (user_id, user_type, content) VALUES ('$user_id', 'user', '$content')";
         } else {
@@ -69,13 +69,13 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['create_post'])) {
             $upload_success = true;
             $uploaded_images = 0;
             
-            // Handle image uploads
+
             if (!empty($_FILES['images']['name'][0])) {
                 $image_urls = [];
                 
                 foreach ($_FILES['images']['tmp_name'] as $key => $tmp_name) {
                     if ($_FILES['images']['error'][$key] === UPLOAD_ERR_OK) {
-                        // Check file size (limit to 5MB per image)
+
                         if ($_FILES['images']['size'][$key] > 5 * 1024 * 1024) {
                             $message = 'One or more images exceed the 5MB size limit.';
                             $message_type = 'error';
@@ -85,7 +85,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['create_post'])) {
                         $image_data = file_get_contents($tmp_name);
                         $base64_image = base64_encode($image_data);
                         
-                        // Upload to IMGBB
+
                         $ch = curl_init();
                         curl_setopt($ch, CURLOPT_URL, "https://api.imgbb.com/1/upload?key=" . IMGBB_API_KEY);
                         curl_setopt($ch, CURLOPT_POST, true);
@@ -104,7 +104,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['create_post'])) {
                             if ($response_data && $response_data['success']) {
                                 $image_url = $conn->real_escape_string($response_data['data']['url']);
                                 
-                                // Insert image URL into database
+
                                 $img_sql = "INSERT INTO post_images (post_id, image_url) VALUES ('$post_id', '$image_url')";
                                 if ($conn->query($img_sql)) {
                                     $uploaded_images++;
@@ -126,7 +126,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['create_post'])) {
                           ($uploaded_images > 0 ? " $uploaded_images image(s) uploaded." : "");
                 $message_type = 'success';
                 
-                // Clear form
+
                 echo '<script>
                     document.getElementById("post-form").reset();
                     document.getElementById("image-preview").innerHTML = "";

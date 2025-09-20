@@ -12,45 +12,32 @@ document.addEventListener('DOMContentLoaded', () => {
         document.body.appendChild(messageDiv);
     }
 
-    /**
-     * Shows the loading overlay.
-     */
+
     function showLoading() {
         loadingOverlay.classList.add('visible');
     }
 
-    /**
-     * Hides the loading overlay.
-     */
+
     function hideLoading() {
         loadingOverlay.classList.remove('visible');
     }
 
-    /**
-     * Displays a message to the user.
-     * @param {string} msg The message to display.
-     * @param {'success'|'error'} type The type of message (for styling).
-     */
+
     function showMessage(msg, type) {
         messageDiv.textContent = msg;
-        messageDiv.className = `message ${type}`; // Apply class for styling (e.g., green for success, red for error)
+        messageDiv.className = `message ${type}`;
         messageDiv.style.display = 'block';
         setTimeout(() => {
-            messageDiv.style.display = 'none'; // Hide message after 5 seconds
+            messageDiv.style.display = 'none';
         }, 5000);
     }
 
-    /**
-     * Hides the message display div.
-     */
+
     function hideMessage() {
         messageDiv.style.display = 'none';
     }
 
-    /**
-     * Navigates between signup and OTP sections.
-     * @param {HTMLElement} sectionToShow The section to display.
-     */
+
     function navigateToSection(sectionToShow) {
         const sections = [signupContainer, otpContainer];
         sections.forEach(sec => {
@@ -59,11 +46,11 @@ document.addEventListener('DOMContentLoaded', () => {
             }
         });
         if (sectionToShow) {
-            sectionToShow.style.display = 'flex'; // Use 'flex' as per your HTML structure
+            sectionToShow.style.display = 'flex';
         }
     }
 
-    // Function to handle the first signup form submission (sending OTPs)
+
     if (signupForm) {
         signupForm.addEventListener('submit', async (e) => {
             e.preventDefault();
@@ -77,7 +64,7 @@ document.addEventListener('DOMContentLoaded', () => {
             const confirmPassword = document.getElementById('confirm-password').value;
             const phoneNumber = document.getElementById('phone-number').value;
 
-            // Client-side password confirmation check
+
             if (password !== confirmPassword) {
                 showMessage('Passwords do not match.', 'error');
                 hideLoading();
@@ -94,7 +81,7 @@ document.addEventListener('DOMContentLoaded', () => {
             };
 
             try {
-                const response = await fetch('PHP/email.php', { // Path to your PHP backend
+                const response = await fetch('PHP/email.php', {
                     method: 'POST',
                     headers: {
                         'Content-Type': 'application/json',
@@ -104,13 +91,10 @@ document.addEventListener('DOMContentLoaded', () => {
 
                 const result = await response.json();
 
-                if (response.ok) { // Check if HTTP status is 2xx
+                if (response.ok) {
                     showMessage(result.message, 'success');
-                    // Store the email in a temporary hidden field if needed for OTP verification
-                    // (Though for signup, it's usually passed via session on the backend)
-                    // You might need a hidden input in otp-form if email isn't session-managed for verification
-                    // For now, assuming email is handled by session for OTP verification in PHP
-                    navigateToSection(otpContainer); // Switch to the OTP verification container
+
+                    navigateToSection(otpContainer);
                 } else {
                     showMessage(result.message || 'Failed to send OTPs.', 'error');
                 }
@@ -123,21 +107,16 @@ document.addEventListener('DOMContentLoaded', () => {
         });
     }
 
-    // Function to handle the OTP verification form submission
+
     if (otpForm) {
         otpForm.addEventListener('submit', async (e) => {
             e.preventDefault();
             hideMessage();
             showLoading();
 
-            // Assuming the email for OTP verification is either available globally (e.g., from a hidden input
-            // or if stored in session on backend and not strictly needed from client for this step).
-            // For robustness, you might add a hidden input in otp-container for the email.
-            // For now, we'll assume the email used for sending OTP is the one to verify against.
-            // If you need it from the client, you'd add:
-            // const email = document.getElementById('signup-email').value; // Or a hidden field in OTP form
 
-            const email = document.getElementById('signup-email').value; // Get email from the signup form's field
+
+            const email = document.getElementById('signup-email').value;
             const otpCodeEmail = document.getElementById('email-otp').value;
             const otpCodePhone = document.getElementById('phone-otp').value;
 
@@ -148,8 +127,8 @@ document.addEventListener('DOMContentLoaded', () => {
             }
 
             const payload = {
-                action: 'verify_otp', // Action for verifying signup OTPs
-                email: email, // Pass email for backend to match against session
+                action: 'verify_otp',
+                email: email,
                 otpCodeEmail: otpCodeEmail,
                 otpCodePhone: otpCodePhone
             };
@@ -167,7 +146,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
                 if (response.ok) {
                     showMessage(result.message, 'success');
-                    // Redirect to login page or a success page after successful verification
+
                     window.location.href = 'wokersignin.html';
                 } else {
                     showMessage(result.message || 'OTP verification failed.', 'error');
@@ -181,7 +160,7 @@ document.addEventListener('DOMContentLoaded', () => {
         });
     }
 
-    // Add a message div if it doesn't exist (for showMessage function)
+
     if (!document.getElementById('form-message-signup')) {
         const msgDiv = document.createElement('div');
         msgDiv.id = 'form-message-signup';

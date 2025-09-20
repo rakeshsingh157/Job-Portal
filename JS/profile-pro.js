@@ -1,4 +1,4 @@
-// Custom alert function
+
 function showCustomAlert(title, message) {
     const modalOverlay = document.getElementById('custom-modal-overlay');
     const modalTitle = document.getElementById('custom-modal-title');
@@ -14,7 +14,7 @@ function showCustomAlert(title, message) {
     };
 }
 
-// Loading screen functions
+
 function showLoader() {
     document.getElementById('loading-overlay')?.classList.add('visible');
 }
@@ -23,7 +23,7 @@ function hideLoader() {
     document.getElementById('loading-overlay')?.classList.remove('visible');
 }
 
-// Main function to fetch all profile data
+
 async function fetchProfileData(showSpinner = true) {
     if (showSpinner) showLoader();
 
@@ -31,7 +31,7 @@ async function fetchProfileData(showSpinner = true) {
     const timeoutId = setTimeout(() => controller.abort(), 15000); // 15-second timeout
 
     try {
-        // Restored paths to include the "PHP/" prefix
+
         const [profileResponse, updateResponse] = await Promise.all([
             fetch('PHP/profile.php', { method: 'GET', signal: controller.signal }),
             fetch('PHP/profile_update.php', { method: 'GET', signal: controller.signal })
@@ -72,9 +72,9 @@ async function fetchProfileData(showSpinner = true) {
     }
 }
 
-// Function to update the entire UI with new data
+
 function updateProfileUI(profileData, experienceData, educationData) {
-    // Basic Info
+
     document.getElementById('profileName').textContent = profileData.name || 'N/A';
     document.getElementById('profilePosition').textContent = profileData.job_field;
     document.getElementById('profileBio').textContent = profileData.bio;
@@ -88,7 +88,7 @@ function updateProfileUI(profileData, experienceData, educationData) {
     document.getElementById('mainProfilePicture').src = profilePictureUrl;
     document.getElementById('navbarProfilePicture').src = profilePictureUrl;
     
-    // Populate Edit Profile Modal
+
     document.getElementById('first_name').value = profileData.first_name || '';
     document.getElementById('last_name').value = profileData.last_name || '';
     document.getElementById('job_field').value = profileData.job_field || '';
@@ -99,15 +99,15 @@ function updateProfileUI(profileData, experienceData, educationData) {
     document.getElementById('email').value = profileData.email || '';
     document.getElementById('part_time_hours').value = profileData.part_time_hours || '';
     
-    // Set radio buttons
+
     setCheckedValue('gender', profileData.gender);
     setCheckedValue('employment_type', profileData.employment_type);
     setCheckedValue('shift_type', profileData.shift_type);
 
-    // Show/hide conditional fields for employment type
+
     toggleEmploymentFields(profileData.employment_type);
     
-    // Populate Skills
+
     const skillTagsContainer = document.getElementById('skillTagsContainer');
     const currentSkillsDiv = document.getElementById('currentSkills');
     skillTagsContainer.innerHTML = '';
@@ -123,7 +123,7 @@ function updateProfileUI(profileData, experienceData, educationData) {
         skillTagsContainer.innerHTML = '<p class="empty-state">No skills added yet.</p>';
     }
 
-    // Populate Languages
+
     const languagesList = document.getElementById('languagesList');
     const currentLangDiv = document.getElementById('currentlang');
     languagesList.innerHTML = '';
@@ -138,7 +138,7 @@ function updateProfileUI(profileData, experienceData, educationData) {
         languagesList.innerHTML = '<p class="empty-state">No languages added yet.</p>';
     }
 
-    // Populate Experience
+
     const experienceContainer = document.getElementById('experienceContainer');
     experienceContainer.innerHTML = '';
     if (experienceData && experienceData.length > 0) {
@@ -160,7 +160,7 @@ function updateProfileUI(profileData, experienceData, educationData) {
          experienceContainer.innerHTML = '<p class="empty-state">No experience added yet.</p>';
     }
 
-    // Populate Education
+
     const educationContainer = document.getElementById('educationContainer');
     educationContainer.innerHTML = '';
     if (educationData && educationData.length > 0) {
@@ -184,14 +184,14 @@ function updateProfileUI(profileData, experienceData, educationData) {
     }
 }
 
-// Helper to set checked value for radio buttons
+
 function setCheckedValue(name, value) {
     const selector = `input[name="${name}"][value="${value}"]`;
     const radio = document.querySelector(selector);
     if (radio) radio.checked = true;
 }
 
-// Helper to toggle employment fields display
+
 function toggleEmploymentFields(value) {
     const shiftContainer = document.getElementById('shift_type_container');
     const partTimeContainer = document.getElementById('part_time_container');
@@ -199,7 +199,7 @@ function toggleEmploymentFields(value) {
     partTimeContainer.style.display = value === 'Part Time' ? 'block' : 'none';
 }
 
-// Generic function to handle form submissions
+
 async function handleFormSubmit(form, actionUrl, additionalData = {}) {
     showLoader();
     try {
@@ -214,36 +214,36 @@ async function handleFormSubmit(form, actionUrl, additionalData = {}) {
         if (result.success) {
             showCustomAlert('Success', result.message || 'Action completed successfully.');
             fetchProfileData(false); // Refresh all data
-            return true; // Indicate success
+            return true;
         } else {
             throw new Error(result.error || 'An unknown error occurred.');
         }
     } catch (error) {
         console.error('Form submission error:', error);
         showCustomAlert('Error', error.message);
-        return false; // Indicate failure
+        return false;
     } finally {
         hideLoader();
     }
 }
 
 
-// EVENT LISTENERS
+
 document.addEventListener('DOMContentLoaded', () => {
     fetchProfileData();
 
-    // Modal Triggers
+
     document.getElementById('exp-btn').addEventListener('click', () => openModal('addexp'));
     document.getElementById('edu-btn').addEventListener('click', () => openModal('addedu'));
     document.getElementById('lang-btn').addEventListener('click', () => openModal('addlangModal'));
     document.getElementById('skill-btn').addEventListener('click', () => openModal('addSkillModal'));
 
-    // Employment type change listener
+
     document.querySelectorAll('input[name="employment_type"]').forEach(radio => {
         radio.addEventListener('change', e => toggleEmploymentFields(e.target.value));
     });
 
-    // Form Submissions
+
     document.getElementById('editProfileForm').addEventListener('submit', async function(e) {
         e.preventDefault();
         const success = await handleFormSubmit(this, 'PHP/profile.php');
@@ -314,7 +314,7 @@ document.addEventListener('DOMContentLoaded', () => {
         }
     });
 
-    // Profile photo change
+
     document.getElementById('profilePhotoInput').addEventListener('change', async function(e) {
         const file = e.target.files[0];
         if (file) {
@@ -338,14 +338,14 @@ async function deleteLanguage(languageName) {
     await handleFormSubmit(null, 'PHP/profile.php', { action: 'delete_language', languageName });
 }
 
-// This is a demo function as there's no backend logic for skill deletion provided.
+
 async function removeSkill(element, skillName) {
     showCustomAlert('Demo', `This would normally delete "${skillName}" from the database.`);
     element.parentElement.remove();
 }
 
 
-// Modal handling
+
 function openModal(modalId) { document.getElementById(modalId).style.display = 'flex'; }
 function closeModal(modalId) { document.getElementById(modalId).style.display = 'none'; }
 function openEditProfileModal() { openModal('editProfileModal'); }
@@ -359,7 +359,7 @@ function openAddlangModal() { openModal('addlangModal'); }
 function closeAddlangModal() { closeModal('addlangModal'); }
 
 
-// Close modals when clicking outside
+
 window.onclick = function(event) {
     if (event.target.classList.contains('modal')) {
         event.target.style.display = "none";

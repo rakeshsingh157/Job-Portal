@@ -15,7 +15,7 @@ use PHPMailer\PHPMailer\PHPMailer;
 use PHPMailer\PHPMailer\Exception;
 
 
-define('DB_HOST', 'photostore.ct0go6um6tj0.ap-south-1.rds.amazonaws.com'); 
+define('DB_HOST', 'database-1.chcyc88wcx2l.eu-north-1.rds.amazonaws.com'); 
 define('DB_USER', 'admin');    
 define('DB_PASS', 'DBpicshot');        
 define('DB_NAME', 'jobp_db');  
@@ -109,13 +109,13 @@ if(isset($_SERVER["REQUEST_METHOD"]) && $_SERVER["REQUEST_METHOD"] === "POST")  
     $countryCode = $data['countryCode'] ?? '+91';
     $phoneNumber = $data['phoneNumber'] ?? null;
 
-    // Gmail SMTP Credentials for PHPMailer
+
     $smtpUsername = 'jobportal00000@gmail.com';
     $smtpPassword = 'gztykeykurgggklb';
 
 
     
-    if ($action === 'send_otp') { // Action for initial signup form submission
+    if ($action === 'send_otp') {
         
         if (empty($email) || !filter_var($email, FILTER_VALIDATE_EMAIL)) {
             http_response_code(400);
@@ -135,7 +135,7 @@ if(isset($_SERVER["REQUEST_METHOD"]) && $_SERVER["REQUEST_METHOD"] === "POST")  
         $stmt_check->execute();
         $stmt_check->store_result();
         if ($stmt_check->num_rows > 0) {
-            http_response_code(409); // Conflict status code
+            http_response_code(409);
             echo json_encode(['message' => 'Email or Phone Number is already registered. Please sign in or use a different one.']);
             $stmt_check->close();
             $conn->close();
@@ -144,7 +144,7 @@ if(isset($_SERVER["REQUEST_METHOD"]) && $_SERVER["REQUEST_METHOD"] === "POST")  
         $stmt_check->close();
         $conn->close();
 
-        // Generate and Store OTPs in Session
+
         $email_otp = str_pad(mt_rand(100000, 999999), 6, '0', STR_PAD_LEFT);
         $phone_otp = str_pad(mt_rand(1000, 9999), 4, '0', STR_PAD_LEFT);
 
@@ -156,21 +156,21 @@ if(isset($_SERVER["REQUEST_METHOD"]) && $_SERVER["REQUEST_METHOD"] === "POST")  
         $_SESSION['phone_otp_phone'] = $phoneNumber;
         $_SESSION['phone_otp_expiry'] = time() + (5 * 60);
 
-        // Store ALL user data temporarily in session until OTPs are verified
+
         $_SESSION['temp_user_data'] = [
             'first_name' => $firstName,
             'last_name' => $lastName,
-            'password' => $password, // Plain password, will be hashed before DB insert
+            'password' => $password,
             'country_code' => $countryCode,
             'phone_number' => $phoneNumber,
-            'test_pass_value' => null // Default to null for 'test_pass' column
+            'test_pass_value' => null
         ];
 
         $emailSent = false;
         $smsSent = false;
         $messages = [];
 
-        // Send Email OTP
+
         $mail = new PHPMailer(true);
         try {
             $mail->isSMTP();
@@ -197,7 +197,7 @@ if(isset($_SERVER["REQUEST_METHOD"]) && $_SERVER["REQUEST_METHOD"] === "POST")  
             $messages[] = 'Error sending email OTP.';
         }
 
-        // Send Phone OTP
+
         $fullPhoneNumberForSMS = ltrim($countryCode, '+') . $phoneNumber;
         $smsResult = sendSmsOtp($fullPhoneNumberForSMS, $phone_otp);
         if ($smsResult['success']) {
@@ -217,15 +217,15 @@ if(isset($_SERVER["REQUEST_METHOD"]) && $_SERVER["REQUEST_METHOD"] === "POST")  
         }
         exit();
 
-    } elseif ($action === 'verify_otp') { // Action for signup OTP verification
-        // Input Validation
+    } elseif ($action === 'verify_otp') {
+
         if (empty($email) || empty($otpCodeEmail) || empty($otpCodePhone)) {
             http_response_code(400);
             echo json_encode(['message' => 'All OTPs are required.']);
             exit();
         }
 
-        // Retrieve stored user data from session for verification and database insertion
+
         $session_email = $_SESSION['email_otp_email'] ?? null;
         $session_phone_number = $_SESSION['phone_otp_phone'] ?? null;
 
@@ -254,7 +254,7 @@ if(isset($_SERVER["REQUEST_METHOD"]) && $_SERVER["REQUEST_METHOD"] === "POST")  
             exit();
         }
 
-        // Both OTPs are correct! Proceed with user registration
+
         if (isset($_SESSION['temp_user_data'])) {
             $userData = $_SESSION['temp_user_data'];
 
@@ -278,7 +278,7 @@ if(isset($_SERVER["REQUEST_METHOD"]) && $_SERVER["REQUEST_METHOD"] === "POST")  
 
             try {
                 if ($stmt->execute()) {
-                    // Clear all session data related to OTPs and temporary user data after successful registration
+
                     unset($_SESSION['email_otp'], $_SESSION['email_otp_email'], $_SESSION['email_otp_expiry']);
                     unset($_SESSION['phone_otp'], $_SESSION['phone_otp_phone'], $_SESSION['phone_otp_expiry']);
                     unset($_SESSION['temp_user_data']);
@@ -304,7 +304,7 @@ if(isset($_SERVER["REQUEST_METHOD"]) && $_SERVER["REQUEST_METHOD"] === "POST")  
         }
         exit();
 
-    // --- LOGIN ACTIONS ---
+
    } elseif ($action === 'login') {
         $password_input = $data['password'] ?? null;
 
@@ -329,7 +329,6 @@ if(isset($_SERVER["REQUEST_METHOD"]) && $_SERVER["REQUEST_METHOD"] === "POST")  
               
                 if ($isVerified) {
                     $_SESSION['user_id'] = $userId;
-                    error_log("Login successful. User ID {$userId} set in session."); 
                    
                     http_response_code(200);
                     echo json_encode(['message' => 'Login successful!', 'redirect' => 'PHP/verify.php']);
@@ -339,13 +338,13 @@ if(isset($_SERVER["REQUEST_METHOD"]) && $_SERVER["REQUEST_METHOD"] === "POST")  
                     echo json_encode(['message' => 'Account not verified. Please verify your email and phone number.']);
                 }
             } elseif (password_needs_rehash($hashedPassword, PASSWORD_DEFAULT)) {
-                // Password needs rehashing
+
                 $newHashedPassword = password_hash($password_input, PASSWORD_DEFAULT);
                 $updateStmt = $conn->prepare("UPDATE users SET password_hash = ? WHERE id = ?");
                 $updateStmt->bind_param("si", $newHashedPassword, $userId);
                 if ($updateStmt->execute()) {
                     $_SESSION['user_id'] = $userId; 
-                    error_log("Login successful. Password rehashed. User ID {$userId} set in session."); // Added for debugging
+
                     http_response_code(200);
                     echo json_encode(['message' => 'Login successful! Password updated.', 'redirect' => 'PHP/verify.php']);
                 } else {
@@ -355,17 +354,17 @@ if(isset($_SERVER["REQUEST_METHOD"]) && $_SERVER["REQUEST_METHOD"] === "POST")  
                 }
                 $updateStmt->close();
             } else {
-                // Password is incorrect
-                http_response_code(401); // Unauthorized
+
+                http_response_code(401);
                 echo json_encode(['message' => 'Invalid email or password.']);
             }
         } else {
-            // Email not found
-            http_response_code(401); // Unauthorized
+
+            http_response_code(401);
             echo json_encode(['message' => 'Invalid email or password.']);
         }
-        $conn->close(); // Close connection here
-        exit(); // Always exit after sending JSON response
+        $conn->close();
+        exit();
     
         
     }elseif ($action === 'send_reset_otp') {
@@ -382,7 +381,7 @@ if(isset($_SERVER["REQUEST_METHOD"]) && $_SERVER["REQUEST_METHOD"] === "POST")  
         $stmt_check->store_result();
 
         if ($stmt_check->num_rows === 0) {
-            http_response_code(404); // Not Found
+            http_response_code(404);
             echo json_encode(['message' => 'Email not found in our records.']);
             $stmt_check->close();
             $conn->close();
@@ -398,7 +397,7 @@ if(isset($_SERVER["REQUEST_METHOD"]) && $_SERVER["REQUEST_METHOD"] === "POST")  
         $_SESSION['reset_otp_email_address'] = $email;
         $_SESSION['reset_otp_expiry'] = time() + (10 * 60); // 10 minutes for reset OTP
 
-        // Store phone number associated with reset for later verification if needed
+
         $_SESSION['reset_phone_number'] = $registeredPhoneNumber;
 
         $mail = new PHPMailer(true);
@@ -430,7 +429,7 @@ if(isset($_SERVER["REQUEST_METHOD"]) && $_SERVER["REQUEST_METHOD"] === "POST")  
         exit();
 
     } elseif ($action === 'verify_reset_otp') {
-        // First, check if the session is active and contains the necessary data
+
         if (!isset($_SESSION['reset_otp_email_address'])) {
             http_response_code(400);
             error_log('Session data for password reset is missing or expired.');
@@ -438,18 +437,18 @@ if(isset($_SERVER["REQUEST_METHOD"]) && $_SERVER["REQUEST_METHOD"] === "POST")  
             exit();
         }
 
-        // Now, get the email from the session and the OTP from the request
+
         $emailFromSession = $_SESSION['reset_otp_email_address'];
         $otpCodeEmail = $data['otpCodeEmail'] ?? null;
         
-        // Input validation using the session data
+
         if (empty($emailFromSession) || empty($otpCodeEmail)) {
             http_response_code(400);
             echo json_encode(['message' => 'Email and OTP are required.']);
             exit();
         }
 
-        // Compare the email from the request with the one in the session
+
         if ($emailFromSession !== $email) {
             http_response_code(401);
             error_log('Email mismatch during OTP verification.');
@@ -471,7 +470,7 @@ if(isset($_SERVER["REQUEST_METHOD"]) && $_SERVER["REQUEST_METHOD"] === "POST")  
         }
 
         if ($_SESSION['reset_otp_email'] === $otpCodeEmail) {
-            // OTP is correct! Mark session as verified for password change
+
             $_SESSION['otp_verified_for_reset'] = true;
             http_response_code(200);
             echo json_encode(['message' => 'OTP verified successfully. You can now set your new password.']);
@@ -490,9 +489,9 @@ if(isset($_SERVER["REQUEST_METHOD"]) && $_SERVER["REQUEST_METHOD"] === "POST")  
             exit();
         }
 
-        // Ensure OTP was verified in the current session
+
         if (!isset($_SESSION['otp_verified_for_reset']) || $_SESSION['reset_otp_email_address'] !== $email) {
-            http_response_code(403); // Forbidden
+            http_response_code(403);
             echo json_encode(['message' => 'Password reset not authorized. Please verify OTP first.']);
             exit();
         }
@@ -507,7 +506,7 @@ if(isset($_SERVER["REQUEST_METHOD"]) && $_SERVER["REQUEST_METHOD"] === "POST")  
             if ($stmt->execute()) {
                
                 unset($_SESSION['reset_otp_email'], $_SESSION['reset_otp_email_address'], $_SESSION['reset_otp_expiry']);
-                unset($_SESSION['otp_verified_for_reset'], $_SESSION['reset_phone_number']); // Also clear phone number if stored
+                unset($_SESSION['otp_verified_for_reset'], $_SESSION['reset_phone_number']);
                 http_response_code(200);
                 echo json_encode(['message' => 'Password has been reset successfully.']);
             } else {
