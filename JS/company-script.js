@@ -117,7 +117,7 @@ avatarInput.addEventListener('change', (e) => {
             const base64Data = reader.result;
 
             try {
-                const response = await fetch('/SyWD/PHP/company-profile.php', {
+                const response = await fetch('PHP/company-profile.php', {
                     method: 'POST',
                     headers: {
                         'Content-Type': 'application/json'
@@ -189,7 +189,7 @@ async function saveProfile() {
     };
     
     try {
-        const response = await fetch('/SyWD/PHP/company-profile.php', {
+        const response = await fetch('PHP/company-profile.php', {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json'
@@ -267,7 +267,7 @@ async function saveJob(event) {
         return;
     }
 
-    let url = '/SyWD/PHP/company-profile.php';
+    let url = 'PHP/company-profile.php';
     let method = 'POST';
     let payload = { ...jobData };
 
@@ -376,7 +376,7 @@ function renderJobs() {
             showMessage('Are you sure you want to delete this job posting?', true, async (confirmed) => {
                 if (confirmed) {
                     try {
-                        const response = await fetch('/SyWD/PHP/company-profile.php', {
+                        const response = await fetch('PHP/company-profile.php', {
                             method: 'DELETE',
                             headers: {
                                 'Content-Type': 'application/json'
@@ -408,7 +408,7 @@ async function fetchProfileAndJobs() {
     showCompanyProfileSkeleton();
     try {
         console.log('Fetching profile and jobs...');
-        const response = await fetch('/SyWD/PHP/company-profile.php', {
+        const response = await fetch('PHP/company-profile.php', {
             method: 'GET',
             credentials: 'same-origin'
         });
