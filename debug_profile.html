@@ -1,0 +1,100 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Profile Debug</title>
+    <style>
+        body { font-family: Arial, sans-serif; margin: 20px; }
+        .debug-section { margin: 20px 0; padding: 15px; border: 1px solid #ddd; }
+        .error { color: red; }
+        .success { color: green; }
+        button { padding: 10px 15px; margin: 5px; }
+        pre { background: #f5f5f5; padding: 10px; overflow-x: auto; }
+    </style>
+</head>
+<body>
+    <h1>Profile Debug Tool</h1>
+    
+    <div class="debug-section">
+        <h3>Session Status</h3>
+        <button onclick="checkSession()">Check Session</button>
+        <div id="sessionResult"></div>
+    </div>
+    
+    <div class="debug-section">
+        <h3>Database Connection</h3>
+        <button onclick="testDbConnection()">Test DB Connection</button>
+        <div id="dbResult"></div>
+    </div>
+    
+    <div class="debug-section">
+        <h3>Profile Data</h3>
+        <button onclick="fetchProfile()">Fetch Profile Data</button>
+        <div id="profileResult"></div>
+    </div>
+    
+    <div class="debug-section">
+        <h3>Test Profile Update</h3>
+        <form id="testForm">
+            <input type="text" name="first_name" placeholder="First Name" required>
+            <input type="text" name="last_name" placeholder="Last Name" required>
+            <input type="text" name="bio" placeholder="Bio">
+            <button type="submit">Test Update</button>
+        </form>
+        <div id="updateResult"></div>
+    </div>
+
+    <script>
+        async function checkSession() {
+            try {
+                const response = await fetch('PHP/get_user_data.php');
+                const result = await response.text();
+                document.getElementById('sessionResult').innerHTML = `<pre>${result}</pre>`;
+            } catch (error) {
+                document.getElementById('sessionResult').innerHTML = `<div class="error">Error: ${error.message}</div>`;
+            }
+        }
+        
+        async function testDbConnection() {
+            try {
+                const response = await fetch('test_db_connection.php');
+                const result = await response.text();
+                document.getElementById('dbResult').innerHTML = `<pre>${result}</pre>`;
+            } catch (error) {
+                document.getElementById('dbResult').innerHTML = `<div class="error">Error: ${error.message}</div>`;
+            }
+        }
+        
+        async function fetchProfile() {
+            try {
+                const response = await fetch('PHP/profile.php');
+                const result = await response.json();
+                document.getElementById('profileResult').innerHTML = `<pre>${JSON.stringify(result, null, 2)}</pre>`;
+            } catch (error) {
+                document.getElementById('profileResult').innerHTML = `<div class="error">Error: ${error.message}</div>`;
+            }
+        }
+        
+        document.getElementById('testForm').addEventListener('submit', async function(e) {
+            e.preventDefault();
+            try {
+                const formData = new FormData(this);
+                const response = await fetch('PHP/profile.php', {
+                    method: 'POST',
+                    body: formData
+                });
+                const result = await response.json();
+                
+                if (result.success) {
+                    document.getElementById('updateResult').innerHTML = `<div class="success">Success: ${result.message}</div>`;
+                } else {
+                    document.getElementById('updateResult').innerHTML = `<div class="error">Error: ${result.error}</div>`;
+                }
+            } catch (error) {
+                document.getElementById('updateResult').innerHTML = `<div class="error">Error: ${error.message}</div>`;
+            }
+        });
+    </script>
+</body>
+</html>

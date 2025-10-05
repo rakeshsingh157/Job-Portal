@@ -1,27 +1,27 @@
 
         :root {
-            --primary-accent-light: #A797FF;
-            --primary-accent-dark: #7A69FF;
-            --gradient-start: #D8C7FF;
-            --gradient-end: #E0BFFF;
+            --primary-accent-light: #0066cc;
+            --primary-accent-dark: #0052a3;
+            --gradient-start: #ffffff;
+            --gradient-end: #f0f0f0;
 
-            --background-body: #F0F2F5;
-            --background-container: rgba(255, 255, 255, 0.9);
-            --background-sidebar: rgba(245, 245, 245, 0.85);
-            --background-chat-area: #F7F9FC;
-            --background-white: #FFFFFF;
+            --background-body: #ffffff;
+            --background-container: rgba(255, 255, 255, 1);
+            --background-sidebar: rgba(255, 255, 255, 1);
+            --background-chat-area: #ffffff;
+            --background-white: #ffffff;
 
             --bubble-sent-bg: linear-gradient(135deg, var(--primary-accent-light), var(--primary-accent-dark));
-            --bubble-sent-text: #FFFFFF;
-            --bubble-received-bg: rgba(255, 255, 255, 0.7);
-            --bubble-received-text: #343A40;
+            --bubble-sent-text: #ffffff;
+            --bubble-received-bg: rgba(0, 0, 0, 0.1);
+            --bubble-received-text: #000000;
 
-            --text-dark: #343A40;
-            --text-medium: #6C757D;
-            --text-light: #ADB5BD;
+            --text-dark: #000000;
+            --text-medium: #000000;
+            --text-light: #000000;
 
-            --border-color: rgba(200, 200, 200, 0.3);
-            --divider-color: rgba(220, 220, 220, 0.5);
+            --border-color: rgba(0, 0, 0, 0.2);
+            --divider-color: rgba(0, 0, 0, 0.1);
 
             --shadow-subtle: 0 2px 8px rgba(0, 0, 0, 0.08);
             --shadow-medium: 0 5px 15px rgba(0, 0, 0, 0.12);
@@ -41,14 +41,6 @@
             height: 100%;
             width: 100%;
             font-family: 'Inter', sans-serif;
-            background: linear-gradient(135deg, var(--background-body) 0%, #DDE3E9 100%);
-            display: flex;
-            min-height: 100vh;
-            box-sizing: border-box;
-            overflow: hidden;
-            color: var(--text-dark);
-            font-size: 15px;
-            line-height: 1.4;
         }
 
         * {
@@ -58,29 +50,17 @@
         .wrap {
             display: flex;
             width: 100%;
-            max-width: 1200px;
-            margin: 20px auto;
-            height: calc(100vh - 40px);
+            height: 100%;
             background-color: var(--background-container);
-            border-radius: var(--border-radius-xl);
-            box-shadow: var(--shadow-medium);
             overflow: hidden;
-            border: 1px solid var(--border-color);
-            -webkit-backdrop-filter: blur(12px);
-            backdrop-filter: blur(12px);
+            border: none;
         }
 
         @media screen and (max-width: 768px) {
             .wrap {
                 flex-direction: column;
-                margin: 0;
-                height: 100vh;
+                height: 100%;
                 width: 100%;
-                border-radius: 0;
-                box-shadow: none;
-                border: none;
-                -webkit-backdrop-filter: none;
-                backdrop-filter: none;
             }
         }
 
@@ -129,11 +109,11 @@
             border-radius: 50%;
             background-color: var(--background-container);
             box-shadow: var(--shadow-subtle);
-            border: 1px solid rgba(255,255,255,0.5);
+            border: 1px solid rgba(0,0,0,0.2);
         }
         #sidebar .add-icon:hover {
             color: var(--primary-accent-light);
-            background-color: rgba(255,255,255,0.9);
+            background-color: rgba(255,255,255,1);
             transform: scale(1.05);
         }
 
@@ -157,7 +137,7 @@
             cursor: pointer;
             overflow: hidden;
             position: relative;
-            border: 1px solid rgba(255,255,255,0.6);
+            border: 1px solid rgba(0,0,0,0.1);
         }
         .user-item::before {
             content: '';
@@ -228,7 +208,6 @@
             flex-direction: column;
             height: 100%;
             background-color: var(--background-container);
-            border-radius: var(--border-radius-xl);
             overflow: hidden;
         }
 
@@ -413,7 +392,7 @@
             background: linear-gradient(45deg, var(--primary-accent-light), var(--primary-accent-dark));
             border: none;
             border-radius: 25px;
-            color: #fff;
+            color: #ffffff;
             font-size: 1.1em;
             font-weight: 500;
             cursor: pointer;

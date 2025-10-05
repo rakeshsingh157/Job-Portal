@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>JobKaro</title>
+    <title>JobKaro - Messages</title>
     <link rel="icon" type="image/png" sizes="32x32" href="IMAGES/icon.png">
 
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
@@ -11,105 +11,279 @@
     <link rel="stylesheet" href="CSS/chat.css">
     <style>
         :root {
-    --card-background: #f8f8f8;
-    --shadow-light: rgba(0, 0, 0, 0.1);
-    --primary-blue: #000000;
-    --text-color-light: #555;
-    --border-color: #ddd;
-}
+            --primary-color: #000000;
+            --secondary-color: #ffffff;
+            --card-background: #ffffff;
+            --shadow-light: rgba(0, 0, 0, 0.1);
+            --text-color-dark: #000000;
+            --text-color-light: #333333;
+            --border-color: #000000;
+            --background-light: #ffffff;
+        }
 
-.navbars {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    background-color: var(--card-background);
-    padding: 15px 40px;
-    box-shadow: 0 2px 4px var(--shadow-light);
-    position: sticky;
-    top: 0;
-    z-index: 1000;
-}
+        /* Reset and base styles */
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
 
-/* Left section of the navbar (logo) */
-.navbar-lefts .logo {
-    font-size: 24px;
-    font-weight: 700;
-    color: var(--primary-blue);
-}
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: var(--background-light);
+            color: var(--text-color-dark);
+            line-height: 1.6;
+            overflow: hidden;
+        }
 
-/* Center section of the navbar (navigation) */
-.navbar-centers ul {
-    list-style: none;
-    display: flex;
-    gap: 30px;
-    margin: 0;
-    padding: 0;
-}
+        /* Black and White Navbar */
+        .navbar {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            background-color: var(--secondary-color);
+            padding: 15px 40px;
+            box-shadow: 0 2px 4px var(--shadow-light);
+            position: sticky;
+            top: 0;
+            z-index: 1000;
+           
+        }
 
-/* Navigation links */
-.navbar-centers ul li a {
-    text-decoration: none;
-    color: var(--text-color-light);
-    font-weight: 500;
-    transition: color 0.3s ease;
-}
+        .navbar-left .logo {
+            font-size: 24px;
+            font-weight: 700;
+            color: var(--primary-color);
+        }
 
-/* Hover and active states for navigation links */
-.navbar-centers ul li a:hover,
-.navbar-centers ul li a.active {
-    color: var(--primary-blue);
-}
+        .navbar-center ul {
+            list-style: none;
+            display: flex;
+            gap: 30px;
+        }
 
-/* Right section of the navbar (location and profile) */
-.navbar-rights {
-    display: flex;
-    align-items: center;
-    gap: 20px;
-}
+        .navbar-center ul li a {
+            text-decoration: none;
+            color: var(--text-color-dark);
+            font-weight: 500;
+            transition: color 0.3s ease;
+        }
 
-/* Location display */
-.location-info {
-    display: flex;
-    align-items: center;
-    color: var(--text-color-light);
-    font-size: 14px;
-}
+        .navbar-center ul li a:hover,
+        .navbar-center ul li a.active {
+            color: var(--text-color-light);
+        }
 
-.location-info i {
-    margin-right: 5px;
-    color: var(--primary-blue);
-}
+        .navbar-right {
+            display: flex;
+            align-items: center;
+            gap: 20px;
+        }
 
-/* Profile image container */
-.profile-avatar img {
-    width: 36px;
-    height: 36px;
-    border-radius: 50%;
-    object-fit: cover;
-    border: 1px solid var(--border-color);
-}
+        .location {
+            display: flex;
+            align-items: center;
+            color: var(--text-color-dark);
+            font-size: 14px;
+        }
 
-/* The following CSS was in your provided code but doesn't match the new HTML.
-   I've included it below, but you may need to adjust your HTML to use these classes.
-   For example, the original profile-icon class is now changed to profile-avatar.
-   The .navbar-right .location class is replaced by .location-info.
-*/
-.navbar-rights .menu-icon {
-    color: var(--text-color-light);
-    font-size: 18px;
-    cursor: pointer;
-}
+        .location i {
+            margin-left: 5px;
+            color: var(--primary-color);
+        }
 
-.profile-container {
-    display: flex;
-    gap: 30px;
-    max-width: 100%;
-    margin: 30px;
-    align-items: flex-start;
-}
-    </style>
-    <style>
-        /* Custom modal for alerts */
+        .profile-avatar img {
+            width: 36px;
+            height: 36px;
+            border-radius: 50%;
+            object-fit: cover;
+            border: 2px solid var(--border-color);
+        }
+
+        /* Full screen chat container */
+        .chat-main-container {
+            height: calc(100vh - 70px);
+            display: flex;
+            background-color: var(--background-light);
+        }
+        
+        /* Sidebar Toggle Button */
+        .sidebar-toggle {
+            position: fixed;
+            top: 50%;
+            left: 10px;
+            transform: translateY(-50%);
+            z-index: 1002;
+            background-color: var(--primary-color);
+            color: var(--secondary-color);
+            border: none;
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 16px;
+            box-shadow: 0 2px 8px var(--shadow-light);
+            transition: all 0.3s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+        }
+        
+        .sidebar-toggle:hover {
+            transform: translateY(-50%) scale(1.1);
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+        }
+        
+        /* Alternative toggle button in header */
+        .header-sidebar-toggle {
+            display: none;
+            background: none;
+            border: none;
+            font-size: 18px;
+            color: var(--primary-color);
+            cursor: pointer;
+            padding: 8px;
+            border-radius: 4px;
+            transition: all 0.3s ease;
+            margin-right: 10px;
+        }
+        
+        .header-sidebar-toggle:hover {
+            background-color: rgba(0, 0, 0, 0.1);
+        }
+        
+        /* Sidebar sliding states */
+        .wrap {
+            position: relative;
+            transition: all 0.3s ease;
+        }
+        
+        .wrap.sidebar-collapsed #sidebar {
+            transform: translateX(-100%);
+            width: 0;
+            padding: 0;
+            border-right: none;
+        }
+        
+        .wrap.sidebar-expanded #sidebar {
+            width: 400px;
+        }
+        
+        /* Sidebar resize states */
+        #sidebar {
+            transition: all 0.3s ease;
+            position: relative;
+        }
+        
+        #sidebar.collapsed {
+            transform: translateX(-100%);
+            width: 0 !important;
+            padding: 0 !important;
+            border-right: none !important;
+        }
+        
+        #sidebar.expanded {
+            width: 400px !important;
+        }
+        
+        /* Sidebar header controls */
+        .sidebar-controls {
+            display: flex;
+            gap: 10px;
+            align-items: center;
+        }
+        
+        .sidebar-expand-btn, .sidebar-collapse-btn {
+            background: none;
+            border: none;
+            font-size: 16px;
+            color: var(--primary-color);
+            cursor: pointer;
+            padding: 5px;
+            border-radius: 3px;
+            transition: all 0.3s ease;
+        }
+        
+        .sidebar-expand-btn:hover, .sidebar-collapse-btn:hover {
+            background-color: rgba(0, 0, 0, 0.1);
+            transform: scale(1.1);
+        }
+        
+        .sidebar-collapse-btn {
+            display: none;
+        }
+        
+        /* Overlay for mobile */
+        .sidebar-overlay {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.5);
+            z-index: 999;
+        }
+        
+        .sidebar-overlay.active {
+            display: block;
+        }
+        
+        /* Animation improvements */
+        .wrap.sidebar-collapsed #chat-container {
+            width: 100%;
+            margin-left: 0;
+        }
+        
+        .wrap.sidebar-expanded #chat-container {
+            width: calc(100% - 400px);
+        }
+        
+        #chat-container {
+            transition: all 0.3s ease;
+            width: calc(100% - 300px);
+            flex: 1;
+        }
+        
+        /* Toggle button positioning states */
+        .sidebar-toggle {
+            left: 10px;
+        }
+        
+        .wrap:not(.sidebar-collapsed) .sidebar-toggle {
+            left: 320px;
+        }
+        
+        .wrap.sidebar-expanded .sidebar-toggle {
+            left: 420px;
+        }
+        
+        /* Hide fixed toggle when sidebar is visible and show header toggle */
+        @media (min-width: 769px) {
+            .wrap:not(.sidebar-collapsed) .sidebar-toggle {
+                display: none;
+            }
+            
+            .wrap:not(.sidebar-collapsed) .header-sidebar-toggle {
+                display: inline-block;
+            }
+        }
+        
+        /* Ensure sidebar content is hidden when collapsed */
+        #sidebar.collapsed .sidebar-header,
+        #sidebar.collapsed #user-list,
+        #sidebar.collapsed #search-overlay {
+            opacity: 0;
+            transition: opacity 0.2s ease;
+        }
+        
+        #sidebar:not(.collapsed) .sidebar-header,
+        #sidebar:not(.collapsed) #user-list,
+        #sidebar:not(.collapsed) #search-overlay {
+            opacity: 1;
+            transition: opacity 0.3s ease 0.1s;
+        }
+        /* Modal styles */
         .modal {
             display: none;
             position: fixed;
@@ -121,11 +295,12 @@
             overflow: auto;
             background-color: rgba(0,0,0,0.4);
         }
+
         .modal-content {
-            background-color: #fefefe;
+            background-color: var(--card-background);
             margin: 15% auto;
             padding: 20px;
-            border: 1px solid #888;
+            border: 1px solid var(--border-color);
             width: 80%;
             max-width: 400px;
             text-align: center;
@@ -133,30 +308,129 @@
             box-shadow: 0 4px 8px 0 rgba(0,0,0,0.2);
             font-family: 'Inter', sans-serif;
         }
+
         .modal-content p {
             margin: 0 0 20px 0;
             font-size: 16px;
         }
+
         .modal-content button {
             background-color: var(--primary-blue);
             color: white;
             padding: 10px 20px;
-            border: none;
+            border: 1px solid var(--border-color);
             border-radius: 5px;
             cursor: pointer;
             font-size: 14px;
+            transition: background-color 0.3s ease;
+        }
+
+        .modal-content button:hover {
+            background-color: #0052a3;
+        }
+
+        /* Responsive design */
+        @media (max-width: 768px) {
+            .navbar {
+                padding: 15px 20px;
+            }
+            
+            .navbar-center ul {
+                gap: 20px;
+            }
+            
+            .chat-main-container {
+                height: calc(100vh - 60px);
+            }
+            
+            .sidebar-toggle {
+                left: 10px !important;
+                width: 35px;
+                height: 35px;
+                font-size: 14px;
+                display: flex !important;
+            }
+            
+            .header-sidebar-toggle {
+                display: inline-block !important;
+            }
+            
+            #sidebar {
+                position: fixed;
+                top: 70px;
+                left: 0;
+                height: calc(100vh - 70px);
+                z-index: 1001;
+                box-shadow: 2px 0 8px rgba(0, 0, 0, 0.1);
+                width: 300px;
+            }
+            
+            #sidebar.collapsed {
+                transform: translateX(-100%);
+            }
+            
+            .wrap.sidebar-expanded #sidebar {
+                width: 320px;
+            }
+            
+            /* Full width chat on mobile when sidebar collapsed */
+            .wrap.sidebar-collapsed #chat-container {
+                width: 100% !important;
+            }
         }
     </style>
 </head>
 <body>
-       
-   
-    <div class="wrap">
+    <!-- Professional Header matching other pages -->
+    <header class="navbar">
+        <div class="navbar-left">
+            <button class="header-sidebar-toggle" id="headerSidebarToggle" title="Toggle Sidebar">
+                <i class="fas fa-bars" id="headerToggleIcon"></i>
+            </button>
+            <h1 class="logo">JobKaro</h1>
+        </div>
+        <nav class="navbar-center">
+            <ul>
+                <li><a href="explore.html">Jobs</a></li>
+                <li><a href="chat.html" class="active">Messages</a></li>
+                <li><a href="view-post.html">Posts</a></li>
+            </ul>
+        </nav>
+        <div class="navbar-right">
+            <div class="location">
+                <span id="navbarLocation">City, District</span>
+                <i class="fas fa-map-marker-alt"></i>
+            </div>
+            <div class="profile-avatar">
+                <img src="https://placehold.co/36x36/000000/FFFFFF?text=U" alt="Profile Picture" id="navbarProfilePicture">
+            </div>
+        </div>
+    </header>
+
+    <!-- Full Screen Chat Interface -->
+    <main class="chat-main-container">
+        <div class="wrap">
+        
+        <!-- Sidebar Toggle Button -->
+        <button class="sidebar-toggle" id="sidebarToggle" title="Toggle Sidebar">
+            <i class="fas fa-bars" id="toggleIcon"></i>
+        </button>
+        
+        <!-- Sidebar Overlay for mobile -->
+        <div class="sidebar-overlay" id="sidebarOverlay"></div>
         
         <aside id="sidebar">
             <div class="sidebar-header">
-                <h1>Chats &nbsp;&nbsp;&nbsp;  </h1>
-                <i class="fas fa-plus add-icon"></i>
+                <h1>Chats</h1>
+                <div class="sidebar-controls">
+                    <button class="sidebar-expand-btn" id="expandBtn" title="Expand Sidebar">
+                        <i class="fas fa-expand-arrows-alt"></i>
+                    </button>
+                    <button class="sidebar-collapse-btn" id="collapseBtn" title="Collapse Sidebar">
+                        <i class="fas fa-compress-arrows-alt"></i>
+                    </button>
+                    <i class="fas fa-plus add-icon"></i>
+                </div>
             </div>
             <div id="user-list">
                 <p class="no-messages"><i class="fas fa-spinner fa-spin"></i> Loading conversations...</p>
@@ -175,7 +449,7 @@
 
         <div id="chat-container">
             <div id="chat-header">
-                <img src="https://placehold.co/50x50/A797FF/FFFFFF?text=U" alt="Default Photo" class="profile-photo">
+                <img src="https://placehold.co/50x50/000000/FFFFFF?text=U" alt="Default Photo" class="profile-photo">
                 <h2>Select a user to chat</h2>
             </div>
 
@@ -185,7 +459,7 @@
 
             <div id="input-area">
                 <input type="text" id="message-input" placeholder="Type your message...">
-                <button id="send-button">
+                <button id="send-button" title="Send message" aria-label="Send message">
                     <i class="fas fa-paper-plane"></i>
                 </button>
             </div>
@@ -193,9 +467,10 @@
             <input type="hidden" id="receiver-type" value="">
             <input type="hidden" id="conversation-id" value="">
         </div>
-    </div>
+        </div>
+    </main>
 
-    <!-- Custom Modal for Alerts -->
+    <!-- Custom Alert Modal -->
     <div id="custom-alert-modal" class="modal">
         <div class="modal-content">
             <p id="alert-message"></p>
@@ -223,22 +498,227 @@
         const alertOkButton = document.getElementById('alert-ok-button');
 
         let messageInterval;
-        let myProfilePhoto = "https://placehold.co/38x38/0000FF/FFFFFF?text=Me";
+        let myProfilePhoto = "https://placehold.co/38x38/000000/FFFFFF?text=Me";
         let myUserType = "";
         let myUserId = "";
 
-        // Function to show custom alert modal
+        // Sidebar functionality variables
+        const sidebar = document.getElementById('sidebar');
+        const sidebarToggle = document.getElementById('sidebarToggle');
+        const headerSidebarToggle = document.getElementById('headerSidebarToggle');
+        const sidebarOverlay = document.getElementById('sidebarOverlay');
+        const expandBtn = document.getElementById('expandBtn');
+        const collapseBtn = document.getElementById('collapseBtn');
+        const toggleIcon = document.getElementById('toggleIcon');
+        const headerToggleIcon = document.getElementById('headerToggleIcon');
+        const wrap = document.querySelector('.wrap');
+
+        let sidebarState = 'normal'; // 'normal', 'collapsed', 'expanded'
+
+        // Sidebar functionality
+        function toggleSidebar() {
+            console.log('Toggle sidebar called, current state:', sidebarState);
+            if (sidebarState === 'collapsed') {
+                showSidebar();
+            } else {
+                hideSidebar();
+            }
+        }
+
+        function showSidebar() {
+            console.log('Showing sidebar');
+            sidebar.classList.remove('collapsed');
+            wrap.classList.remove('sidebar-collapsed');
+            
+            // Reset to normal state if expanded
+            if (sidebarState === 'expanded') {
+                sidebar.classList.remove('expanded');
+                wrap.classList.remove('sidebar-expanded');
+                expandBtn.style.display = 'inline-block';
+                collapseBtn.style.display = 'none';
+            }
+            
+            updateToggleIcons('bars');
+            sidebarState = 'normal';
+            
+            if (window.innerWidth <= 768) {
+                sidebarOverlay.classList.add('active');
+            }
+        }
+
+        function hideSidebar() {
+            console.log('Hiding sidebar');
+            sidebar.classList.add('collapsed');
+            wrap.classList.add('sidebar-collapsed');
+            
+            // Remove expanded state if present
+            sidebar.classList.remove('expanded');
+            wrap.classList.remove('sidebar-expanded');
+            expandBtn.style.display = 'inline-block';
+            collapseBtn.style.display = 'none';
+            
+            updateToggleIcons('times');
+            sidebarState = 'collapsed';
+            
+            sidebarOverlay.classList.remove('active');
+        }
+
+        function updateToggleIcons(iconType) {
+            const iconClass = iconType === 'bars' ? 'fas fa-bars' : 'fas fa-times';
+            if (toggleIcon) toggleIcon.className = iconClass;
+            if (headerToggleIcon) headerToggleIcon.className = iconClass;
+        }
+
+        function expandSidebar() {
+            sidebar.classList.add('expanded');
+            wrap.classList.add('sidebar-expanded');
+            expandBtn.style.display = 'none';
+            collapseBtn.style.display = 'inline-block';
+            sidebarState = 'expanded';
+        }
+
+        function collapseSidebarToNormal() {
+            sidebar.classList.remove('expanded');
+            wrap.classList.remove('sidebar-expanded');
+            expandBtn.style.display = 'inline-block';
+            collapseBtn.style.display = 'none';
+            sidebarState = 'normal';
+        }
+
+        // Event listeners for sidebar controls
+        if (sidebarToggle) {
+            sidebarToggle.addEventListener('click', (e) => {
+                e.preventDefault();
+                e.stopPropagation();
+                toggleSidebar();
+            });
+        }
+
+        if (headerSidebarToggle) {
+            headerSidebarToggle.addEventListener('click', (e) => {
+                e.preventDefault();
+                e.stopPropagation();
+                toggleSidebar();
+            });
+        }
+
+        if (expandBtn) {
+            expandBtn.addEventListener('click', expandSidebar);
+        }
+
+        if (collapseBtn) {
+            collapseBtn.addEventListener('click', collapseSidebarToNormal);
+        }
+        
+        // Close sidebar when clicking overlay
+        if (sidebarOverlay) {
+            sidebarOverlay.addEventListener('click', () => {
+                hideSidebar();
+            });
+        }
+
+        // Handle window resize
+        window.addEventListener('resize', () => {
+            // Remove overlay on desktop
+            if (window.innerWidth > 768) {
+                sidebarOverlay.classList.remove('active');
+            }
+            
+            // Force sidebar to show on desktop if it was hidden on mobile
+            if (window.innerWidth > 768 && sidebarState === 'collapsed') {
+                // Don't auto-show on desktop, let user control it
+                console.log('Window resized to desktop, keeping sidebar state');
+            }
+        });
+
+        // Keyboard shortcuts
+        document.addEventListener('keydown', (e) => {
+            // Ctrl/Cmd + B to toggle sidebar
+            if ((e.ctrlKey || e.metaKey) && e.key === 'b') {
+                e.preventDefault();
+                toggleSidebar();
+            }
+            // Escape to hide sidebar
+            if (e.key === 'Escape' && sidebarState !== 'collapsed') {
+                hideSidebar();
+            }
+        });
+
+        // Initialize sidebar state on page load
+        function initializeSidebar() {
+            // Start with sidebar visible by default
+            sidebarState = 'normal';
+            updateToggleIcons('bars');
+            
+            // On mobile, start with sidebar hidden
+            if (window.innerWidth <= 768) {
+                hideSidebar();
+            }
+        }
+
+        // Call initialization
+        initializeSidebar();
+
+        // Load navbar user data
+        function loadNavbarUserData() {
+            fetch('PHP/get_user_data.php')
+                .then(response => response.json())
+                .then(data => {
+                    console.log('User data received:', data); // Debug log
+                    if (data.success) {
+                        const navbarProfilePicture = document.getElementById('navbarProfilePicture');
+                        const navbarLocation = document.getElementById('navbarLocation');
+                        
+                        if (navbarProfilePicture) {
+                            // Use photo or profile_url, fallback to black/white placeholder
+                            navbarProfilePicture.src = data.photo || data.profile_url || 'https://placehold.co/36x36/000000/FFFFFF?text=U';
+                        }
+                        
+                        if (navbarLocation) {
+                            // Use location or combine district/state, fallback to default
+                            let locationText = data.location || `${data.district || 'City'}, ${data.state || 'District'}`;
+                            navbarLocation.textContent = locationText;
+                        }
+                    } else {
+                        console.error('Failed to load user data:', data.error);
+                        // Set default values on error
+                        const navbarProfilePicture = document.getElementById('navbarProfilePicture');
+                        const navbarLocation = document.getElementById('navbarLocation');
+                        
+                        if (navbarProfilePicture) {
+                            navbarProfilePicture.src = 'https://placehold.co/36x36/000000/FFFFFF?text=U';
+                        }
+                        if (navbarLocation) {
+                            navbarLocation.textContent = 'City, District';
+                        }
+                    }
+                })
+                .catch(error => {
+                    console.error('Error loading navbar user data:', error);
+                    // Set default values on network error
+                    const navbarProfilePicture = document.getElementById('navbarProfilePicture');
+                    const navbarLocation = document.getElementById('navbarLocation');
+                    
+                    if (navbarProfilePicture) {
+                        navbarProfilePicture.src = 'https://placehold.co/36x36/000000/FFFFFF?text=U';
+                    }
+                    if (navbarLocation) {
+                        navbarLocation.textContent = 'City, District';
+                    }
+                });
+        }
+
         function showCustomAlert(message) {
             alertMessage.textContent = message;
             alertModal.style.display = 'block';
         }
 
-        // Close custom alert modal
+       
         alertOkButton.addEventListener('click', () => {
             alertModal.style.display = 'none';
         });
 
-        // Close modal if user clicks outside of it
+       
         window.addEventListener('click', (event) => {
             if (event.target === alertModal) {
                 alertModal.style.display = 'none';
@@ -419,7 +899,7 @@
                 if (data.success) {
                     messageInput.value = '';
                     
-                    // Add message to UI immediately for better UX
+                 
                     const messageClass = 'sent-message';
                     const currentTime = new Date().toLocaleTimeString('en-US', { hour: '2-digit', minute: '2-digit', hour12: true });
                     
@@ -442,7 +922,7 @@
                     messageArea.scrollTop = messageArea.scrollHeight;
                     
                     if (!conversationId) {
-                        // Reload conversations if this was a new conversation
+                        
                         setTimeout(loadConversations, 500);
                     }
                 } else {
@@ -467,6 +947,9 @@
         sendButton.addEventListener('click', sendMessage);
 
         window.onload = function() {
+            // Load navbar user data first
+            loadNavbarUserData();
+            
             fetch('PHP/chat_api.php?action=get_current_user')
                 .then(response => response.json())
                 .then(user => {

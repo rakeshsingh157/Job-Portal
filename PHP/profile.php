@@ -5,15 +5,26 @@ error_reporting(E_ALL);
 header('Content-Type: application/json');
 
 session_start();
+
+// Log the request for debugging
+error_log("Profile.php accessed - Method: " . $_SERVER['REQUEST_METHOD'] . ", Session ID: " . session_id());
+
 require('config.php'); 
 
+// Check if database connection exists
+if (!$conn) {
+    http_response_code(500);
+    echo json_encode(['success' => false, 'error' => 'Database connection failed.']);
+    exit();
+}
 
 if (!isset($_SESSION['user_id'])) {
    http_response_code(401);
-   echo json_encode(['success' => false, 'error' => 'User not authenticated.']);
+   echo json_encode(['success' => false, 'error' => 'User not authenticated. Please log in again.']);
    exit();
 }
 $user_id = $_SESSION['user_id'];
+error_log("User ID from session: " . $user_id);
 
 
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
@@ -120,22 +131,38 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     }
 
 
-    $first_name = htmlspecialchars($_POST['first_name'] ?? '');
-    $last_name = htmlspecialchars($_POST['last_name'] ?? '');
-    $address = htmlspecialchars($_POST['address'] ?? '');
-    $employment_type = htmlspecialchars($_POST['employment_type'] ?? '');
-    $shift_type = $employment_type === 'Full Time' ? htmlspecialchars($_POST['shift_type'] ?? '') : null;
-    $part_time_hours = $employment_type === 'Part Time' ? htmlspecialchars($_POST['part_time_hours'] ?? '') : null;
-    $gender = htmlspecialchars($_POST['gender'] ?? '');
-    $bio = htmlspecialchars($_POST['bio'] ?? '');
+    // Log the received POST data
+    error_log("Received POST data: " . print_r($_POST, true));
+    
+    $first_name = htmlspecialchars(trim($_POST['first_name'] ?? ''));
+    $last_name = htmlspecialchars(trim($_POST['last_name'] ?? ''));
+    $address = htmlspecialchars(trim($_POST['address'] ?? ''));
+    $employment_type = htmlspecialchars(trim($_POST['employment_type'] ?? ''));
+    $shift_type = $employment_type === 'Full Time' ? htmlspecialchars(trim($_POST['shift_type'] ?? '')) : null;
+    $part_time_hours = $employment_type === 'Part Time' ? htmlspecialchars(trim($_POST['part_time_hours'] ?? '')) : null;
+    $gender = htmlspecialchars(trim($_POST['gender'] ?? ''));
+    $bio = htmlspecialchars(trim($_POST['bio'] ?? ''));
+    $job_field = htmlspecialchars(trim($_POST['job_field'] ?? ''));
     $age = !empty($_POST['age']) ? intval($_POST['age']) : null;
 
-    $stmt = $conn->prepare("UPDATE users SET first_name = ?, last_name = ?, address = ?, gender = ?, employment_type = ?, shift_type = ?, part_time_hours = ?, bio = ?, age = ? WHERE id = ?");
-    $stmt->bind_param("ssssssssii", $first_name, $last_name, $address, $gender, $employment_type, $shift_type, $part_time_hours, $bio, $age, $user_id);
+    // Validate required fields
+    if (empty($first_name) || empty($last_name)) {
+        http_response_code(400);
+        echo json_encode(['success' => false, 'error' => 'First name and last name are required.']);
+        exit();
+    }
+
+    $stmt = $conn->prepare("UPDATE users SET first_name = ?, last_name = ?, address = ?, gender = ?, employment_type = ?, shift_type = ?, part_time_hours = ?, bio = ?, age = ?, job_field = ? WHERE id = ?");
+    $stmt->bind_param("sssssssssii", $first_name, $last_name, $address, $gender, $employment_type, $shift_type, $part_time_hours, $bio, $age, $job_field, $user_id);
     
     if ($stmt->execute()) {
-        echo json_encode(['success' => true, 'message' => 'Profile updated successfully.']);
+        if ($stmt->affected_rows > 0) {
+            echo json_encode(['success' => true, 'message' => 'Profile updated successfully.']);
+        } else {
+            echo json_encode(['success' => true, 'message' => 'No changes were made to your profile.']);
+        }
     } else {
+        error_log("Database update error: " . $stmt->error);
         http_response_code(500);
         echo json_encode(['success' => false, 'error' => 'Database update failed: ' . $stmt->error]);
     }

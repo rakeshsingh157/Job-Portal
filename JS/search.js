@@ -1,4 +1,4 @@
-
+﻿
 let searchTimeout = null;
 
 function initSearch() {

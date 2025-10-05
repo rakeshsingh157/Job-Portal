@@ -1,0 +1,151 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Profile Save Button Test</title>
+    <style>
+        body { font-family: Arial, sans-serif; margin: 20px; }
+        .test-section { margin: 20px 0; padding: 15px; border: 1px solid #ddd; }
+        .modal { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.5); z-index: 1000; }
+        .modal.show { display: flex; align-items: center; justify-content: center; }
+        .modal-content { background: white; padding: 30px; border-radius: 8px; max-width: 500px; width: 90%; }
+        .form-group { margin: 15px 0; }
+        .form-group label { display: block; margin-bottom: 5px; font-weight: bold; }
+        .form-group input, .form-group textarea { width: 100%; padding: 8px; border: 1px solid #ddd; border-radius: 4px; }
+        .form-actions { margin-top: 20px; text-align: right; }
+        .form-actions button { padding: 10px 20px; margin: 0 5px; border: none; border-radius: 4px; cursor: pointer; }
+        .form-actions button[type="submit"] { background: #007cba; color: white; }
+        .form-actions button[type="button"] { background: #ccc; }
+        .log { background: #f5f5f5; padding: 10px; margin: 10px 0; border-radius: 4px; max-height: 200px; overflow-y: auto; font-family: monospace; font-size: 12px; }
+        .success { color: green; }
+        .error { color: red; }
+    </style>
+</head>
+<body>
+    <h1>Profile Save Button Test</h1>
+    
+    <div class="test-section">
+        <h3>Test Controls</h3>
+        <button onclick="openTestModal()">Open Edit Profile Modal</button>
+        <button onclick="clearLog()">Clear Log</button>
+    </div>
+    
+    <div class="test-section">
+        <h3>Debug Log</h3>
+        <div id="debugLog" class="log">Log will appear here...</div>
+    </div>
+
+    <!-- Test Modal -->
+    <div id="testProfileModal" class="modal">
+        <div class="modal-content">
+            <h2>Edit Profile (Test)</h2>
+            <form id="testProfileForm">
+                <div class="form-group">
+                    <label for="test_first_name">First Name</label>
+                    <input type="text" id="test_first_name" name="first_name" value="John" required>
+                </div>
+                <div class="form-group">
+                    <label for="test_last_name">Last Name</label>
+                    <input type="text" id="test_last_name" name="last_name" value="Doe" required>
+                </div>
+                <div class="form-group">
+                    <label for="test_bio">Bio</label>
+                    <textarea id="test_bio" name="bio" rows="3">Test bio content</textarea>
+                </div>
+                <div class="form-group">
+                    <label for="test_job_field">Job Field</label>
+                    <input type="text" id="test_job_field" name="job_field" value="Software Developer">
+                </div>
+                <div class="form-actions">
+                    <button type="submit">Save Changes</button>
+                    <button type="button" onclick="closeTestModal()">Cancel</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <script>
+        function log(message, type = 'info') {
+            const logDiv = document.getElementById('debugLog');
+            const timestamp = new Date().toLocaleTimeString();
+            const className = type === 'error' ? 'error' : (type === 'success' ? 'success' : '');
+            logDiv.innerHTML += `<div class="${className}">[${timestamp}] ${message}</div>`;
+            logDiv.scrollTop = logDiv.scrollHeight;
+        }
+
+        function clearLog() {
+            document.getElementById('debugLog').innerHTML = '';
+        }
+
+        function openTestModal() {
+            log('Opening test modal...');
+            document.getElementById('testProfileModal').classList.add('show');
+        }
+
+        function closeTestModal() {
+            log('Closing test modal...');
+            document.getElementById('testProfileModal').classList.remove('show');
+        }
+
+        // Test form submission
+        document.addEventListener('DOMContentLoaded', function() {
+            log('DOM loaded, setting up form event listener...');
+            
+            const form = document.getElementById('testProfileForm');
+            if (form) {
+                log('Test form found, attaching event listener...');
+                form.addEventListener('submit', async function(e) {
+                    e.preventDefault();
+                    log('Form submitted! Processing...', 'info');
+                    
+                    try {
+                        const formData = new FormData(this);
+                        log('Form data created, contents: ' + JSON.stringify(Object.fromEntries(formData)));
+                        
+                        log('Sending request to PHP/profile.php...');
+                        const response = await fetch('PHP/profile.php', {
+                            method: 'POST',
+                            body: formData,
+                            credentials: 'same-origin'
+                        });
+                        
+                        log('Response status: ' + response.status);
+                        
+                        if (!response.ok) {
+                            throw new Error(`HTTP ${response.status}`);
+                        }
+                        
+                        const responseText = await response.text();
+                        log('Raw response: ' + responseText);
+                        
+                        const result = JSON.parse(responseText);
+                        log('Parsed response: ' + JSON.stringify(result));
+                        
+                        if (result.success) {
+                            log('SUCCESS: ' + result.message, 'success');
+                            closeTestModal();
+                        } else {
+                            log('ERROR: ' + result.error, 'error');
+                        }
+                        
+                    } catch (error) {
+                        log('EXCEPTION: ' + error.message, 'error');
+                        console.error('Form submission error:', error);
+                    }
+                });
+                log('Event listener attached successfully!');
+            } else {
+                log('ERROR: Test form not found!', 'error');
+            }
+        });
+
+        // Close modal when clicking outside
+        document.getElementById('testProfileModal').addEventListener('click', function(e) {
+            if (e.target === this) {
+                closeTestModal();
+            }
+        });
+    </script>
+</body>
+</html>

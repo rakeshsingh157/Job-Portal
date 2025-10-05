@@ -1,0 +1,137 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Company Profile Debug</title>
+    <style>
+        body { font-family: Arial, sans-serif; margin: 20px; }
+        .debug-info { background: #f5f5f5; padding: 15px; margin: 10px 0; border-radius: 5px; }
+        .error { background: #ffebee; color: #c62828; }
+        .success { background: #e8f5e9; color: #2e7d32; }
+        .warning { background: #fff3e0; color: #ef6c00; }
+        button { padding: 10px 20px; margin: 5px; background: #007bff; color: white; border: none; border-radius: 4px; cursor: pointer; }
+        button:hover { background: #0056b3; }
+    </style>
+</head>
+<body>
+    <h1>Company Profile Debug Tool</h1>
+    
+    <div class="debug-info">
+        <h3>Current Session Status</h3>
+        <div id="session-status">Loading...</div>
+    </div>
+    
+    <div class="debug-info">
+        <h3>Test API Endpoints</h3>
+        <button onclick="testGetProfile()">Test GET Profile</button>
+        <button onclick="testAddJob()">Test Add Job</button>
+        <button onclick="loginAsCompany()">Simulate Company Login</button>
+    </div>
+    
+    <div class="debug-info">
+        <h3>Results</h3>
+        <div id="results"></div>
+    </div>
+
+    <script>
+        function log(message, type = 'info') {
+            const results = document.getElementById('results');
+            const div = document.createElement('div');
+            div.className = `debug-info ${type}`;
+            div.innerHTML = `<strong>${new Date().toLocaleTimeString()}:</strong> ${message}`;
+            results.appendChild(div);
+            console.log(message);
+        }
+
+        async function checkSession() {
+            try {
+                const response = await fetch('/SyWD/debug_session.php');
+                const data = await response.json();
+                document.getElementById('session-status').innerHTML = `
+                    <strong>Session ID:</strong> ${data.session_id}<br>
+                    <strong>Company User ID:</strong> ${data.cuser_id || 'Not logged in'}<br>
+                    <strong>Session Keys:</strong> ${Object.keys(data.session_data).join(', ') || 'None'}
+                `;
+                
+                if (!data.cuser_id_exists) {
+                    log('⚠️ No company user session found. You need to log in as a company user.', 'warning');
+                } else {
+                    log('✅ Company user session found: ' + data.cuser_id, 'success');
+                }
+            } catch (error) {
+                log('❌ Error checking session: ' + error.message, 'error');
+            }
+        }
+
+        async function testGetProfile() {
+            try {
+                log('Testing GET profile...');
+                const response = await fetch('/SyWD/PHP/company-profile.php', {
+                    method: 'GET',
+                    credentials: 'same-origin'
+                });
+                
+                const data = await response.json();
+                
+                if (data.success) {
+                    log('✅ Profile fetch successful: ' + JSON.stringify(data, null, 2), 'success');
+                } else {
+                    log('❌ Profile fetch failed: ' + data.message, 'error');
+                }
+            } catch (error) {
+                log('❌ Error testing profile: ' + error.message, 'error');
+            }
+        }
+
+        async function testAddJob() {
+            try {
+                log('Testing ADD job...');
+                const testJob = {
+                    action: 'add_job',
+                    job_title: 'Test Developer Position',
+                    job_desc: 'This is a test job description',
+                    location: 'Test City',
+                    work_mode: 'Remote',
+                    experience: '2-3 years',
+                    time: 'Full-time',
+                    salary: '$50,000',
+                    skills: 'JavaScript, PHP',
+                    form_link: 'https://example.com/apply'
+                };
+                
+                const response = await fetch('/SyWD/PHP/company-profile.php', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify(testJob),
+                    credentials: 'same-origin'
+                });
+                
+                const data = await response.json();
+                
+                if (data.success) {
+                    log('✅ Job addition successful: ' + data.message, 'success');
+                } else {
+                    log('❌ Job addition failed: ' + data.message, 'error');
+                }
+            } catch (error) {
+                log('❌ Error testing job addition: ' + error.message, 'error');
+            }
+        }
+
+        async function loginAsCompany() {
+            try {
+                log('Attempting to create a test company session...');
+                // This would typically be handled by your actual login system
+                log('⚠️ You need to log in through your actual company login page first.', 'warning');
+                log('Go to your company signin page and log in, then return to test the profile.', 'warning');
+            } catch (error) {
+                log('❌ Error simulating login: ' + error.message, 'error');
+            }
+        }
+
+        // Check session on page load
+        checkSession();
+    </script>
+</body>
+</html>

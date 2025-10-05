@@ -249,7 +249,6 @@ function closeJobModal() {
 
 async function saveJob(event) {
     event.preventDefault();
-    toggleLoading(true);
 
     const jobData = {
         job_title: document.getElementById('job-title-input').value.trim(),
@@ -280,15 +279,23 @@ async function saveJob(event) {
     }
     
     try {
+        console.log('Saving job with payload:', payload);
+        
         const response = await fetch(url, {
             method: method,
             headers: {
                 'Content-Type': 'application/json'
             },
-            body: JSON.stringify(payload)
+            body: JSON.stringify(payload),
+            credentials: 'same-origin'
         });
 
+        if (!response.ok) {
+            throw new Error(`HTTP error! status: ${response.status}`);
+        }
+
         const result = await response.json();
+        console.log('Save job result:', result);
 
         if (result.success) {
             console.log(result.message);
@@ -301,7 +308,16 @@ async function saveJob(event) {
         }
     } catch (error) {
         console.error('Error saving job:', error);
-        showMessage('An error occurred while saving the job.');
+        showMessage('Error saving job: ' + error.message + '. Please check your connection and try again.');
+    }
+}
+
+function toggleLoading(show) {
+    // Add loading indicator if needed
+    const saveBtn = document.querySelector('.btn-save');
+    if (saveBtn) {
+        saveBtn.disabled = show;
+        saveBtn.textContent = show ? 'Saving...' : 'Save Job';
     }
 }
 
@@ -391,10 +407,18 @@ function renderJobs() {
 async function fetchProfileAndJobs() {
     showCompanyProfileSkeleton();
     try {
+        console.log('Fetching profile and jobs...');
         const response = await fetch('/SyWD/PHP/company-profile.php', {
-            method: 'GET'
+            method: 'GET',
+            credentials: 'same-origin'
         });
+        
+        if (!response.ok) {
+            throw new Error(`HTTP error! status: ${response.status}`);
+        }
+        
         const result = await response.json();
+        console.log('Fetch result:', result);
         if (result.success) {
             // Update profile display
             if (result.profile) {
@@ -407,7 +431,10 @@ async function fetchProfileAndJobs() {
                 document.getElementById('display-company-type').textContent = profile.company_type;
                 document.getElementById('display-website').textContent = profile.website;
                 document.getElementById('display-website').href = profile.website;
-                document.getElementById('display-overview').textContent = profile.overview;
+                const overviewElement = document.getElementById('display-overview');
+                if (overviewElement) {
+                    overviewElement.textContent = profile.overview;
+                }
                 
 
                 displayContact.innerHTML = `${profile.email || 'N/A'}<br>Phone: ${profile.phone_number || 'N/A'}`;
@@ -420,7 +447,10 @@ async function fetchProfileAndJobs() {
                 document.getElementById('edit-industry').value = profile.industry;
                 document.getElementById('edit-company-type').value = profile.company_type;
                 document.getElementById('edit-website').value = profile.website;
-                document.getElementById('edit-overview').value = profile.overview;
+                const editOverviewElement = document.getElementById('edit-overview');
+                if (editOverviewElement) {
+                    editOverviewElement.value = profile.overview;
+                }
                 document.getElementById('edit-founded').value = profile.founded_year;
                 document.getElementById('profile-image').src = profile.profile_photo;
                 if (profile.profile_photo) {
@@ -436,9 +466,11 @@ async function fetchProfileAndJobs() {
             renderJobs();
         } else {
             console.error('Failed to fetch profile and jobs:', result.message);
+            showMessage('Failed to load profile data: ' + result.message);
         }
     } catch (error) {
         console.error('Error fetching profile and jobs:', error);
+        showMessage('Error loading profile data. Please check your connection and try again.');
     } finally {
         hideCompanyProfileSkeleton();
     }

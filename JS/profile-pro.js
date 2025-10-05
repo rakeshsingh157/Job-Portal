@@ -1,4 +1,15 @@
 
+// Loader Functions
+function showLoader() {
+    console.log('Loading...');
+    // You can add a loading spinner here if needed
+}
+
+function hideLoader() {
+    console.log('Loading complete.');
+    // Hide loading spinner here if needed
+}
+
 // Profile Skeleton Loading Functions
 function showProfileSkeleton() {
     try {
@@ -60,6 +71,8 @@ function showCustomAlert(title, message) {
 
 
 async function fetchProfileData(showSkeleton = true) {
+    console.log('fetchProfileData called, showSkeleton:', showSkeleton);
+    
     if (showSkeleton) {
         showProfileSkeleton();
     } else {
@@ -70,13 +83,24 @@ async function fetchProfileData(showSkeleton = true) {
     const timeoutId = setTimeout(() => controller.abort(), 15000); // 15-second timeout
 
     try {
+        console.log('Making requests to profile endpoints...');
 
         const [profileResponse, updateResponse] = await Promise.all([
-            fetch('PHP/profile.php', { method: 'GET', signal: controller.signal }),
-            fetch('PHP/profile_update.php', { method: 'GET', signal: controller.signal })
+            fetch('PHP/profile.php', { 
+                method: 'GET', 
+                signal: controller.signal,
+                credentials: 'same-origin'
+            }),
+            fetch('PHP/profile_update.php', { 
+                method: 'GET', 
+                signal: controller.signal,
+                credentials: 'same-origin'
+            })
         ]);
 
         clearTimeout(timeoutId);
+        
+        console.log('Response statuses:', profileResponse.status, updateResponse.status);
 
         if (!profileResponse.ok || !updateResponse.ok) {
            throw new Error(`Server responded with status: ${profileResponse.status}, ${updateResponse.status}`);
@@ -84,6 +108,9 @@ async function fetchProfileData(showSkeleton = true) {
 
         const profileResult = await profileResponse.json();
         const updateResult = await updateResponse.json();
+        
+        console.log('Profile result:', profileResult);
+        console.log('Update result:', updateResult);
         
         if (!profileResult.success || !updateResult.success) {
             throw new Error(profileResult.error || updateResult.error || 'Failed to get data from server.');
@@ -96,6 +123,8 @@ async function fetchProfileData(showSkeleton = true) {
         if (!profileData || !updateResult.data) {
              throw new Error('Incomplete profile data received.');
         }
+        
+        console.log('Profile data loaded successfully:', profileData);
 
         updateProfileUI(profileData, experienceData, educationData);
         
@@ -140,15 +169,28 @@ function updateProfileUI(profileData, experienceData, educationData) {
     document.getElementById('navbarProfilePicture').src = profilePictureUrl;
     
 
-    document.getElementById('first_name').value = profileData.first_name || '';
-    document.getElementById('last_name').value = profileData.last_name || '';
-    document.getElementById('job_field').value = profileData.job_field || '';
-    document.getElementById('age').value = profileData.age || '';
-    document.getElementById('bio').value = profileData.bio || '';
-    document.getElementById('address').value = profileData.address || '';
-    document.getElementById('phone_number').value = profileData.phone_number || '';
-    document.getElementById('email').value = profileData.email || '';
-    document.getElementById('part_time_hours').value = profileData.part_time_hours || '';
+    // Populate form fields with safety checks
+    const fields = {
+        'first_name': profileData.first_name || '',
+        'last_name': profileData.last_name || '',
+        'job_field': profileData.job_field || '',
+        'age': profileData.age || '',
+        'bio': profileData.bio || '',
+        'address': profileData.address || '',
+        'phone_number': profileData.phone_number || '',
+        'email': profileData.email || '',
+        'part_time_hours': profileData.part_time_hours || ''
+    };
+    
+    for (const [fieldId, value] of Object.entries(fields)) {
+        const element = document.getElementById(fieldId);
+        if (element) {
+            element.value = value;
+            console.log(`Set ${fieldId} to: ${value}`);
+        } else {
+            console.warn(`Element with ID ${fieldId} not found`);
+        }
+    }
     
 
     setCheckedValue('gender', profileData.gender);
@@ -253,25 +295,51 @@ function toggleEmploymentFields(value) {
 
 async function handleFormSubmit(form, actionUrl, additionalData = {}) {
     showLoader();
+    console.log('Form submission started...');
     try {
         const formData = form ? new FormData(form) : new FormData();
         for (const key in additionalData) {
             formData.append(key, additionalData[key]);
         }
 
-        const response = await fetch(actionUrl, { method: 'POST', body: formData });
-        const result = await response.json();
+        console.log('Submitting to:', actionUrl);
+        console.log('Form data:', Object.fromEntries(formData));
+
+        const response = await fetch(actionUrl, { 
+            method: 'POST', 
+            body: formData,
+            credentials: 'same-origin'
+        });
+        
+        if (!response.ok) {
+            throw new Error(`HTTP error! status: ${response.status}`);
+        }
+        
+        const responseText = await response.text();
+        console.log('Response text:', responseText);
+        
+        let result;
+        try {
+            result = JSON.parse(responseText);
+        } catch (parseError) {
+            console.error('JSON parse error:', parseError);
+            throw new Error('Invalid response from server. Please check if you are logged in.');
+        }
 
         if (result.success) {
             showCustomAlert('Success', result.message || 'Action completed successfully.');
-            fetchProfileData(false); // Refresh all data
+            await fetchProfileData(false); // Refresh all data
             return true;
         } else {
             throw new Error(result.error || 'An unknown error occurred.');
         }
     } catch (error) {
         console.error('Form submission error:', error);
-        showCustomAlert('Error', error.message);
+        if (error.message.includes('Failed to fetch')) {
+            showCustomAlert('Error', 'Network error. Please check your internet connection and try again.');
+        } else {
+            showCustomAlert('Error', error.message);
+        }
         return false;
     } finally {
         hideLoader();
@@ -295,11 +363,32 @@ document.addEventListener('DOMContentLoaded', () => {
     });
 
 
-    document.getElementById('editProfileForm').addEventListener('submit', async function(e) {
-        e.preventDefault();
-        const success = await handleFormSubmit(this, 'PHP/profile.php');
-        if (success) closeModal('editProfileModal');
-    });
+    // Add event listener for edit profile form
+    const editForm = document.getElementById('editProfileForm');
+    if (editForm) {
+        editForm.addEventListener('submit', async function(e) {
+            e.preventDefault();
+            console.log('Edit profile form submitted!');
+            
+            // Basic form validation
+            const firstName = document.getElementById('first_name').value.trim();
+            const lastName = document.getElementById('last_name').value.trim();
+            
+            if (!firstName || !lastName) {
+                showCustomAlert('Error', 'First name and last name are required.');
+                return;
+            }
+            
+            console.log('Form data - First Name:', firstName, 'Last Name:', lastName);
+            const success = await handleFormSubmit(this, 'PHP/profile.php');
+            if (success) {
+                closeModal('editProfileModal');
+            }
+        });
+        console.log('Edit profile form event listener attached successfully');
+    } else {
+        console.error('Edit profile form not found!');
+    }
 
     document.getElementById('addexpForm').addEventListener('submit', async function(e) {
         e.preventDefault();
