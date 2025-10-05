@@ -1031,7 +1031,7 @@
                 if (response.ok) {
                     showCustomModal('Application Submitted', 'Application successfully submitted! Status: ' + result.test_pass_status.toUpperCase(), () => {
                         sessionStorage.clear(); // Clear all session data after successful submission
-                        window.location.href = 'profile.html';
+                        window.location.href = '../profile.html';
                     });
                 } else {
                     // Display specific error message from server if available

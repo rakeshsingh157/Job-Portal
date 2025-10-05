@@ -568,20 +568,7 @@
             const shiftTypeRadios = document.querySelectorAll('input[name="shiftType"]');
             const minHoursInput = document.getElementById('minHours');
             const maxHoursInput = document.getElementById('maxHours');
-            
-            // NOTE: The following lines are causing the error because the elements don't exist in the HTML.
-            // I'm commenting them out to fix the error, as they are not present in your provided HTML.
-            // If you add these elements to your HTML later, you can uncomment them.
-            // const profilePhotoInput = document.getElementById('profilePhotoInput');
-            // const profilePhotoName = document.getElementById('profilePhotoName');
-            // const profilePhotoDropArea = document.getElementById('profilePhotoDropArea');
-
-            // const resumeInput = document.getElementById('resumeInput');
-            // const resumeName = document.getElementById('resumeName');
-            // const resumeDropArea = document.getElementById('resumeDropArea');
-
-            // Employment type visibility
-            const shiftDetailsDiv = document.getElementById('shift-details');
+             const shiftDetailsDiv = document.getElementById('shift-details');
             const partTimeHoursDiv = document.getElementById('part-time-hours');
 
             // Loading overlay elements
@@ -596,75 +583,7 @@
                 }
             }
 
-            // --- The following drag and drop functions and event listeners are commented out ---
-            // --- because the HTML elements they refer to are not present in your code. ---
-            
-            // profilePhotoInput.addEventListener('change', () => handleFileChange(profilePhotoInput, profilePhotoName));
-            // resumeInput.addEventListener('change', () => handleFileChange(resumeInput, resumeName));
-
-            // function setupDragAndDrop(dropArea, fileInput, nameDisplayElement, allowedTypes, maxSizeMB) {
-            //     ['dragenter', 'dragover', 'dragleave', 'drop'].forEach(eventName => {
-            //         dropArea.addEventListener(eventName, preventDefaults, false);
-            //         document.body.addEventListener(eventName, preventDefaults, false);
-            //     });
-
-            //     ['dragenter', 'dragover'].forEach(eventName => {
-            //         dropArea.addEventListener(eventName, () => dropArea.classList.add('drag-over'), false);
-            //     });
-
-            //     ['dragleave', 'drop'].forEach(eventName => {
-            //         dropArea.addEventListener(eventName, () => dropArea.classList.remove('drag-over'), false);
-            //     });
-
-            //     dropArea.addEventListener('drop', (e) => {
-            //         const files = e.dataTransfer.files;
-            //         if (files.length > 0) {
-            //             const file = files[0];
-            //             const fileType = file.type;
-            //             const fileSize = file.size;
-
-            //             const typeMatch = allowedTypes.some(type => {
-            //                 if (type.includes('/')) {
-            //                     return fileType.startsWith(type.split('/')[0]) && fileType.includes(type.split('/')[1]);
-            //                 } else {
-            //                     return file.name.toLowerCase().endsWith(type);
-            //                 }
-            //             });
-
-            //             if (!typeMatch) {
-            //                 alert(`Invalid file type. Please upload ${allowedTypes.map(t => t.startsWith('.') ? t.toUpperCase() : t.split('/')[1].toUpperCase()).join(', ')} files.`);
-            //                 return;
-            //             }
-
-            //             const maxSizeBytes = maxSizeMB * 1024 * 1024;
-            //             if (fileSize > maxSizeBytes) {
-            //                 alert(`File is too large. Max size is ${maxSizeMB}MB.`);
-            //                 return;
-            //             }
-
-            //             const dataTransfer = new DataTransfer();
-            //             dataTransfer.items.add(file);
-            //             fileInput.files = dataTransfer.files;
-
-            //             handleFileChange(fileInput, nameDisplayElement);
-            //         }
-            //     }, false);
-
-            //     dropArea.addEventListener('click', () => {
-            //         fileInput.click();
-            //     });
-            // }
-
-            // function preventDefaults(e) {
-            //     e.preventDefault();
-            //     e.stopPropagation();
-            // }
-
-            // setupDragAndDrop(profilePhotoDropArea, profilePhotoInput, profilePhotoName, ['image/jpeg', 'image/png'], 5);
-            // setupDragAndDrop(resumeDropArea, resumeInput, resumeName, ['.pdf', '.doc', '.docx'], 10);
-
-            // --- Employment Type Logic ---
-            employmentTypeRadios.forEach(radio => {
+           employmentTypeRadios.forEach(radio => {
                 radio.addEventListener('change', () => {
                     if (document.getElementById('fullTime').checked) {
                         shiftDetailsDiv.style.display = 'block';

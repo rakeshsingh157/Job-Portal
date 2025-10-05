@@ -17,7 +17,7 @@ if (isset($_POST['field'])) {
     curl_setopt($ch, CURLOPT_POST, 1);
     
     $payload = [
-        "model" => "command-r-plus", // Assuming command-r-plus model for Cohere
+        "model" => "command-a-03-2025", // Assuming command-r-plus model for Cohere
         "message" => $prompt,
         "chat_history" => [], // No chat history needed for fresh quiz generation
         "preamble" => QUIZ_SYSTEM_MESSAGE_CONTENT, // Use quiz-specific preamble
