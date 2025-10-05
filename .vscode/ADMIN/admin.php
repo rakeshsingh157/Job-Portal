@@ -1,0 +1,222 @@
+<?php
+session_start();
+
+if (!isset($_SESSION['admin_logged_in']) || $_SESSION['admin_logged_in'] !== true) {
+    header("Location: index.html");
+    exit;
+}
+?>
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Admin Dashboard - Company Verification</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="admin.css">
+</head>
+<body>
+    <div class="admin-container">
+        <div class="dashboard-header">
+            <h1>
+                <i class="fas fa-shield-alt"></i>
+                Admin Dashboard - Company Verification
+            </h1>
+            <div class="header-actions">
+                <div class="search-container">
+                    <i class="fas fa-search"></i>
+                    <input type="text" id="searchInput" placeholder="Search companies...">
+                </div>
+                <div class="user-profile">
+                    <div class="user-avatar">JD</div>
+                    <div>
+                        <div style="font-weight: 600;">John Doe</div>
+                        <div style="font-size: 13px; opacity: 0.8;">Administrator</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="dashboard-content">
+            <div class="stats-container">
+                <div class="stat-card pending">
+                    <div class="stat-icon pending">
+                        <i class="fas fa-hourglass-half"></i>
+                    </div>
+                    <div class="stat-info">
+                        <h3 id="pendingCount">0</h3>
+                        <p>Pending Verifications</p>
+                    </div>
+                </div>
+                <div class="stat-card verified">
+                    <div class="stat-icon verified">
+                        <i class="fas fa-check-circle"></i>
+                    </div>
+                    <div class="stat-info">
+                        <h3 id="verifiedCount">0</h3>
+                        <p>Verified Companies</p>
+                    </div>
+                </div>
+                <div class="stat-card rejected">
+                    <div class="stat-icon rejected">
+                        <i class="fas fa-times-circle"></i>
+                    </div>
+                    <div class="stat-info">
+                        <h3 id="rejectedCount">0</h3>
+                        <p>Rejected Applications</p>
+                    </div>
+                </div>
+            </div>
+
+            <div class="table-header">
+                <h2><i class="fas fa-file-alt"></i> Verification Forms</h2>
+                <div class="filter-actions">
+                    <div class="filter-btn active" data-filter="all">
+                        <i class="fas fa-list"></i> All
+                    </div>
+                    <div class="filter-btn" data-filter="pending">
+                        <i class="fas fa-clock"></i> Pending
+                    </div>
+                    <div class="filter-btn" data-filter="done">
+                        <i class="fas fa-check"></i> Verified
+                    </div>
+                    <div class="filter-btn" data-filter="rejected">
+                        <i class="fas fa-ban"></i> Rejected
+                    </div>
+                </div>
+            </div>
+
+            <table id="formsTable">
+                <thead>
+                    <tr>
+                        <th data-sort="id">ID</th>
+                        <th data-sort="company_name">Company Name</th>
+                        <th data-sort="created_at">Submitted On</th>
+                        <th data-sort="status">Status</th>
+                        <th>Actions</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td colspan="5">Loading forms...</td>
+                    </tr>
+                </tbody>
+            </table>
+            
+            <div class="pagination">
+                </div>
+        </div>
+    </div>
+
+    <div id="detailsModal" class="modal">
+        <div class="modal-content">
+            <span class="close-btn">&times;</span>
+            <div class="modal-header">
+                <h2>Company Details</h2>
+                <div class="action-buttons">
+                    <button class="action-button download-btn"><i class="fas fa-download"></i> Export</button>
+                    <button class="action-button edit-btn"><i class="fas fa-print"></i> Print</button>
+                </div>
+            </div>
+            <div class="modal-body" id="modalBody">
+                <div class="detail-card">
+                    <h3>Company Information</h3>
+                    <div class="detail-item">
+                        <strong>Company Name:</strong>
+                        <span id="detail-company_name"></span>
+                    </div>
+                    <div class="detail-item">
+                        <strong>Registration ID:</strong>
+                        <span id="detail-registration_number"></span>
+                    </div>
+                    <div class="detail-item">
+                        <strong>Business Type:</strong>
+                        <span id="detail-business_type"></span>
+                    </div>
+                    <div class="detail-item">
+                        <strong>Legal Status:</strong>
+                        <span id="detail-legal_status"></span>
+                    </div>
+                    <div class="detail-item">
+                        <strong>Established:</strong>
+                        <span id="detail-date_established"></span>
+                    </div>
+                    <div class="detail-item">
+                        <strong>Number of Employees:</strong>
+                        <span id="detail-num_employees"></span>
+                    </div>
+                </div>
+                
+                <div class="detail-card">
+                    <h3>Contact Information</h3>
+                    <div class="detail-item">
+                        <strong>Contact Person:</strong>
+                        <span id="detail-contact_person"></span>
+                    </div>
+                    <div class="detail-item">
+                        <strong>Contact Title:</strong>
+                        <span id="detail-contact_title"></span>
+                    </div>
+                    <div class="detail-item">
+                        <strong>Email:</strong>
+                        <span id="detail-email"></span>
+                    </div>
+                    <div class="detail-item">
+                        <strong>Phone:</strong>
+                        <span id="detail-phone_number"></span>
+                    </div>
+                    <div class="detail-item">
+                        <strong>Website:</strong>
+                        <span id="detail-website"></span>
+                    </div>
+                    <div class="detail-item">
+                        <strong>Address:</strong>
+                        <span id="detail-physical_address"></span>
+                    </div>
+                </div>
+                
+                <div class="detail-card">
+                    <h3>Business Details</h3>
+                    <div class="detail-item">
+                        <strong>Nature of Business:</strong>
+                        <span id="detail-nature_of_business"></span>
+                    </div>
+                    <div class="detail-item">
+                        <strong>Products/Services:</strong>
+                        <span id="detail-products_services"></span>
+                    </div>
+                    <div class="detail-item">
+                        <strong>Hours of Operation:</strong>
+                        <span id="detail-hours_of_operation"></span>
+                    </div>
+                </div>
+
+                <div class="detail-card">
+                    <h3>Verification & Documents</h3>
+                    <div class="detail-item">
+                        <strong>Status:</strong>
+                        <span id="detail-status"></span>
+                    </div>
+                    <div class="detail-item">
+                        <strong>Submitted On:</strong>
+                        <span id="detail-created_at"></span>
+                    </div>
+                    <div class="detail-item">
+                        <strong>Documents:</strong>
+                        <span id="detail-documents"></span>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="modal-actions">
+                <button class="action-button verify-btn" id="verifyModalBtn"><i class="fas fa-check-circle"></i> Verify Company</button>
+                <button class="action-button reject-btn" id="rejectModalBtn"><i class="fas fa-times-circle"></i> Reject Application</button>
+                <button class="action-button edit-btn" id="pendingModalBtn"><i class="fas fa-redo"></i> Set to Pending</button>
+            </div>
+        </div>
+    </div>
+
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+    <script src="admin.js"></script>
+</body>
+</html>

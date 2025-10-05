@@ -1,0 +1,15 @@
+{
+	"folders": [
+		{
+			"name": "SyWD",
+			"path": ".."
+		},
+		{
+			"name": "ADMIN",
+			"path": "."
+		}
+	],
+	"settings": {
+		"liveServer.settings.port": 5501
+	}
+}
