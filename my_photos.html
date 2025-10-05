@@ -7,7 +7,8 @@
     <link rel="icon" type="image/png" sizes="32x32" href="IMAGES/icon.png">
 
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-    <link rel="stylesheet" href="CSS/my_photos.css">
+    <link rel="stylesheet" href="CSS/postview-style.css?v=2.3">
+    <link rel="stylesheet" href="CSS/gallery-custom.css">
 
     <style>
         
@@ -120,7 +121,7 @@
     </div>
     <div class="navbar-center">
         <ul>
-            <li><a href="explore.html" class="active">Jobs</a></li>
+            <li><a href="explore.html" >Jobs</a></li>
                 <li><a href="chat.html">Messages</a></li>
                 <li><a href="view-post.html">Posts</a></li>
         </ul>
@@ -198,52 +199,83 @@
         </div>
     </div>
 
-    <div class="modal" id="viewModal">
+    <div class="modal" id="imageModal">
+        <div class="modal-backdrop" onclick="closeModal()"></div>
+        <div class="modal-close" onclick="closeModal()">×</div>
         <div class="modal-content">
-            <div class="modal-header">
-                <h2 class="modal-title">Post Details</h2>
-                <button class="modal-close" onclick="closeModal('viewModal')">&times;</button>
-            </div>
-            <div class="modal-body">
-                <div class="modal-image-container">
-                    <img src="" alt="Post image" class="modal-image" id="viewModalImage">
-                    <button class="modal-image-nav-btn modal-nav-btn-prev" id="viewModalPrevBtn" style="display: none;"><i class="fas fa-chevron-left"></i></button>
-                    <button class="modal-image-nav-btn modal-nav-btn-next" id="viewModalNextBtn" style="display: none;"><i class="fas fa-chevron-right"></i></button>
-                    <div class="modal-image-count" id="viewModalImageCount" style="display: none;"></div>
-                    <div class="modal-image-navigation" id="viewModalNavDots" style="display: none;"></div>
+            <div class="modal-image-container">
+                <img class="modal-image" id="modalImage" src="" alt="Enlarged post image">
+                
+                <div class="modal-nav">
+                    <div class="nav-btn prev-btn" onclick="navigateImage(-1)">❮</div>
+                    <div class="nav-btn next-btn" onclick="navigateImage(1)">❯</div>
                 </div>
-                <div class="modal-details">
-                    <div class="post-author">
-                        <div class="author-avatar">
-                            <img src="" alt="Author" class="profile-image" id="viewModalAvatar">
+                
+                <div class="modal-dots" id="modalDots"></div>
+            </div>
+            
+            <div class="modal-sidebar">
+                <!-- Header Section -->
+                <div class="modal-header">
+                    <div class="modal-user-section">
+                        <a id="modalUsernameLink" href="#" class="modal-avatar-link">
+                            <div class="modal-avatar">
+                                <img id="modalAvatar" src="https://via.placeholder.com/48" alt="Profile">
+                            </div>
+                        </a>
+                        <div class="modal-user-info">
+                            <a id="modalUsernameLink2" href="#" class="modal-username-link">
+                                <div class="modal-username" id="modalUsername"></div>
+                            </a>
+                            <div class="modal-post-time" id="modalPostTime">Just now</div>
                         </div>
-                        <div class="author-info">
-                            <div class="author-name" id="viewModalAuthor"></div>
-                            <div class="author-title" id="viewModalTitle"></div>
-                        </div>
-                        <div class="post-time" id="viewModalTime"></div>
                     </div>
                     
-                    <div class="modal-text" id="viewModalText"></div>
-                    
-                    <div class="engagement-stats" style="display:none;">
-                        <span id="viewModalLikes"></span>
-                        <span id="viewModalComments"></span>
+                    <div class="modal-actions">
+                        <button type="button" class="modal-action-btn" id="editPostBtn" onclick="editPost(currentPostId)">
+                            <svg width="20" height="20" viewBox="0 0 24 24" fill="none">
+                                <path d="M11 4H4a2 2 0 00-2 2v14a2 2 0 002 2h14a2 2 0 002-2v-7M18.5 2.5a2.121 2.121 0 013 3L12 15l-4 1 1-4 9.5-9.5z" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                            </svg>
+                        </button>
+                        <button type="button" class="modal-action-btn delete-btn" id="deletePostBtn" onclick="openDeleteModal(currentPostId)">
+                            <svg width="20" height="20" viewBox="0 0 24 24" fill="none">
+                                <path d="M3 6h18M19 6v14a2 2 0 01-2 2H7a2 2 0 01-2-2V6m3 0V4a2 2 0 012-2h4a2 2 0 012 2v2M10 11v6M14 11v6" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                            </svg>
+                        </button>
+                    </div>
+                </div>
+                
+                <!-- Description Section -->
+                <div class="modal-description-section">
+                    <div class="modal-description" id="modalDescription">
+                        <span class="modal-description-text" id="modalText"></span>
+                        <button class="modal-read-more" id="readMoreBtn" style="display: none;">...more</button>
+                    </div>
+                    <div class="modal-image-count" id="modalImageCount"></div>
+                </div>
+                
+                <!-- Comments Section -->
+                <div class="modal-comments-section">
+                    <div class="modal-comments-header">
+                        <span id="commentCount">Comments</span>
                     </div>
                     
-                    
-                    <div class="comments-section" id="viewModalCommentsSection">
-                        <h3 class="comments-title">Comments</h3>
-                    </div>
-                    
-                    <div class="add-comment">
-                        <div class="commenter-avatar">
-                            <img src="" alt="Your avatar" class="profile-image" id="commenterAvatar">
+                    <!-- Comment Input at Top -->
+                    <form id="commentForm" method="POST" class="modal-comment-input-top">
+                        <input type="hidden" name="post_id" id="commentPostId">
+                        <div class="comment-input-wrapper">
+                            <img id="commentUserAvatar" src="https://via.placeholder.com/32" alt="Your profile" class="comment-user-avatar">
+                            <input type="text" id="commentTextInput" name="comment_text" placeholder="Add a comment..." required>
+                            <button type="submit" name="add_comment" class="comment-submit-btn" title="Post comment">
+                                <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor">
+                                    <path d="M2.01 21L23 12 2.01 3 2 10l15 2-15 2z"/>
+                                </svg>
+                            </button>
                         </div>
-                        <div class="comment-input-container">
-                            <textarea class="comment-input" placeholder="Add a comment..." id="commentInput"></textarea>
-                            <button class="comment-submit" id="submitComment" disabled>Comment</button>
-                        </div>
+                    </form>
+                    
+                    <div class="modal-comments" id="modalComments">
+                        <!-- Comments will be loaded here -->
                     </div>
                 </div>
             </div>

@@ -1,4 +1,45 @@
 
+// Profile Skeleton Loading Functions
+function showProfileSkeleton() {
+    try {
+        // Show skeleton containers
+        const sidebarSkeleton = document.getElementById('profileSidebarSkeleton');
+        const contentSkeleton = document.getElementById('profileContentSkeleton');
+        
+        if (sidebarSkeleton) sidebarSkeleton.classList.add('active');
+        if (contentSkeleton) contentSkeleton.classList.add('active');
+        
+        // Hide actual content
+        const sidebarContent = document.getElementById('profileSidebarContent');
+        const contentMain = document.getElementById('profileContentMain');
+        
+        if (sidebarContent) sidebarContent.classList.add('loading');
+        if (contentMain) contentMain.classList.add('loading');
+    } catch (error) {
+        console.error('Error showing profile skeleton:', error);
+    }
+}
+
+function hideProfileSkeleton() {
+    try {
+        // Hide skeleton containers
+        const sidebarSkeleton = document.getElementById('profileSidebarSkeleton');
+        const contentSkeleton = document.getElementById('profileContentSkeleton');
+        
+        if (sidebarSkeleton) sidebarSkeleton.classList.remove('active');
+        if (contentSkeleton) contentSkeleton.classList.remove('active');
+        
+        // Show actual content
+        const sidebarContent = document.getElementById('profileSidebarContent');
+        const contentMain = document.getElementById('profileContentMain');
+        
+        if (sidebarContent) sidebarContent.classList.remove('loading');
+        if (contentMain) contentMain.classList.remove('loading');
+    } catch (error) {
+        console.error('Error hiding profile skeleton:', error);
+    }
+}
+
 function showCustomAlert(title, message) {
     const modalOverlay = document.getElementById('custom-modal-overlay');
     const modalTitle = document.getElementById('custom-modal-title');
@@ -15,17 +56,15 @@ function showCustomAlert(title, message) {
 }
 
 
-function showLoader() {
-    document.getElementById('loading-overlay')?.classList.add('visible');
-}
-
-function hideLoader() {
-    document.getElementById('loading-overlay')?.classList.remove('visible');
-}
 
 
-async function fetchProfileData(showSpinner = true) {
-    if (showSpinner) showLoader();
+
+async function fetchProfileData(showSkeleton = true) {
+    if (showSkeleton) {
+        showProfileSkeleton();
+    } else {
+        showLoader();
+    }
 
     const controller = new AbortController();
     const timeoutId = setTimeout(() => controller.abort(), 15000); // 15-second timeout
@@ -59,6 +98,11 @@ async function fetchProfileData(showSpinner = true) {
         }
 
         updateProfileUI(profileData, experienceData, educationData);
+        
+        // Hide skeleton and show actual content
+        if (showSkeleton) {
+            hideProfileSkeleton();
+        }
 
     } catch (error) {
         clearTimeout(timeoutId);
@@ -67,8 +111,15 @@ async function fetchProfileData(showSpinner = true) {
             ? 'Server is not responding. Please try again later.'
             : error.message || 'Failed to connect to the server.';
         showCustomAlert('Error', errorMessage);
+        
+        // Hide skeleton on error
+        if (showSkeleton) {
+            hideProfileSkeleton();
+        }
     } finally {
-        if (showSpinner) hideLoader();
+        if (!showSkeleton) {
+            hideLoader();
+        }
     }
 }
 

@@ -60,21 +60,127 @@
                 font-size: 13px;
             }
         }
+
+        /* Skeleton Loading Styles */
+        .skeleton-container {
+            display: none;
+        }
+        
+        .skeleton-container.active {
+            display: block;
+            margin-bottom: 2rem;
+        }
+        
+        .content-container {
+            display: block;
+        }
+        
+        .content-container.loading {
+            display: none;
+        }
+        
+        .profile-content .card {
+            margin-bottom: 2rem;
+        }
+        
+        .profile-sidebar .profile-header,
+        .profile-sidebar .bio-section,
+        .profile-sidebar .skills-section {
+            margin-bottom: 2rem;
+        }
+        
+        .profile-sidebar .languages-section {
+            margin-bottom: 1rem;
+        }
+        
+        .skeleton {
+            background: linear-gradient(90deg, #f0f0f0 25%, #e0e0e0 50%, #f0f0f0 75%);
+            background-size: 200% 100%;
+            animation: shimmer 1.5s infinite;
+            border-radius: 4px;
+        }
+        
+        @keyframes shimmer {
+            0% { background-position: -200% 0; }
+            100% { background-position: 200% 0; }
+        }
+        
+        .skeleton-profile-picture {
+            width: 150px;
+            height: 150px;
+            border-radius: 50%;
+            margin: 0 auto 20px;
+        }
+        
+        .skeleton-text {
+            height: 20px;
+            margin-bottom: 10px;
+        }
+        
+        .skeleton-text.large {
+            height: 28px;
+            margin-bottom: 15px;
+        }
+        
+        .skeleton-text.small {
+            height: 16px;
+            margin-bottom: 8px;
+        }
+        
+        .skeleton-bio {
+            height: 60px;
+            margin-bottom: 20px;
+        }
+        
+        .skeleton-button {
+            height: 40px;
+            width: 120px;
+            margin-bottom: 20px;
+        }
+        
+        .skeleton-skill-tag {
+            height: 28px;
+            width: 80px;
+            display: inline-block;
+            margin: 2px 4px;
+            border-radius: 14px;
+        }
+        
+        .skeleton-info-item {
+            margin-bottom: 15px;
+        }
+        
+        .skeleton-info-label {
+            height: 14px;
+            width: 60px;
+            margin-bottom: 5px;
+        }
+        
+        .skeleton-info-value {
+            height: 18px;
+            width: 120px;
+        }
+        
+        .skeleton-experience-item,
+        .skeleton-education-item {
+            padding: 15px 0;
+            border-bottom: 1px solid #f0f0f0;
+        }
+        
+        .skeleton-experience-item:last-child,
+        .skeleton-education-item:last-child {
+            border-bottom: none;
+        }
     </style>
 </head>
 <body>
-    <!-- Loading Overlay -->
-    <div id="loading-overlay" class="visible">
-        <div class="loader"></div>
-    </div>
-
     <header class="navbar">
         <div class="navbar-left">
             <h1 class="logo">JobKaro</h1>
         </div>
         <nav class="navbar-center">
             <ul>
-                <li><a href="explore.html" class="active">Jobs</a></li>
+                <li><a href="explore.html" >Jobs</a></li>
                 <li><a href="chat.html">Messages</a></li>
                 <li><a href="view-post.html">Posts</a></li>
             </ul>
@@ -91,74 +197,162 @@
 
     <main class="profile-container">
         <aside class="profile-sidebar">
-            <div class="profile-header">
-                <img src="https://placehold.co/150x150/png?text=P" alt="Profile Picture" class="profile-picture" id="mainProfilePicture" onclick="changeProfilePhoto()">
-                <input type="file" id="profilePhotoInput" accept="image/*" style="display: none;">
-
-                <h2 id="profileName"></h2>
-                <p class="position-name" id="profilePosition"></p>
-                <button class="status-button">open to work</button>
-            </div>
-            <div class="bio-section">
-                <p id="profileBio">something about yourself or something you would write for your bio or experience.</p>
-                <button class="edit-profile-button" onclick="openEditProfileModal()">Edit Profile</button>
-            </div>
-            <div class="skills-section">
-                <h3>Skills <button id="skill-btn" onclick="openAddSkillModal()" style="cursor: pointer; float: right;  border: 2px solid black; height: 30px; width: 30px; border-radius: 100px; align-items: center; text-align: center; justify-content: center; justify-items: center; font-size: 15px; font-weight: 700;">+</button></h3> 
-                
-                <div class="skill-tags" id="skillTagsContainer">
-                   
+            <!-- Skeleton Loading for Sidebar -->
+            <div class="skeleton-container active" id="profileSidebarSkeleton">
+                <div class="profile-header" style="margin-bottom: 2rem;">
+                    <div class="skeleton skeleton-profile-picture"></div>
+                    <div class="skeleton skeleton-text large" style="width: 60%; margin: 0 auto 10px;"></div>
+                    <div class="skeleton skeleton-text" style="width: 40%; margin: 0 auto 10px;"></div>
+                    <div class="skeleton skeleton-button" style="margin: 0 auto;"></div>
+                </div>
+                <div class="bio-section" style="margin-bottom: 2rem;">
+                    <div class="skeleton skeleton-bio"></div>
+                    <div class="skeleton skeleton-button"></div>
+                </div>
+                <div class="skills-section" style="margin-bottom: 2rem;">
+                    <div class="skeleton skeleton-text" style="width: 100px; margin-bottom: 15px;"></div>
+                    <div>
+                        <div class="skeleton skeleton-skill-tag"></div>
+                        <div class="skeleton skeleton-skill-tag"></div>
+                        <div class="skeleton skeleton-skill-tag"></div>
+                        <div class="skeleton skeleton-skill-tag"></div>
+                    </div>
+                </div>
+                <div class="languages-section" style="margin-bottom: 1rem;">
+                    <div class="skeleton skeleton-text" style="width: 120px; margin-bottom: 15px;"></div>
+                    <div class="skeleton skeleton-text" style="width: 80px; margin-bottom: 8px;"></div>
+                    <div class="skeleton skeleton-text" style="width: 70px; margin-bottom: 8px;"></div>
+                    <div class="skeleton skeleton-text" style="width: 90px;"></div>
                 </div>
             </div>
-            <div class="languages-section">
-                <h3>Languages <button  id="lang-btn" onclick="openAddlangModal()" style="cursor: pointer; float: right;  border: 2px solid black; height: 30px; width: 30px; border-radius: 100px; align-items: center; text-align: center; justify-content: center; justify-items: center; font-size: 15px; font-weight: 700;">+</button></h3>
-                <ul id="languagesList">
-                   
-                </ul>
+            
+            <!-- Actual Content -->
+            <div class="content-container loading" id="profileSidebarContent">
+                <div class="profile-header">
+                    <img src="https://placehold.co/150x150/png?text=P" alt="Profile Picture" class="profile-picture" id="mainProfilePicture" onclick="changeProfilePhoto()">
+                    <input type="file" id="profilePhotoInput" accept="image/*" style="display: none;">
+
+                    <h2 id="profileName"></h2>
+                    <p class="position-name" id="profilePosition"></p>
+                    <button class="status-button">open to work</button>
+                </div>
+                <div class="bio-section">
+                    <p id="profileBio">something about yourself or something you would write for your bio or experience.</p>
+                    <button class="edit-profile-button" onclick="openEditProfileModal()">Edit Profile</button>
+                </div>
+                <div class="skills-section">
+                    <h3>Skills <button id="skill-btn" onclick="openAddSkillModal()" style="cursor: pointer; float: right;  border: 2px solid black; height: 30px; width: 30px; border-radius: 100px; align-items: center; text-align: center; justify-content: center; justify-items: center; font-size: 15px; font-weight: 700;">+</button></h3> 
+                    
+                    <div class="skill-tags" id="skillTagsContainer">
+                       
+                    </div>
+                </div>
+                <div class="languages-section">
+                    <h3>Languages <button  id="lang-btn" onclick="openAddlangModal()" style="cursor: pointer; float: right;  border: 2px solid black; height: 30px; width: 30px; border-radius: 100px; align-items: center; text-align: center; justify-content: center; justify-items: center; font-size: 15px; font-weight: 700;">+</button></h3>
+                    <ul id="languagesList">
+                       
+                    </ul>
+                </div>
             </div>
         </aside>
 
         <section class="profile-content">
-            <div class="basic-information-card card">
-                <h3>Basic Information</h3>
-                <!-- Added Go to Posts button container -->
-                <div class="posts-button-container">
-                    <a href="my_photos.html" class="posts-button">
-                        <i class="fas fa-sticky-note"></i>
-                        Go to Posts
-                    </a>
+            <!-- Skeleton Loading for Main Content -->
+            <div class="skeleton-container active" id="profileContentSkeleton">
+                <div class="basic-information-card card" style="margin-bottom: 2rem;">
+                    <div class="skeleton skeleton-text" style="width: 150px; margin-bottom: 20px;"></div>
+                    <div class="info-grid">
+                        <div class="skeleton-info-item">
+                            <div class="skeleton skeleton-info-label"></div>
+                            <div class="skeleton skeleton-info-value"></div>
+                        </div>
+                        <div class="skeleton-info-item">
+                            <div class="skeleton skeleton-info-label"></div>
+                            <div class="skeleton skeleton-info-value"></div>
+                        </div>
+                        <div class="skeleton-info-item">
+                            <div class="skeleton skeleton-info-label"></div>
+                            <div class="skeleton skeleton-info-value"></div>
+                        </div>
+                        <div class="skeleton-info-item">
+                            <div class="skeleton skeleton-info-label"></div>
+                            <div class="skeleton skeleton-info-value"></div>
+                        </div>
+                    </div>
                 </div>
-                <div class="info-grid">
-                    <div class="info-item">
-                        <span class="label">AGE</span>
-                        <span class="value" id="profileAge"></span>
+
+                <div class="experience-card card" style="margin-bottom: 2rem;">
+                    <div class="skeleton skeleton-text" style="width: 120px; margin-bottom: 20px;"></div>
+                    <div class="skeleton-experience-item">
+                        <div class="skeleton skeleton-text" style="width: 70%; margin-bottom: 8px;"></div>
+                        <div class="skeleton skeleton-text small" style="width: 50%; margin-bottom: 8px;"></div>
+                        <div class="skeleton skeleton-text small" style="width: 40%;"></div>
                     </div>
-                    <div class="info-item">
-                        <span class="label">GENDER</span>
-                        <span class="value" id="profilegender"></span>
+                    <div class="skeleton-experience-item">
+                        <div class="skeleton skeleton-text" style="width: 65%; margin-bottom: 8px;"></div>
+                        <div class="skeleton skeleton-text small" style="width: 55%; margin-bottom: 8px;"></div>
+                        <div class="skeleton skeleton-text small" style="width: 35%;"></div>
                     </div>
-                    <div class="info-item">
-                        <span class="label">LOCATION</span>
-                        <span class="value" id="profileLocation"></span>
+                </div>
+
+                <div class="education-card card" style="margin-bottom: 1rem;">
+                    <div class="skeleton skeleton-text" style="width: 100px; margin-bottom: 20px;"></div>
+                    <div class="skeleton-education-item">
+                        <div class="skeleton skeleton-text" style="width: 75%; margin-bottom: 8px;"></div>
+                        <div class="skeleton skeleton-text small" style="width: 60%; margin-bottom: 8px;"></div>
+                        <div class="skeleton skeleton-text small" style="width: 45%;"></div>
                     </div>
-                    <div class="info-item">
-                        <span class="label">EMAIL</span>
-                        <span class="value" id="profileEmail"></span>
+                    <div class="skeleton-education-item">
+                        <div class="skeleton skeleton-text" style="width: 70%; margin-bottom: 8px;"></div>
+                        <div class="skeleton skeleton-text small" style="width: 55%; margin-bottom: 8px;"></div>
+                        <div class="skeleton skeleton-text small" style="width: 40%;"></div>
                     </div>
                 </div>
             </div>
-
-            <div class="experience-card card " >
-                <h3>Experience <button id="exp-btn" style="cursor: pointer; float: right;  border: 2px solid black; height: 30px; width: 30px; border-radius: 100px; align-items: center; text-align: center; justify-content: center; justify-items: center; font-size: 15px; font-weight: 700;">+</button></h3>
-                <div id="experienceContainer" class="experience-container">
-                   
+            
+            <!-- Actual Content -->
+            <div class="content-container loading" id="profileContentMain">
+                <div class="basic-information-card card">
+                    <h3>Basic Information</h3>
+                    <!-- Added Go to Posts button container -->
+                    <div class="posts-button-container">
+                        <a href="my_photos.html" class="posts-button">
+                            <i class="fas fa-sticky-note"></i>
+                            Go to Posts
+                        </a>
+                    </div>
+                    <div class="info-grid">
+                        <div class="info-item">
+                            <span class="label">AGE</span>
+                            <span class="value" id="profileAge"></span>
+                        </div>
+                        <div class="info-item">
+                            <span class="label">GENDER</span>
+                            <span class="value" id="profilegender"></span>
+                        </div>
+                        <div class="info-item">
+                            <span class="label">LOCATION</span>
+                            <span class="value" id="profileLocation"></span>
+                        </div>
+                        <div class="info-item">
+                            <span class="label">EMAIL</span>
+                            <span class="value" id="profileEmail"></span>
+                        </div>
+                    </div>
                 </div>
-            </div>
 
-            <div class="education-card card">
-                <h3>Education <button id="edu-btn" style="cursor: pointer; float: right;  border: 2px solid black; height: 30px; width: 30px; border-radius: 100px; align-items: center; text-align: center; justify-content: center; justify-items: center; font-size: 15px; font-weight: 700;">+</button></h3>
-                <div id="educationContainer" class="education-container">
-                  
+                <div class="experience-card card " >
+                    <h3>Experience <button id="exp-btn" style="cursor: pointer; float: right;  border: 2px solid black; height: 30px; width: 30px; border-radius: 100px; align-items: center; text-align: center; justify-content: center; justify-items: center; font-size: 15px; font-weight: 700;">+</button></h3>
+                    <div id="experienceContainer" class="experience-container">
+                       
+                    </div>
+                </div>
+
+                <div class="education-card card">
+                    <h3>Education <button id="edu-btn" style="cursor: pointer; float: right;  border: 2px solid black; height: 30px; width: 30px; border-radius: 100px; align-items: center; text-align: center; justify-content: center; justify-items: center; font-size: 15px; font-weight: 700;">+</button></h3>
+                    <div id="educationContainer" class="education-container">
+                      
+                    </div>
                 </div>
             </div>
         </section>

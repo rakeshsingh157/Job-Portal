@@ -59,6 +59,9 @@ document.addEventListener('DOMContentLoaded', () => {
  * @param {string} searchTerm - The term to filter posts by content.
  */
 async function fetchPosts(searchTerm = '') {
+    // Show improved loading state with skeleton posts
+    showLoadingState();
+    
     // Abort controller for fetch timeout
     const controller = new AbortController();
     const timeoutId = setTimeout(() => controller.abort(), 15000); // 15-second timeout
@@ -193,8 +196,11 @@ function processPostData(data) {
     currentUser.id = data.currentUser.id;
     currentUser.company_id = data.currentUser.company_id;
     currentUser.type = data.currentUser.type;
+    currentUser.profile = data.currentUser.profile || null;
 
     renderPosts();
+    setCommentUserAvatar(); // Set the avatar after data is loaded
+    
     if (data.message && data.message.text) {
         showMessage(data.message.text, data.message.type);
     }
@@ -203,6 +209,47 @@ function processPostData(data) {
     if (currentUser.id || currentUser.company_id) {
         createPostBtn.style.display = 'flex';
     }
+}
+
+// Function to set the comment user avatar
+function setCommentUserAvatar() {
+    const commentUserAvatar = document.getElementById('commentUserAvatar');
+    if (!commentUserAvatar) {
+        console.log('Comment user avatar element not found');
+        return;
+    }
+    
+    let currentUserAvatar = 'https://via.placeholder.com/32';
+    
+    if (currentUser.profile) {
+        currentUserAvatar = currentUser.profile;
+        console.log('Using profile from currentUser:', currentUserAvatar);
+    } else if (currentUser.id || currentUser.company_id) {
+        // Fallback: try to get avatar from any post by the current user
+        const userPost = postsData.find(post => {
+            if (currentUser.id && post.user_type === 'user' && post.user_id == currentUser.id) {
+                return post.user_profile;
+            } else if (currentUser.company_id && post.user_type === 'company' && post.company_id == currentUser.company_id) {
+                return post.company_profile;
+            }
+            return false;
+        });
+        
+        if (userPost) {
+            currentUserAvatar = currentUser.type === 'company' ? 
+                (userPost.company_profile || currentUserAvatar) : 
+                (userPost.user_profile || currentUserAvatar);
+            console.log('Using avatar from user post:', currentUserAvatar);
+        }
+    }
+    
+    console.log('Setting comment avatar to:', currentUserAvatar);
+    commentUserAvatar.src = currentUserAvatar;
+    commentUserAvatar.style.display = 'block';
+    commentUserAvatar.onerror = function() {
+        console.log('Avatar failed to load, using placeholder');
+        this.src = 'https://via.placeholder.com/32';
+    };
 }
 
 // Function to handle form submissions (delete and comment)
@@ -255,6 +302,30 @@ function handleFormResponse(data, form) {
         closeModal();
     } else if (form.id === 'commentForm') {
         form.querySelector('input[name="comment_text"]').value = '';
+    }
+}
+
+function showLoadingState() {
+    const postsGrid = document.getElementById('postsGrid');
+    postsGrid.innerHTML = '';
+    
+    // Create skeleton loading posts
+    for (let i = 0; i < 6; i++) {
+        const skeletonPost = document.createElement('div');
+        skeletonPost.className = 'post-skeleton';
+        
+        const randomHeight = Math.floor(Math.random() * 100) + 200; // Random height between 200-300px
+        
+        skeletonPost.innerHTML = `
+            <div class="skeleton-image" style="height: ${randomHeight}px;"></div>
+            <div class="skeleton-content">
+                <div class="skeleton-line medium"></div>
+                <div class="skeleton-line short"></div>
+                <div class="skeleton-line" style="width: 40%; margin-top: 12px;"></div>
+            </div>
+        `;
+        
+        postsGrid.appendChild(skeletonPost);
     }
 }
 
@@ -349,17 +420,21 @@ function updateModal() {
     const modalDots = document.getElementById('modalDots');
     const modalUsername = document.getElementById('modalUsername');
     const modalUsernameLink = document.getElementById('modalUsernameLink');
+    const modalUsernameLink2 = document.getElementById('modalUsernameLink2');
     const modalAvatar = document.getElementById('modalAvatar');
     const modalImageCount = document.getElementById('modalImageCount');
     const modalText = document.getElementById('modalText');
     const modalComments = document.getElementById('modalComments');
+    const commentCount = document.getElementById('commentCount');
     const deleteForm = document.getElementById('deleteForm');
     const deletePostId = document.getElementById('deletePostId');
     const commentForm = document.getElementById('commentForm');
     const commentPostId = document.getElementById('commentPostId');
+    const readMoreBtn = document.getElementById('readMoreBtn');
     
     modalImage.src = currentPost.images[currentImageIndex];
     
+    // Update image dots
     modalDots.innerHTML = '';
     if (currentPost.images.length > 1) {
         for (let i = 0; i < currentPost.images.length; i++) {
@@ -370,47 +445,89 @@ function updateModal() {
         }
     }
     
-    // --- DYNAMIC LINK LOGIC ---
-    let profileUrl = '#'; // Default fallback URL
+    // Set profile URL
+    let profileUrl = '#';
     if (currentPost.user_type === 'user' && currentPost.user_id) {
         profileUrl = `Public/profile.html?user_id=${currentPost.user_id}`;
     } else if (currentPost.user_type === 'company' && currentPost.company_id) {
         profileUrl = `Public/company-profile.html?cuser_id=${currentPost.company_id}`;
     }
     modalUsernameLink.href = profileUrl;
-    // --- END DYNAMIC LINK LOGIC ---
+    if (modalUsernameLink2) modalUsernameLink2.href = profileUrl;
 
-    modalUsername.textContent = currentPost.user_type === 'user' ? `${currentPost.first_name} ${currentPost.last_name}` : currentPost.company_name;
+    // Set username and avatar
+    const username = currentPost.user_type === 'user' ? 
+        `${currentPost.first_name} ${currentPost.last_name}` : 
+        currentPost.company_name;
+    modalUsername.textContent = username;
     
-    const avatarUrl = currentPost.user_type === 'user' ? currentPost.user_profile : currentPost.company_profile;
+    const avatarUrl = currentPost.user_type === 'user' ? 
+        currentPost.user_profile : 
+        currentPost.company_profile;
     modalAvatar.src = avatarUrl || 'https://via.placeholder.com/48';
     
-    modalImageCount.textContent = `${currentImageIndex + 1} of ${currentPost.images.length}`;
-    modalText.textContent = currentPost.content;
+    // Set comment user avatar (current user)
+    setCommentUserAvatar();
     
-    modalComments.innerHTML = '';
-    if (currentPost.comments && currentPost.comments.length > 0) {
-        currentPost.comments.forEach(comment => {
+    // Set image count
+    if (currentPost.images.length > 1) {
+        modalImageCount.textContent = `Photo ${currentImageIndex + 1} of ${currentPost.images.length}`;
+    } else {
+        modalImageCount.textContent = '';
+    }
+    
+    // Set description (now scrollable if too long)
+    modalText.textContent = currentPost.content;
+    if (readMoreBtn) {
+        readMoreBtn.style.display = 'none';
+    }
+    
+    // Update comments
+    const commentsArray = currentPost.comments || [];
+    if (commentsArray.length > 0) {
+        commentCount.textContent = `Comments (${commentsArray.length})`;
+        modalComments.innerHTML = '';
+        commentsArray.forEach(comment => {
             const commentDiv = document.createElement('div');
             commentDiv.className = 'comment';
             
-            const commentAvatarImgSrc = comment.user_type === 'user' ? (comment.user_profile || 'https://via.placeholder.com/32') : (comment.company_profile || 'https://via.placeholder.com/32');
+            const commentAvatarImgSrc = comment.user_type === 'user' ? 
+                (comment.user_profile || 'https://via.placeholder.com/32') : 
+                (comment.company_profile || 'https://via.placeholder.com/32');
+            
+            const commentUsername = comment.user_type === 'user' ? 
+                `${comment.first_name} ${comment.last_name}` : 
+                comment.company_name;
+
+            // Set profile URL for comment user
+            let commentProfileUrl = '#';
+            if (comment.user_type === 'user' && comment.user_id) {
+                commentProfileUrl = `Public/profile.html?user_id=${comment.user_id}`;
+            } else if (comment.user_type === 'company' && comment.company_id) {
+                commentProfileUrl = `Public/company-profile.html?cuser_id=${comment.company_id}`;
+            }
 
             commentDiv.innerHTML = `
-                <div class="comment-avatar">
-                    <img src="${commentAvatarImgSrc}" alt="Profile" onerror="this.src='https://via.placeholder.com/32'">
-                </div>
+                <a href="${commentProfileUrl}" class="comment-avatar-link">
+                    <div class="comment-avatar">
+                        <img src="${commentAvatarImgSrc}" alt="Profile" onerror="this.src='https://via.placeholder.com/32'">
+                    </div>
+                </a>
                 <div class="comment-content">
-                    <div class="comment-username">${comment.user_type === 'user' ? `${comment.first_name} ${comment.last_name}` : comment.company_name}</div>
+                    <a href="${commentProfileUrl}" class="comment-username-link">
+                        <div class="comment-username">${commentUsername}</div>
+                    </a>
                     <div class="comment-text">${comment.comment}</div>
                 </div>
             `;
             modalComments.appendChild(commentDiv);
         });
     } else {
-        modalComments.innerHTML = '<div style="color: #777; text-align: center; padding: 20px;">No comments yet.</div>';
+        commentCount.textContent = 'Comments';
+        modalComments.innerHTML = '<div style="color: #999; text-align: center; padding: 20px; font-size: 14px;">No comments yet. Be the first to comment!</div>';
     }
     
+    // Show/hide delete button
     deleteForm.style.display = 'none';
     const isOwner = (
         (currentUser.id && currentPost.user_type === 'user' && currentPost.user_id == currentUser.id) ||
@@ -422,6 +539,16 @@ function updateModal() {
     }
     
     commentPostId.value = currentPost.id;
+}
+
+// Helper function to focus comment input
+function focusCommentInput() {
+    const commentInput = document.getElementById('commentTextInput');
+    if (commentInput) {
+        commentInput.focus();
+        // Scroll to comment input if needed
+        commentInput.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+    }
 }
 
 function showMessage(text, type) {

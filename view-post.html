@@ -6,8 +6,9 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>JobKaro</title>
     <link rel="icon" type="image/png" sizes="32x32" href="IMAGES/icon.png">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
 
-    <link rel="stylesheet" href="CSS/postview-style.css">
+    <link rel="stylesheet" href="CSS/postview-style.css?v=2.3">
     <style>
     .header-search-container {
         position: relative;
@@ -158,6 +159,7 @@
     <a href="PHP/post.php" class="create-post-btn" id="createPostBtn" style="display: none;">+</a>
 
     <div class="modal" id="imageModal">
+        <div class="modal-backdrop" onclick="closeModal()"></div>
         <div class="modal-close" onclick="closeModal()">×</div>
         <div class="modal-content">
             <div class="modal-image-container">
@@ -171,40 +173,66 @@
                 <div class="modal-dots" id="modalDots"></div>
             </div>
             
-            <div class="modal-details">
+            <div class="modal-sidebar">
+                <!-- Header Section -->
                 <div class="modal-header">
-                    <div class="modal-avatar">
-                        <img id="modalAvatar" src="https://via.placeholder.com/48" alt="Profile">
-                    </div>
-                    <div class="modal-user-info">
-                        <a id="modalUsernameLink" href="#">
-                            <div class="modal-username" id="modalUsername"></div>
+                    <div class="modal-user-section">
+                        <a id="modalUsernameLink" href="#" class="modal-avatar-link">
+                            <div class="modal-avatar">
+                                <img id="modalAvatar" src="https://via.placeholder.com/48" alt="Profile">
+                            </div>
                         </a>
+                        <div class="modal-user-info">
+                            <a id="modalUsernameLink2" href="#" class="modal-username-link">
+                                <div class="modal-username" id="modalUsername"></div>
+                            </a>
+                            <div class="modal-post-time" id="modalPostTime">Just now</div>
+                        </div>
                     </div>
                     
                     <form id="deleteForm" method="POST" style="display: none;">
                         <input type="hidden" name="post_id" id="deletePostId">
-                        <button type="submit" name="delete_post" class="modal-action-btn delete-btn">🗑️ Delete</button>
+                        <button type="submit" name="delete_post" class="modal-delete-btn" title="Delete post">
+                            <svg width="20" height="20" viewBox="0 0 24 24" fill="none">
+                                <path d="M3 6h18M19 6v14a2 2 0 01-2 2H7a2 2 0 01-2-2V6m3 0V4a2 2 0 012-2h4a2 2 0 012 2v2M10 11v6M14 11v6" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                            </svg>
+                        </button>
                     </form>
                 </div>
                 
-                <div class="modal-image-count" id="modalImageCount"></div>
-                
-                <div class="modal-text" id="modalText"></div>
-                
-                <div class="modal-actions">
-                    <!-- Like and other actions can go here -->
+                <!-- Description Section -->
+                <div class="modal-description-section">
+                    <div class="modal-description" id="modalDescription">
+                        <span class="modal-description-text" id="modalText"></span>
+                        <button class="modal-read-more" id="readMoreBtn" style="display: none;">...more</button>
+                    </div>
+                    <div class="modal-image-count" id="modalImageCount"></div>
                 </div>
                 
-                <div class="modal-comments" id="modalComments">
-                    <!-- Comments will be loaded here -->
+                <!-- Comments Section -->
+                <div class="modal-comments-section">
+                    <div class="modal-comments-header">
+                        <span id="commentCount">Comments</span>
+                    </div>
+                    
+                    <!-- Comment Input at Top -->
+                    <form id="commentForm" method="POST" class="modal-comment-input-top">
+                        <input type="hidden" name="post_id" id="commentPostId">
+                        <div class="comment-input-wrapper">
+                            <img id="commentUserAvatar" src="https://via.placeholder.com/32" alt="Your profile" class="comment-user-avatar">
+                            <input type="text" id="commentTextInput" name="comment_text" placeholder="Add a comment..." required>
+                            <button type="submit" name="add_comment" class="comment-submit-btn" title="Post comment">
+                                <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor">
+                                    <path d="M2.01 21L23 12 2.01 3 2 10l15 2-15 2z"/>
+                                </svg>
+                            </button>
+                        </div>
+                    </form>
+                    
+                    <div class="modal-comments" id="modalComments">
+                        <!-- Comments will be loaded here -->
+                    </div>
                 </div>
-                
-                <form id="commentForm" method="POST" class="modal-comment-input">
-                    <input type="hidden" name="post_id" id="commentPostId">
-                    <input type="text" name="comment_text" placeholder="Add a comment..." required>
-                    <button type="submit" name="add_comment">Post</button>
-                </form>
             </div>
         </div>
     </div>

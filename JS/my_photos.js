@@ -7,12 +7,14 @@
         document.addEventListener('DOMContentLoaded', () => {
             fetchUserPosts();
             
-            // Add event listener for comment input
-            document.getElementById('commentInput').addEventListener('input', function() {
-                document.getElementById('submitComment').disabled = this.value.trim() === '';
-            });
-            
-            document.getElementById('submitComment').addEventListener('click', addComment);
+            // Handle comment form submission
+            const commentForm = document.getElementById('commentForm');
+            if (commentForm) {
+                commentForm.addEventListener('submit', async function(e) {
+                    e.preventDefault();
+                    await addComment();
+                });
+            }
             
             // Add event listeners to modal close buttons
             document.querySelectorAll('.modal-close').forEach(button => {
@@ -34,8 +36,8 @@
 
         async function fetchUserPosts() {
             try {
-                // Show loading state
-                document.getElementById('postsGrid').innerHTML = '<div class="empty-state"><div class="empty-state-icon"><i class="fas fa-spinner fa-spin"></i></div><p>Loading your posts...</p></div>';
+                // Show improved loading state with skeleton posts
+                showLoadingState();
                 
                 const response = await fetch('PHP/fetch_user_posts.php');
                 
@@ -177,8 +179,13 @@
         }
 
 
+        let currentModalPost = null;
+        let currentModalImageIndex = 0;
+
         function openPostModal(post) {
             currentPostId = post.id;
+            currentModalPost = post;
+            currentModalImageIndex = 0;
             
             const username = post.user_type === 'user' ? 
                 `${post.first_name} ${post.last_name}` : 
@@ -197,95 +204,78 @@
                 timeText = timeDiff === 1 ? '1 day ago' : `${timeDiff} days ago`;
             }
             
-            // Set modal content
-            const viewModalImage = document.getElementById('viewModalImage');
-            const viewModalPrevBtn = document.getElementById('viewModalPrevBtn');
-            const viewModalNextBtn = document.getElementById('viewModalNextBtn');
-            const viewModalImageCount = document.getElementById('viewModalImageCount');
-            const viewModalNavDots = document.getElementById('viewModalNavDots');
-
-            // Initialize or update current image index for modal view
-            currentImageIndex.modal = 0;
-            const hasMultipleImages = post.images && post.images.length > 1;
-
-            if (hasMultipleImages) {
-                viewModalPrevBtn.style.display = 'flex';
-                viewModalNextBtn.style.display = 'flex';
-                viewModalImageCount.style.display = 'block';
-                viewModalNavDots.style.display = 'flex';
-
-                viewModalImageCount.textContent = `${currentImageIndex.modal + 1}/${post.images.length}`;
-                viewModalNavDots.innerHTML = post.images.map((_, index) => 
-                    `<span class="modal-nav-dot ${index === 0 ? 'active' : ''}" onclick="navigateModalImage(${index})"></span>`
-                ).join('');
-
-                viewModalPrevBtn.onclick = () => navigateModalImage(-1);
-                viewModalNextBtn.onclick = () => navigateModalImage(1);
-            } else {
-                viewModalPrevBtn.style.display = 'none';
-                viewModalNextBtn.style.display = 'none';
-                viewModalImageCount.style.display = 'none';
-                viewModalNavDots.style.display = 'none';
-            }
-
-            // Function to navigate modal images
-            function navigateModalImage(directionOrIndex) {
-                const images = post.images;
-                if (!images) return;
-
-                let newIndex;
-                if (typeof directionOrIndex === 'number' && directionOrIndex >= 0) {
-                    newIndex = directionOrIndex;
-                } else {
-                    newIndex = currentImageIndex.modal + directionOrIndex;
-                }
-                
-                if (newIndex < 0) {
-                    newIndex = images.length - 1;
-                } else if (newIndex >= images.length) {
-                    newIndex = 0;
-                }
-                
-                currentImageIndex.modal = newIndex;
-                viewModalImage.src = images[newIndex];
-                viewModalImageCount.textContent = `${newIndex + 1}/${images.length}`;
-                
-                viewModalNavDots.querySelectorAll('.modal-nav-dot').forEach((dot, index) => {
-                    dot.classList.toggle('active', index === newIndex);
-                });
-            }
-
-            viewModalImage.src = post.images[0];
+            // Set modal image
+            const modalImage = document.getElementById('modalImage');
+            modalImage.src = post.images[0];
             
             // Set author avatar with error handling
-            const authorAvatar = document.getElementById('viewModalAvatar');
-            authorAvatar.src = profileImage;
-            authorAvatar.onerror = function() {
-                this.src = 'https://via.placeholder.com/56?text=No+Image';
+            const modalAvatar = document.getElementById('modalAvatar');
+            modalAvatar.src = profileImage;
+            modalAvatar.onerror = function() {
+                this.src = 'https://via.placeholder.com/48?text=No+Image';
             };
             
-            document.getElementById('viewModalAuthor').textContent = username;
-            document.getElementById('viewModalTitle').textContent = post.user_type === 'user' ? 'Professional' : 'Company';
-            document.getElementById('viewModalTime').textContent = timeText;
-            document.getElementById('viewModalText').textContent = post.content || 'No description';
-            document.getElementById('viewModalComments').textContent = `${post.comments ? post.comments.length : 0} comments`;
+            // Set username and time
+            document.getElementById('modalUsername').textContent = username;
+            document.getElementById('modalPostTime').textContent = timeText;
+            document.getElementById('modalText').textContent = post.content || 'No description';
+            
+            // Handle multiple images
+            const hasMultipleImages = post.images && post.images.length > 1;
+            const modalNav = document.querySelector('.modal-nav');
+            const modalDots = document.getElementById('modalDots');
+            const modalImageCount = document.getElementById('modalImageCount');
+            
+            if (hasMultipleImages) {
+                modalNav.style.display = 'flex';
+                modalDots.style.display = 'flex';
+                modalImageCount.style.display = 'block';
+                modalImageCount.textContent = `1 of ${post.images.length}`;
+                
+                // Create dots
+                modalDots.innerHTML = post.images.map((_, index) => 
+                    `<span class="dot ${index === 0 ? 'active' : ''}" onclick="setModalImage(${index})"></span>`
+                ).join('');
+            } else {
+                modalNav.style.display = 'none';
+                modalDots.style.display = 'none';
+                modalImageCount.style.display = 'none';
+            }
             
             // Set commenter avatar (current user's profile)
-            const commenterAvatar = document.getElementById('commenterAvatar');
-            let commenterProfileUrl = 'https://via.placeholder.com/40?text=You';
+            const commentUserAvatar = document.getElementById('commentUserAvatar');
+            let commenterProfileUrl = 'https://via.placeholder.com/32?text=You';
             if (currentUser.type === 'user' && currentUser.profile && currentUser.profile.profile_url) {
                 commenterProfileUrl = currentUser.profile.profile_url;
             } else if (currentUser.type === 'company' && currentUser.profile && currentUser.profile.profile_photo) {
                 commenterProfileUrl = currentUser.profile.profile_photo;
             }
-            commenterAvatar.src = commenterProfileUrl;
-            commenterAvatar.onerror = function() {
-                this.src = 'https://via.placeholder.com/40?text=You';
+            commentUserAvatar.src = commenterProfileUrl;
+            commentUserAvatar.onerror = function() {
+                this.src = 'https://via.placeholder.com/32?text=You';
             };
             
+            // Set post ID for comment form
+            document.getElementById('commentPostId').value = post.id;
+            
+            // Update comment count
+            document.getElementById('commentCount').textContent = `${post.comments ? post.comments.length : 0} Comments`;
+            
             // Load comments
-            const commentsSection = document.getElementById('viewModalCommentsSection');
-            commentsSection.innerHTML = '<h3 class="comments-title">Comments</h3>';
+            loadModalComments(post);
+            
+            // Clear comment input
+            document.getElementById('commentTextInput').value = '';
+            
+            // Show modal
+            const modal = document.getElementById('imageModal');
+            modal.style.display = 'flex';
+            document.body.style.overflow = 'hidden';
+        }
+
+        function loadModalComments(post) {
+            const modalComments = document.getElementById('modalComments');
+            modalComments.innerHTML = '';
             
             if (post.comments && post.comments.length > 0) {
                 post.comments.forEach(comment => {
@@ -301,30 +291,42 @@
                     commentElement.className = 'comment';
                     commentElement.innerHTML = `
                         <div class="comment-avatar">
-                            <img src="${commentAvatar}" alt="${commentAuthor}" class="profile-image" onerror="this.src='https://via.placeholder.com/40?text=U'">
+                            <img src="${commentAvatar}" alt="${commentAuthor}" onerror="this.src='https://via.placeholder.com/32?text=U'">
                         </div>
                         <div class="comment-content">
                             <div class="comment-username">${commentAuthor}</div>
                             <div class="comment-text">${comment.comment}</div>
-                            <div class="comment-actions">
-                                
-                                <span class="comment-action">${timeAgo(new Date(comment.created_at))}</span>
-                            </div>
                         </div>
                     `;
                     
-                    commentsSection.appendChild(commentElement);
+                    modalComments.appendChild(commentElement);
                 });
-            } else {
-                commentsSection.innerHTML += '<p>No comments yet. Be the first to comment!</p>';
+            }
+        }
+
+
+
+        function updateModalImage() {
+            if (!currentModalPost || !currentModalPost.images) return;
+            
+            const modalImage = document.getElementById('modalImage');
+            const modalDots = document.getElementById('modalDots');
+            const modalImageCount = document.getElementById('modalImageCount');
+            
+            modalImage.src = currentModalPost.images[currentModalImageIndex];
+            
+            if (modalImageCount) {
+                modalImageCount.textContent = `${currentModalImageIndex + 1} of ${currentModalPost.images.length}`;
             }
             
-            // Clear comment input
-            document.getElementById('commentInput').value = '';
-            document.getElementById('submitComment').disabled = true;
-            
-            openModal('viewModal');
+            if (modalDots) {
+                modalDots.querySelectorAll('.dot').forEach((dot, index) => {
+                    dot.classList.toggle('active', index === currentModalImageIndex);
+                });
+            }
         }
+
+
 
         function timeAgo(date) {
             const now = new Date();
@@ -488,7 +490,7 @@
         }
 
         async function addComment() {
-            const commentText = document.getElementById('commentInput').value.trim();
+            const commentText = document.getElementById('commentTextInput').value.trim();
             
             if (!commentText) return;
             
@@ -526,50 +528,18 @@
                         }
                         post.comments.push(newComment);
                         
-                        // Render the new comment on the modal instantly
-                        const commentsSection = document.getElementById('viewModalCommentsSection');
-                        const commentsTitle = commentsSection.querySelector('.comments-title');
-                        const emptyMessage = commentsSection.querySelector('p');
+                        // Update current modal post
+                        currentModalPost = post;
                         
-                        if (emptyMessage) {
-                            emptyMessage.remove();
-                        }
-                        
-                        const commentElement = document.createElement('div');
-                        commentElement.className = 'comment';
-                        
-                        let commenterName = currentUser.type === 'user' ? 
-                            `${currentUser.profile.first_name} ${currentUser.profile.last_name}` : 
-                            currentUser.profile.company_name;
-
-                        let commenterAvatar = currentUser.type === 'user' ? 
-                            (currentUser.profile.profile_url || 'default_user.jpg') : 
-                            (currentUser.profile.profile_photo || 'default_company.jpg');
-                        
-                        commentElement.innerHTML = `
-                            <div class="comment-avatar">
-                                <img src="${commenterAvatar}" alt="${commenterName}" class="profile-image">
-                            </div>
-                            <div class="comment-content">
-                                <div class="comment-username">${commenterName}</div>
-                                <div class="comment-text">${commentText}</div>
-                                <div class="comment-actions">
-                                   
-                                    <span class="comment-action">Just now</span>
-                                </div>
-                            </div>
-                        `;
-                        
-                        commentsSection.insertBefore(commentElement, commentsTitle.nextSibling);
+                        // Re-render comments in modal
+                        loadModalComments(post);
                         
                         // Update comment count
-                        const commentCount = document.getElementById('viewModalComments');
-                        commentCount.textContent = `${post.comments.length} comments`;
+                        document.getElementById('commentCount').textContent = `${post.comments.length} Comments`;
                     }
                     
                     // Clear the input
-                    document.getElementById('commentInput').value = '';
-                    document.getElementById('submitComment').disabled = true;
+                    document.getElementById('commentTextInput').value = '';
                     
                     showMessage('Comment added successfully!', 'success');
                 } else {
@@ -578,6 +548,30 @@
             } catch (error) {
                 console.error('Error adding comment:', error);
                 showMessage('Failed to add comment. Please try again.', 'error');
+            }
+        }
+
+        function showLoadingState() {
+            const postsGrid = document.getElementById('postsGrid');
+            postsGrid.innerHTML = '';
+            
+            // Create skeleton loading posts  
+            for (let i = 0; i < 6; i++) {
+                const skeletonPost = document.createElement('div');
+                skeletonPost.className = 'post-skeleton';
+                
+                const randomHeight = Math.floor(Math.random() * 100) + 200; // Random height between 200-300px
+                
+                skeletonPost.innerHTML = `
+                    <div class="skeleton-image" style="height: ${randomHeight}px;"></div>
+                    <div class="skeleton-content">
+                        <div class="skeleton-line medium"></div>
+                        <div class="skeleton-line short"></div>
+                        <div class="skeleton-line" style="width: 40%; margin-top: 12px;"></div>
+                    </div>
+                `;
+                
+                postsGrid.appendChild(skeletonPost);
             }
         }
 
@@ -600,19 +594,43 @@
         }
 
         function closeModal(modalId) {
-            document.getElementById(modalId).style.display = 'none';
+            if (modalId) {
+                document.getElementById(modalId).style.display = 'none';
+            } else {
+                // For the new imageModal
+                const modal = document.getElementById('imageModal');
+                if (modal) modal.style.display = 'none';
+            }
             document.body.style.overflow = 'auto';
             currentPostId = null;
+            currentModalPost = null;
+            currentModalImageIndex = 0;
         }
 
-        // Close modals when clicking outside
-        window.onclick = function(event) {
-            if (event.target.classList.contains('modal')) {
-                const modals = document.getElementsByClassName('modal');
-                for (let i = 0; i < modals.length; i++) {
-                    modals[i].style.display = 'none';
-                }
-                document.body.style.overflow = 'auto';
-                currentPostId = null;
+        // Global functions for the new modal structure
+        window.closeModal = function() {
+            const modal = document.getElementById('imageModal');
+            if (modal) modal.style.display = 'none';
+            document.body.style.overflow = 'auto';
+            currentPostId = null;
+            currentModalPost = null;
+            currentModalImageIndex = 0;
+        }
+
+        window.navigateImage = function(direction) {
+            if (!currentModalPost || !currentModalPost.images || currentModalPost.images.length <= 1) return;
+            
+            if (direction === 1) {
+                currentModalImageIndex = (currentModalImageIndex + 1) % currentModalPost.images.length;
+            } else {
+                currentModalImageIndex = currentModalImageIndex === 0 ? currentModalPost.images.length - 1 : currentModalImageIndex - 1;
             }
-        };
+            
+            updateModalImage();
+        }
+
+        window.setModalImage = function(index) {
+            if (!currentModalPost || !currentModalPost.images) return;
+            currentModalImageIndex = index;
+            updateModalImage();
+        }

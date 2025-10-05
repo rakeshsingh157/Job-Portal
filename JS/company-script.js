@@ -3,6 +3,55 @@ let isEditing = false;
 let editingJobIndex = -1;
 let jobs = [];
 
+// Skeleton Loading Functions
+function showCompanyProfileSkeleton() {
+    // Show skeleton containers
+    const skeletonProfileCard = document.getElementById('skeletonProfileCard');
+    const skeletonMainContent = document.getElementById('skeletonMainContent');
+    
+    if (skeletonProfileCard) {
+        skeletonProfileCard.classList.remove('hidden');
+    }
+    if (skeletonMainContent) {
+        skeletonMainContent.classList.remove('hidden');
+    }
+    
+    // Hide actual content
+    const actualProfileCard = document.getElementById('actualProfileCard');
+    const actualMainContent = document.getElementById('actualMainContent');
+    
+    if (actualProfileCard) {
+        actualProfileCard.classList.remove('visible');
+    }
+    if (actualMainContent) {
+        actualMainContent.classList.remove('visible');
+    }
+}
+
+function hideCompanyProfileSkeleton() {
+    // Hide skeleton containers
+    const skeletonProfileCard = document.getElementById('skeletonProfileCard');
+    const skeletonMainContent = document.getElementById('skeletonMainContent');
+    
+    if (skeletonProfileCard) {
+        skeletonProfileCard.classList.add('hidden');
+    }
+    if (skeletonMainContent) {
+        skeletonMainContent.classList.add('hidden');
+    }
+    
+    // Show actual content
+    const actualProfileCard = document.getElementById('actualProfileCard');
+    const actualMainContent = document.getElementById('actualMainContent');
+    
+    if (actualProfileCard) {
+        actualProfileCard.classList.add('visible');
+    }
+    if (actualMainContent) {
+        actualMainContent.classList.add('visible');
+    }
+}
+
 
 const editProfileBtn = document.getElementById('edit-profile-btn');
 const saveProfileBtn = document.getElementById('save-profile-btn');
@@ -24,16 +73,6 @@ const displayContact = document.getElementById('display-contact');
 
 
 const profileImageHeader = document.getElementById('profile-image2');
-const loadingOverlay = document.getElementById('loading-overlay');
-
-
-function toggleLoading(show) {
-    if (show) {
-        loadingOverlay.classList.add('visible');
-    } else {
-        loadingOverlay.classList.remove('visible');
-    }
-}
 
 
 function showMessage(message, isConfirmation = false, onConfirm = null) {
@@ -73,13 +112,12 @@ avatarContainer.addEventListener('click', () => {
 avatarInput.addEventListener('change', (e) => {
     const file = e.target.files[0];
     if (file) {
-        toggleLoading(true);
         const reader = new FileReader();
         reader.onloadend = async () => {
             const base64Data = reader.result;
 
             try {
-                const response = await fetch('PHP/company-profile.php', {
+                const response = await fetch('/SyWD/PHP/company-profile.php', {
                     method: 'POST',
                     headers: {
                         'Content-Type': 'application/json'
@@ -106,8 +144,6 @@ avatarInput.addEventListener('change', (e) => {
             } catch (error) {
                 console.error('Error uploading photo:', error);
                 showMessage('An error occurred during photo upload.');
-            } finally {
-                toggleLoading(false);
             }
         };
 
@@ -138,7 +174,6 @@ async function toggleEditMode() {
 }
 
 async function saveProfile() {
-    toggleLoading(true);
 
     const profileData = {
         action: 'update_profile',
@@ -154,7 +189,7 @@ async function saveProfile() {
     };
     
     try {
-        const response = await fetch('PHP/company-profile.php', {
+        const response = await fetch('/SyWD/PHP/company-profile.php', {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json'
@@ -178,8 +213,6 @@ async function saveProfile() {
     } catch (error) {
         console.error('Error saving profile:', error);
         showMessage('An error occurred while saving the profile.');
-    } finally {
-        toggleLoading(false);
     }
 }
 
@@ -232,11 +265,10 @@ async function saveJob(event) {
 
     if (!jobData.job_title || !jobData.job_desc || !jobData.location || !jobData.work_mode) {
         showMessage('Please fill in all required fields (Job Title, Description, Location, and Work Mode).');
-        toggleLoading(false);
         return;
     }
 
-    let url = 'PHP/company-profile.php';
+    let url = '/SyWD/PHP/company-profile.php';
     let method = 'POST';
     let payload = { ...jobData };
 
@@ -270,8 +302,6 @@ async function saveJob(event) {
     } catch (error) {
         console.error('Error saving job:', error);
         showMessage('An error occurred while saving the job.');
-    } finally {
-        toggleLoading(false);
     }
 }
 
@@ -330,7 +360,7 @@ function renderJobs() {
             showMessage('Are you sure you want to delete this job posting?', true, async (confirmed) => {
                 if (confirmed) {
                     try {
-                        const response = await fetch('PHP/company-profile.php', {
+                        const response = await fetch('/SyWD/PHP/company-profile.php', {
                             method: 'DELETE',
                             headers: {
                                 'Content-Type': 'application/json'
@@ -359,9 +389,9 @@ function renderJobs() {
 }
 
 async function fetchProfileAndJobs() {
-    toggleLoading(true);
+    showCompanyProfileSkeleton();
     try {
-        const response = await fetch('PHP/company-profile.php', {
+        const response = await fetch('/SyWD/PHP/company-profile.php', {
             method: 'GET'
         });
         const result = await response.json();
@@ -410,7 +440,7 @@ async function fetchProfileAndJobs() {
     } catch (error) {
         console.error('Error fetching profile and jobs:', error);
     } finally {
-        toggleLoading(false);
+        hideCompanyProfileSkeleton();
     }
 }
 
@@ -435,4 +465,9 @@ document.addEventListener('keydown', (e) => {
 });
 
 
-document.addEventListener('DOMContentLoaded', fetchProfileAndJobs);
+document.addEventListener('DOMContentLoaded', () => {
+    // Show skeleton immediately when page loads
+    showCompanyProfileSkeleton();
+    // Then fetch the actual data
+    fetchProfileAndJobs();
+});

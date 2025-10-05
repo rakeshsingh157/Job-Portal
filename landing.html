@@ -1,0 +1,399 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>JobKaro - Connect. Collaborate. Career.</title>
+    <link rel="icon" type="image/png" sizes="32x32" href="IMAGES/icon.png">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="CSS/landing.css">
+</head>
+<body>
+    <!-- Navigation -->
+    <nav class="navbar">
+        <div class="nav-container">
+            <div class="logo">
+                <i class="fas fa-briefcase"></i>
+                <span>JobKaro</span>
+            </div>
+            <ul class="nav-menu">
+                <li><a href="#home" class="nav-link">Home</a></li>
+                <li><a href="#features" class="nav-link">Features</a></li>
+                <li><a href="#how-it-works" class="nav-link">How It Works</a></li>
+                <li><a href="#team" class="nav-link">Team</a></li>
+                <li><a href="index.html" class="nav-link get-started-btn">Get Started</a></li>
+            </ul>
+            <div class="hamburger">
+                <span></span>
+                <span></span>
+                <span></span>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Hero Section -->
+    <section id="home" class="hero">
+        <div class="hero-content">
+            <div class="hero-text">
+                <h1 class="hero-title">
+                    Find Your Dream Job or Perfect Candidate
+                </h1>
+                <p class="hero-subtitle">
+                    JobKaro bridges the gap between talented professionals and forward-thinking companies. 
+                    Whether you're seeking opportunities or building your team, we've got you covered.
+                </p>
+                <div class="hero-buttons">
+                    <a href="wokersignup.html" class="btn btn-primary">
+                        <i class="fas fa-user-plus"></i> I'm a Job Seeker
+                    </a>
+                    <a href="recruitersignup.html" class="btn btn-secondary">
+                        <i class="fas fa-building"></i> I'm a Recruiter
+                    </a>
+                </div>
+            </div>
+            <div class="hero-image">
+                <div class="floating-card card-1">
+                    <i class="fas fa-search"></i>
+                    <span>Explore Jobs</span>
+                </div>
+                <div class="floating-card card-2">
+                    <i class="fas fa-comments"></i>
+                    <span>Direct Messaging</span>
+                </div>
+                <div class="floating-card card-3">
+                    <i class="fas fa-certificate"></i>
+                    <span>Skill Verification</span>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Features Section -->
+    <section id="features" class="features">
+        <div class="container">
+            <div class="section-header">
+                <h2>Why Choose JobKaro?</h2>
+                <p>Everything you need to make your job search or recruitment process seamless</p>
+            </div>
+            <div class="features-grid">
+                <div class="feature-card">
+                    <div class="feature-icon">
+                        <i class="fas fa-search-location"></i>
+                    </div>
+                    <h3>Smart Job Search</h3>
+                    <p>Advanced filters and AI-powered recommendations to find the perfect match for your skills and preferences.</p>
+                </div>
+                <div class="feature-card">
+                    <div class="feature-icon">
+                        <i class="fas fa-user-circle"></i>
+                    </div>
+                    <h3>Professional Profiles</h3>
+                    <p>Create stunning profiles that showcase your skills, experience, and achievements to stand out from the crowd.</p>
+                </div>
+                <div class="feature-card">
+                    <div class="feature-icon">
+                        <i class="fas fa-comments"></i>
+                    </div>
+                    <h3>Direct Messaging</h3>
+                    <p>Connect instantly with recruiters or candidates through our built-in chat system for seamless communication.</p>
+                </div>
+                <div class="feature-card">
+                    <div class="feature-icon">
+                        <i class="fas fa-briefcase"></i>
+                    </div>
+                    <h3>Company Profiles</h3>
+                    <p>Recruiters can showcase their company culture, values, and opportunities to attract top talent.</p>
+                </div>
+                <div class="feature-card">
+                    <div class="feature-icon">
+                        <i class="fas fa-clipboard-check"></i>
+                    </div>
+                    <h3>Skill Assessment</h3>
+                    <p>Take AI-generated quizzes to verify your skills and prove your expertise to potential employers.</p>
+                </div>
+                <div class="feature-card">
+                    <div class="feature-icon">
+                        <i class="fas fa-images"></i>
+                    </div>
+                    <h3>Portfolio Gallery</h3>
+                    <p>Showcase your work through photos and posts to demonstrate your capabilities visually.</p>
+                </div>
+                <div class="feature-card">
+                    <div class="feature-icon">
+                        <i class="fas fa-shield-alt"></i>
+                    </div>
+                    <h3>Verified Companies</h3>
+                    <p>All companies go through our verification process to ensure legitimacy and protect job seekers.</p>
+                </div>
+                <div class="feature-card">
+                    <div class="feature-icon">
+                        <i class="fas fa-bell"></i>
+                    </div>
+                    <h3>Real-time Updates</h3>
+                    <p>Get instant notifications about new job postings, messages, and application status updates.</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- How It Works Section -->
+    <section id="how-it-works" class="how-it-works">
+        <div class="container">
+            <div class="section-header">
+                <h2>How JobKaro Works</h2>
+                <p>Get started in just a few simple steps</p>
+            </div>
+            <div class="tabs">
+                <button class="tab-btn active" data-tab="seeker">For Job Seekers</button>
+                <button class="tab-btn" data-tab="recruiter">For Recruiters</button>
+            </div>
+            <div class="tab-content active" id="seeker">
+                <div class="steps-grid">
+                    <div class="step-card">
+                        <div class="step-number">1</div>
+                        <div class="step-icon">
+                            <i class="fas fa-user-plus"></i>
+                        </div>
+                        <h3>Create Your Profile</h3>
+                        <p>Sign up and build a comprehensive profile highlighting your skills, experience, and achievements.</p>
+                    </div>
+                    <div class="step-card">
+                        <div class="step-number">2</div>
+                        <div class="step-icon">
+                            <i class="fas fa-search"></i>
+                        </div>
+                        <h3>Explore Opportunities</h3>
+                        <p>Browse through thousands of job listings tailored to your skills and preferences.</p>
+                    </div>
+                    <div class="step-card">
+                        <div class="step-number">3</div>
+                        <div class="step-icon">
+                            <i class="fas fa-paper-plane"></i>
+                        </div>
+                        <h3>Apply & Connect</h3>
+                        <p>Apply to jobs and connect directly with recruiters through our messaging system.</p>
+                    </div>
+                    <div class="step-card">
+                        <div class="step-number">4</div>
+                        <div class="step-icon">
+                            <i class="fas fa-handshake"></i>
+                        </div>
+                        <h3>Land Your Dream Job</h3>
+                        <p>Complete skill assessments, showcase your portfolio, and secure your perfect role.</p>
+                    </div>
+                </div>
+            </div>
+            <div class="tab-content" id="recruiter">
+                <div class="steps-grid">
+                    <div class="step-card">
+                        <div class="step-number">1</div>
+                        <div class="step-icon">
+                            <i class="fas fa-building"></i>
+                        </div>
+                        <h3>Register Your Company</h3>
+                        <p>Create a company profile and go through our verification process to build trust.</p>
+                    </div>
+                    <div class="step-card">
+                        <div class="step-number">2</div>
+                        <div class="step-icon">
+                            <i class="fas fa-bullhorn"></i>
+                        </div>
+                        <h3>Post Job Openings</h3>
+                        <p>Create detailed job listings with custom requirements and skill assessments.</p>
+                    </div>
+                    <div class="step-card">
+                        <div class="step-number">3</div>
+                        <div class="step-icon">
+                            <i class="fas fa-users"></i>
+                        </div>
+                        <h3>Review Applications</h3>
+                        <p>Browse candidate profiles, review their portfolios, and check their skill assessment results.</p>
+                    </div>
+                    <div class="step-card">
+                        <div class="step-number">4</div>
+                        <div class="step-icon">
+                            <i class="fas fa-user-check"></i>
+                        </div>
+                        <h3>Hire Top Talent</h3>
+                        <p>Connect with candidates directly and build your dream team effortlessly.</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Team Section -->
+    <section id="team" class="team">
+        <div class="container">
+            <div class="section-header">
+                <h2>Meet Our Development Team</h2>
+                <p>The talented individuals behind JobKaro</p>
+            </div>
+            <div class="team-grid">
+                <div class="team-card">
+                    <div class="team-avatar">
+                        <i class="fas fa-user-tie"></i>
+                    </div>
+                    <h3>Rakesh Kumar Singh</h3>
+                    <p class="team-role">Lead Developer</p>
+                    <a href="https://www.linkedin.com/in/rakesh-kumar-singh-14b17331a/" target="_blank" rel="noopener noreferrer" class="linkedin-btn">
+                        <i class="fab fa-linkedin"></i> LinkedIn
+                    </a>
+                </div>
+                <div class="team-card">
+                    <div class="team-avatar">
+                        <i class="fas fa-user-tie"></i>
+                    </div>
+                    <h3>Adarsh Maurya</h3>
+                    <p class="team-role">Developer</p>
+                    <a href="https://www.linkedin.com/in/adarsh-maurya-6664a3327/" target="_blank" rel="noopener noreferrer" class="linkedin-btn">
+                        <i class="fab fa-linkedin"></i> LinkedIn
+                    </a>
+                </div>
+                <div class="team-card">
+                    <div class="team-avatar">
+                        <i class="fas fa-user-tie"></i>
+                    </div>
+                    <h3>Sania Patil</h3>
+                    <p class="team-role">Developer</p>
+                    <a href="https://www.linkedin.com/in/sania-patil-14aab034a/" target="_blank" rel="noopener noreferrer" class="linkedin-btn">
+                        <i class="fab fa-linkedin"></i> LinkedIn
+                    </a>
+                </div>
+                <div class="team-card">
+                    <div class="team-avatar">
+                        <i class="fas fa-user-tie"></i>
+                    </div>
+                    <h3>Shumaila Khan</h3>
+                    <p class="team-role">Developer</p>
+                    <a href="https://www.linkedin.com/in/shumaila-khan-8196aa356/" target="_blank" rel="noopener noreferrer" class="linkedin-btn">
+                        <i class="fab fa-linkedin"></i> LinkedIn
+                    </a>
+                </div>
+                <div class="team-card">
+                    <div class="team-avatar">
+                        <i class="fas fa-user-tie"></i>
+                    </div>
+                    <h3>Nandlal Shukla</h3>
+                    <p class="team-role">Developer</p>
+                    <a href="https://www.linkedin.com/in/nandlal-shukla-5a0527351/" target="_blank" rel="noopener noreferrer" class="linkedin-btn">
+                        <i class="fab fa-linkedin"></i> LinkedIn
+                    </a>
+                </div>
+                <div class="team-card">
+                    <div class="team-avatar">
+                        <i class="fas fa-user-tie"></i>
+                    </div>
+                    <h3>Hrushita Mane</h3>
+                    <p class="team-role">Developer</p>
+                    <a href="https://www.linkedin.com/in/hrushita-mane-a616b4346/" target="_blank" rel="noopener noreferrer" class="linkedin-btn">
+                        <i class="fab fa-linkedin"></i> LinkedIn
+                    </a>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- FAQ Section -->
+    <section class="faq">
+        <div class="container">
+            <div class="section-header">
+                <h2>Frequently Asked Questions</h2>
+                <p>Everything you need to know about JobKaro</p>
+            </div>
+            <div class="faq-container">
+                <div class="faq-item">
+                    <div class="faq-question">
+                        <h3>How do I create a profile on JobKaro?</h3>
+                        <i class="fas fa-chevron-down"></i>
+                    </div>
+                    <div class="faq-answer">
+                        <p>Creating a profile is simple! Click on "I'm a Job Seeker" button, fill in your basic details, add your skills and experience, and upload your resume. You can also add a portfolio to showcase your work. The entire process takes less than 10 minutes!</p>
+                    </div>
+                </div>
+                <div class="faq-item">
+                    <div class="faq-question">
+                        <h3>Is JobKaro free to use?</h3>
+                        <i class="fas fa-chevron-down"></i>
+                    </div>
+                    <div class="faq-answer">
+                        <p>Yes! JobKaro is completely free for job seekers. You can create a profile, browse jobs, apply to positions, and message recruiters at no cost. For recruiters, we offer both free and premium plans with additional features.</p>
+                    </div>
+                </div>
+                <div class="faq-item">
+                    <div class="faq-question">
+                        <h3>How does the skill assessment work?</h3>
+                        <i class="fas fa-chevron-down"></i>
+                    </div>
+                    <div class="faq-answer">
+                        <p>Our AI-powered skill assessment generates custom quizzes based on job requirements. When you apply for a position, you may be asked to complete a brief assessment. Your results are shared with recruiters to help them evaluate your expertise objectively.</p>
+                    </div>
+                </div>
+                <div class="faq-item">
+                    <div class="faq-question">
+                        <h3>How are companies verified on JobKaro?</h3>
+                        <i class="fas fa-chevron-down"></i>
+                    </div>
+                    <div class="faq-answer">
+                        <p>We take verification seriously. All companies must submit official documentation, which our team reviews manually. We verify business registration, contact information, and company legitimacy to ensure job seekers are protected from fraudulent listings.</p>
+                    </div>
+                </div>
+                <div class="faq-item">
+                    <div class="faq-question">
+                        <h3>Can I message recruiters directly?</h3>
+                        <i class="fas fa-chevron-down"></i>
+                    </div>
+                    <div class="faq-answer">
+                        <p>Absolutely! JobKaro features a built-in messaging system that allows direct communication between job seekers and recruiters. Once you apply for a position or a recruiter shows interest in your profile, you can start a conversation instantly.</p>
+                    </div>
+                </div>
+                <div class="faq-item">
+                    <div class="faq-question">
+                        <h3>How long does it take to get hired through JobKaro?</h3>
+                        <i class="fas fa-chevron-down"></i>
+                    </div>
+                    <div class="faq-answer">
+                        <p>The timeline varies based on industry, role, and your qualifications. On average, our users receive their first interview call within 2 weeks and secure a job within 4-6 weeks. Many have found positions even faster with our direct messaging feature!</p>
+                    </div>
+                </div>
+                <div class="faq-item">
+                    <div class="faq-question">
+                        <h3>What makes JobKaro different from other job platforms?</h3>
+                        <i class="fas fa-chevron-down"></i>
+                    </div>
+                    <div class="faq-answer">
+                        <p>JobKaro combines profile building, job search, portfolio showcasing, skill assessments, and direct messaging in one platform. Our AI-powered matching, verified companies, and focus on authentic connections set us apart from traditional job boards.</p>
+                    </div>
+                </div>
+                <div class="faq-item">
+                    <div class="faq-question">
+                        <h3>Can I edit my profile after creating it?</h3>
+                        <i class="fas fa-chevron-down"></i>
+                    </div>
+                    <div class="faq-answer">
+                        <p>Yes, you can edit your profile anytime! Update your skills, add new experiences, upload fresh portfolio pieces, and modify your preferences whenever needed. Keeping your profile updated increases your chances of being discovered by recruiters.</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- CTA Section -->
+    <section class="cta">
+        <div class="container">
+            <div class="cta-content">
+                <h2>Ready to Take the Next Step?</h2>
+                <p>Join thousands of professionals who have already found success with JobKaro</p>
+                <a href="index.html" class="btn btn-large">
+                    Get Started Today <i class="fas fa-arrow-right"></i>
+                </a>
+            </div>
+        </div>
+    </section>
+
+    <script src="JS/landing.js"></script>
+</body>
+</html>

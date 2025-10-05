@@ -111,7 +111,7 @@ if(isset($_SERVER["REQUEST_METHOD"]) && $_SERVER["REQUEST_METHOD"] === "POST")  
 
 
     $smtpUsername = 'jobportal00000@gmail.com';
-    $smtpPassword = 'gztykeykurgggklb';
+    $smtpPassword = 'voqihrpmwmzcwxrc';
 
 
     

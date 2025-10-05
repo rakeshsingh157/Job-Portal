@@ -1,7 +1,7 @@
 <?php
 
 // Database credentials from your query
-define('DB_SERVER', 'photostore.ct0go6um6tj0.ap-south-1.rds.amazonaws.com');
+define('DB_SERVER', 'database-1.chcyc88wcx2l.eu-north-1.rds.amazonaws.com');
 define('DB_USERNAME', 'admin'); 
 define('DB_PASSWORD', 'DBpicshot'); 
 define('DB_NAME', 'jobp_db');

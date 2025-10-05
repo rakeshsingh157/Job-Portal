@@ -2,7 +2,7 @@ document.addEventListener('DOMContentLoaded', () => {
     // Function to fetch and display data for the currently logged-in user in the header
     function loadLoggedInUserData() {
         // Fetch data from the PHP script that gets session user data
-        fetch('../PHP/get_logged_in_user_data.php')
+        fetch('PHP/get_logged_in_user_data.php')
             .then(response => response.json())
             .then(data => {
                 // Check if the request was successful
@@ -40,11 +40,11 @@ document.addEventListener('DOMContentLoaded', () => {
     const cuserId = getUrlParameter('cuser_id');
 
     if (cuserId) {
-        // Show loading overlay
-        document.getElementById('loading-overlay').classList.add('visible');
+        // Show skeleton loading screen
+        showSkeletonLoading();
         
         // Fetch company data
-        fetch(`../PHP/company-profile.php?cuser_id=${cuserId}`)
+        fetch(`PHP/company-profile.php?cuser_id=${cuserId}`)
             .then(response => {
                 if (!response.ok) {
                     throw new Error('Network response was not ok');
@@ -52,8 +52,8 @@ document.addEventListener('DOMContentLoaded', () => {
                 return response.json();
             })
             .then(data => {
-                // Hide loading overlay
-                document.getElementById('loading-overlay').classList.remove('visible');
+                // Hide skeleton loading screen
+                hideSkeletonLoading();
                 
                 if (data.error) {
                     console.error('Error fetching company data:', data.error);
@@ -67,8 +67,8 @@ document.addEventListener('DOMContentLoaded', () => {
                 populateCompanyData(data);
             })
             .catch(error => {
-                // Hide loading overlay
-                document.getElementById('loading-overlay').classList.remove('visible');
+                // Hide skeleton loading screen
+                hideSkeletonLoading();
                 
                 console.error('Fetch error:', error);
                 showError('Could not load profile data. Please check your connection.');
@@ -179,7 +179,24 @@ document.addEventListener('DOMContentLoaded', () => {
         }
     }
 
+    function showSkeletonLoading() {
+        const skeletonContainer = document.getElementById('skeleton-container');
+        if (skeletonContainer) {
+            skeletonContainer.classList.add('visible');
+        }
+    }
+    
+    function hideSkeletonLoading() {
+        const skeletonContainer = document.getElementById('skeleton-container');
+        if (skeletonContainer) {
+            skeletonContainer.classList.remove('visible');
+        }
+    }
+
     function showError(message) {
+        // Hide skeleton loading on error
+        hideSkeletonLoading();
+        
         document.body.innerHTML = `
             <div style="text-align: center; padding: 50px;">
                 <h2>Error</h2>

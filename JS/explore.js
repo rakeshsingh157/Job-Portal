@@ -37,10 +37,50 @@ function getRandomColorClass() {
     return colors[randomIndex];
 }
 
+function showJobSkeletonLoading() {
+    const jobGrid = document.getElementById('job-grid');
+    if (!jobGrid) return;
+    
+    const skeletonHTML = `
+        ${Array.from({ length: 6 }, () => `
+            <div class="job-skeleton">
+                <div class="skeleton-job-header">
+                    <div class="skeleton skeleton-company-logo"></div>
+                    <div class="skeleton-job-info">
+                        <div class="skeleton skeleton-job-title"></div>
+                        <div class="skeleton skeleton-company-name"></div>
+                    </div>
+                </div>
+                <div class="skeleton skeleton-job-description"></div>
+                <div class="skeleton skeleton-job-description"></div>
+                <div class="skeleton skeleton-job-description"></div>
+                <div class="skeleton-job-tags">
+                    <div class="skeleton skeleton-job-tag"></div>
+                    <div class="skeleton skeleton-job-tag"></div>
+                    <div class="skeleton skeleton-job-tag"></div>
+                    <div class="skeleton skeleton-job-tag"></div>
+                </div>
+                <div class="skeleton-job-footer">
+                    <div class="skeleton-job-details">
+                        <div class="skeleton skeleton-job-detail"></div>
+                        <div class="skeleton skeleton-job-detail"></div>
+                        <div class="skeleton skeleton-job-detail"></div>
+                    </div>
+                    <div class="skeleton skeleton-apply-btn"></div>
+                </div>
+            </div>
+        `).join('')}
+    `;
+    
+    jobGrid.innerHTML = skeletonHTML;
+}
+
 async function fetchJobs(filters = {}) {
     const jobGrid = document.getElementById('job-grid');
     if (!jobGrid) return;
-    jobGrid.innerHTML = '<div style="text-align: center; padding: 20px;"><h1>Loading jobs...</h1></div>';
+    
+    // Show skeleton loading
+    showJobSkeletonLoading();
 
     const params = new URLSearchParams(filters).toString();
     const url = `PHP/explore.php?${params}`;

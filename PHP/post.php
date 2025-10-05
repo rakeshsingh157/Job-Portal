@@ -72,61 +72,135 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['create_post'])) {
 
             if (!empty($_FILES['images']['name'][0])) {
                 $image_urls = [];
+                $failed_uploads = 0;
+                $upload_errors = [];
                 
                 foreach ($_FILES['images']['tmp_name'] as $key => $tmp_name) {
                     if ($_FILES['images']['error'][$key] === UPLOAD_ERR_OK) {
-
-                        if ($_FILES['images']['size'][$key] > 5 * 1024 * 1024) {
-                            $message = 'One or more images exceed the 5MB size limit.';
-                            $message_type = 'error';
+                        // Read image data
+                        $image_data = @file_get_contents($tmp_name);
+                        if ($image_data === false) {
+                            $failed_uploads++;
+                            $upload_errors[] = "Failed to read image file " . ($_FILES['images']['name'][$key] ?? 'unknown');
+                            error_log("Failed to read image: " . $tmp_name);
                             continue;
                         }
                         
-                        $image_data = file_get_contents($tmp_name);
                         $base64_image = base64_encode($image_data);
                         
-
-                        $ch = curl_init();
-                        curl_setopt($ch, CURLOPT_URL, "https://api.imgbb.com/1/upload?key=" . IMGBB_API_KEY);
-                        curl_setopt($ch, CURLOPT_POST, true);
-                        curl_setopt($ch, CURLOPT_POSTFIELDS, [
-                            'image' => $base64_image
-                        ]);
-                        curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+                        // Retry logic: try up to 3 times
+                        $max_retries = 3;
+                        $upload_successful = false;
                         
-                        $response = curl_exec($ch);
-                        $http_code = curl_getinfo($ch, CURLINFO_HTTP_CODE);
-                        curl_close($ch);
-                        
-                        if ($http_code === 200) {
-                            $response_data = json_decode($response, true);
+                        for ($retry = 0; $retry < $max_retries; $retry++) {
+                            $ch = curl_init();
+                            curl_setopt($ch, CURLOPT_URL, "https://api.imgbb.com/1/upload?key=" . IMGBB_API_KEY);
+                            curl_setopt($ch, CURLOPT_POST, true);
+                            curl_setopt($ch, CURLOPT_POSTFIELDS, [
+                                'image' => $base64_image
+                            ]);
+                            curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+                            curl_setopt($ch, CURLOPT_TIMEOUT, 30); // 30 second timeout
+                            curl_setopt($ch, CURLOPT_CONNECTTIMEOUT, 10); // 10 second connection timeout
+                            curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, false); // In case of SSL issues
                             
-                            if ($response_data && $response_data['success']) {
-                                $image_url = $conn->real_escape_string($response_data['data']['url']);
+                            $response = curl_exec($ch);
+                            $http_code = curl_getinfo($ch, CURLINFO_HTTP_CODE);
+                            $curl_error = curl_error($ch);
+                            curl_close($ch);
+                            
+                            if ($response === false) {
+                                error_log("CURL error on attempt " . ($retry + 1) . ": " . $curl_error);
+                                if ($retry < $max_retries - 1) {
+                                    sleep(1); // Wait 1 second before retry
+                                    continue;
+                                }
+                            } elseif ($http_code === 200) {
+                                $response_data = json_decode($response, true);
                                 
-
-                                $img_sql = "INSERT INTO post_images (post_id, image_url) VALUES ('$post_id', '$image_url')";
-                                if ($conn->query($img_sql)) {
-                                    $uploaded_images++;
+                                if ($response_data && isset($response_data['success']) && $response_data['success']) {
+                                    $image_url = $conn->real_escape_string($response_data['data']['url']);
+                                    
+                                    $img_sql = "INSERT INTO post_images (post_id, image_url) VALUES ('$post_id', '$image_url')";
+                                    if ($conn->query($img_sql)) {
+                                        $uploaded_images++;
+                                        $upload_successful = true;
+                                        break; // Success, exit retry loop
+                                    } else {
+                                        error_log("Image insert failed: " . $conn->error);
+                                        $upload_errors[] = "Database error for image " . ($_FILES['images']['name'][$key] ?? 'unknown');
+                                        break; // Database error, don't retry
+                                    }
                                 } else {
-                                    error_log("Image insert failed: " . $conn->error);
+                                    $error_msg = isset($response_data['error']['message']) ? $response_data['error']['message'] : 'Unknown error';
+                                    error_log("IMGBB upload failed on attempt " . ($retry + 1) . ": " . $error_msg);
+                                    if ($retry < $max_retries - 1) {
+                                        sleep(1);
+                                        continue;
+                                    }
                                 }
                             } else {
-                                error_log("IMGBB upload failed: " . $response);
+                                error_log("IMGBB API error. HTTP code: " . $http_code . " on attempt " . ($retry + 1));
+                                if ($retry < $max_retries - 1) {
+                                    sleep(1);
+                                    continue;
+                                }
                             }
-                        } else {
-                            error_log("IMGBB API error. HTTP code: " . $http_code);
                         }
+                        
+                        if (!$upload_successful) {
+                            $failed_uploads++;
+                            $upload_errors[] = "Failed to upload image " . ($_FILES['images']['name'][$key] ?? 'unknown') . " after $max_retries attempts";
+                        }
+                    } else {
+                        // Handle file upload errors
+                        $failed_uploads++;
+                        $error_message = "Unknown error";
+                        switch ($_FILES['images']['error'][$key]) {
+                            case UPLOAD_ERR_INI_SIZE:
+                            case UPLOAD_ERR_FORM_SIZE:
+                                $error_message = "File too large";
+                                break;
+                            case UPLOAD_ERR_PARTIAL:
+                                $error_message = "File partially uploaded";
+                                break;
+                            case UPLOAD_ERR_NO_FILE:
+                                $error_message = "No file uploaded";
+                                break;
+                            case UPLOAD_ERR_NO_TMP_DIR:
+                                $error_message = "Missing temporary folder";
+                                break;
+                            case UPLOAD_ERR_CANT_WRITE:
+                                $error_message = "Failed to write file to disk";
+                                break;
+                        }
+                        $upload_errors[] = "Error uploading " . ($_FILES['images']['name'][$key] ?? 'unknown') . ": $error_message";
+                        error_log("File upload error " . $_FILES['images']['error'][$key] . " for file: " . ($_FILES['images']['name'][$key] ?? 'unknown'));
                     }
                 }
             }
             
+            // Build success/error message
             if ($uploaded_images > 0 || empty($_FILES['images']['name'][0])) {
-                $message = 'Post created successfully!' . 
-                          ($uploaded_images > 0 ? " $uploaded_images image(s) uploaded." : "");
-                $message_type = 'success';
+                $message = 'Post created successfully!';
+                if ($uploaded_images > 0) {
+                    $message .= " $uploaded_images image(s) uploaded.";
+                }
+                if (!empty($failed_uploads)) {
+                    $message .= " $failed_uploads image(s) failed to upload.";
+                    $message_type = 'warning';
+                } else {
+                    $message_type = 'success';
+                }
                 
-
+                // Show detailed errors if any
+                if (!empty($upload_errors)) {
+                    $message .= "<br><small>" . implode("<br>", array_slice($upload_errors, 0, 5)) . "</small>";
+                    if (count($upload_errors) > 5) {
+                        $message .= "<br><small>... and " . (count($upload_errors) - 5) . " more errors</small>";
+                    }
+                }
+                
                 echo '<script>
                     document.getElementById("post-form").reset();
                     document.getElementById("image-preview").innerHTML = "";
@@ -134,6 +208,12 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['create_post'])) {
                 </script>';
             } else {
                 $message = 'Post created but no images were uploaded.';
+                if (!empty($upload_errors)) {
+                    $message .= "<br><small>" . implode("<br>", array_slice($upload_errors, 0, 5)) . "</small>";
+                    if (count($upload_errors) > 5) {
+                        $message .= "<br><small>... and " . (count($upload_errors) - 5) . " more errors</small>";
+                    }
+                }
                 $message_type = 'warning';
             }
         } else {
@@ -417,6 +497,113 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['create_post'])) {
                 height: 100px;
             }
         }
+        
+        /* Loading Overlay */
+        #loading-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(255, 255, 255, 0.98);
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            z-index: 9999;
+            visibility: hidden;
+            opacity: 0;
+            transition: visibility 0s 0.5s, opacity 0.5s linear;
+        }
+        
+        #loading-overlay.visible {
+            visibility: visible;
+            opacity: 1;
+            transition-delay: 0s;
+        }
+        
+        .spinner {
+            animation: rotate 1s infinite;
+            height: 50px;
+            width: 50px;
+        }
+        
+        .spinner:before,
+        .spinner:after {
+            border-radius: 50%;
+            content: '';
+            display: block;
+            height: 20px;
+            width: 20px;
+        }
+        
+        .spinner:before {
+            animation: ball1 1s infinite;
+            background-color: #cb2025;
+            box-shadow: 30px 0 0 #f8b334;
+            margin-bottom: 10px;
+        }
+        
+        .spinner:after {
+            animation: ball2 1s infinite;
+            background-color: #00a096;
+            box-shadow: 30px 0 0 #97bf0d;
+        }
+        
+        @keyframes rotate {
+            0% {
+                transform: rotate(0deg) scale(0.8);
+            }
+            50% {
+                transform: rotate(360deg) scale(1.2);
+            }
+            100% {
+                transform: rotate(720deg) scale(0.8);
+            }
+        }
+        
+        @keyframes ball1 {
+            0% {
+                box-shadow: 30px 0 0 #f8b334;
+            }
+            50% {
+                box-shadow: 0 0 0 #f8b334;
+                margin-bottom: 0;
+                transform: translate(15px, 15px);
+            }
+            100% {
+                box-shadow: 30px 0 0 #f8b334;
+                margin-bottom: 10px;
+            }
+        }
+        
+        @keyframes ball2 {
+            0% {
+                box-shadow: 30px 0 0 #97bf0d;
+            }
+            50% {
+                box-shadow: 0 0 0 #97bf0d;
+                margin-top: -20px;
+                transform: translate(15px, 15px);
+            }
+            100% {
+                box-shadow: 30px 0 0 #97bf0d;
+                margin-top: 0;
+            }
+        }
+        
+        .loading-text {
+            margin-top: 30px;
+            font-size: 18px;
+            font-weight: 600;
+            color: #1c1e21;
+        }
+        
+        .upload-progress {
+            margin-top: 10px;
+            font-size: 14px;
+            color: #65676b;
+        }
    
   
         
@@ -580,7 +767,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['create_post'])) {
                     <p>Drag & drop photos here or</p>
                     <label for="file-input" class="upload-btn">Select Photos</label>
                     <input type="file" id="file-input" name="images[]" multiple accept="image/*">
-                    <div class="file-size-warning">Maximum 5MB per image</div>
+                    <div class="file-size-warning">Upload as many images as you want</div>
                     <div class="image-count" id="image-count">No images selected</div>
                 </div>
                 
@@ -594,6 +781,13 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['create_post'])) {
                 <a href="login.php" class="login-btn">Login</a>
             </div>
         <?php endif; ?>
+    </div>
+
+    <!-- Loading Overlay -->
+    <div id="loading-overlay">
+        <div class="spinner"></div>
+        <div class="loading-text">Uploading your post...</div>
+        <div class="upload-progress" id="upload-progress">Preparing images...</div>
     </div>
 
     <script>
@@ -652,12 +846,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['create_post'])) {
             function handleFiles(newFiles) {
                 for (let i = 0; i < newFiles.length; i++) {
                     if (newFiles[i].type.startsWith('image/')) {
-                        // Check file size (client-side validation)
-                        if (newFiles[i].size > 5 * 1024 * 1024) {
-                            alert('File "' + newFiles[i].name + '" exceeds the 5MB size limit.');
-                            continue;
-                        }
-                        
                         files.push(newFiles[i]);
                         
                         const reader = new FileReader();
@@ -701,9 +889,26 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['create_post'])) {
             // Initialize image count
             updateImageCount();
             
-            // Form submission validation
-            form.addEventListener('submit', function() {
-                // You could add additional validation here if needed
+            // Form submission with loading overlay
+            form.addEventListener('submit', function(e) {
+                const loadingOverlay = document.getElementById('loading-overlay');
+                const uploadProgress = document.getElementById('upload-progress');
+                
+                if (!loadingOverlay) return; // Safety check
+                
+                // Show loading overlay
+                loadingOverlay.classList.add('visible');
+                
+                // Update progress text
+                const imageCount = files.length;
+                if (imageCount > 0) {
+                    uploadProgress.textContent = `Uploading ${imageCount} image${imageCount > 1 ? 's' : ''}...`;
+                } else {
+                    uploadProgress.textContent = 'Creating your post...';
+                }
+                
+                // Note: The overlay will be hidden when page reloads after form submission
+                // If using AJAX in the future, you would hide it manually after success
             });
         });
     </script>

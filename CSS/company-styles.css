@@ -70,10 +70,10 @@ nav a:hover, nav a.active { color: var(--text); }
 .container { 
   max-width: 1400px; 
   margin: 0 auto; 
-  padding: 32px;
+  padding: 50px;
   display: grid;
-  grid-template-columns: 320px 1fr;
-  gap: 32px;
+  grid-template-columns: 340px 1fr;
+  gap: 50px;
 }
 
 .card { 
@@ -81,7 +81,7 @@ nav a:hover, nav a.active { color: var(--text); }
   border-radius: 16px; 
   border: 1px solid;
   border-color: var(--borderr); 
-  padding: 32px;
+  padding: 50px 40px;
   height: fit-content;
 }
 
@@ -90,25 +90,27 @@ nav a:hover, nav a.active { color: var(--text); }
   display: flex;
   flex-direction: column;
   align-items: center;
+  justify-content: flex-start;
   text-align: center;
+  width: 100%;
+  box-sizing: border-box;
+  position: relative;
 }
 
 .profile-avatar {
   width: 120px;
   height: 120px;
-  margin-bottom: 20px;
   background: var(--bg);
   border-radius: 50%;
-  display: flex;
-  align-items: center;
-  justify-content: center;
+  display: block;
   border: 1px solid;
   border-color: var(--borderr);
   cursor: pointer;
   transition: all 0.2s ease;
-  
   overflow: hidden;
   position: relative;
+  left: 50%;
+  transform: translateX(-50%);
 }
 
 .profile-avatar:hover {
@@ -120,12 +122,24 @@ nav a:hover, nav a.active { color: var(--text); }
   width: 100%;
   height: 100%;
   object-fit: cover;
+  object-position: center;
   border-radius: 50%;
+  display: block;
+  position: absolute;
+  top: 0;
+  left: 0;
 }
 
 .avatar-placeholder {
   font-size: 48px;
   color: var(--muted);
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  display: flex;
+  align-items: center;
+  justify-content: center;
 }
 
 .upload-hint {
@@ -151,36 +165,39 @@ nav a:hover, nav a.active { color: var(--text); }
 .company-name {
   font-size: 24px;
   font-weight: 600;
-  margin-bottom: 4px;
+  margin-bottom: 8px;
+  text-align: center;
 }
 
 .company-type {
   color: var(--muted);
   font-size: 14px;
-  margin-bottom: 12px;
+  margin-bottom: 16px;
+  text-align: center;
 }
 
 .verified-badge {
   background: var(--verified);
   color: var(--primary);
-  padding: 4px 12px;
+  padding: 6px 16px;
   border-radius: 20px;
   font-size: 12px;
   font-weight: 600;
-  margin-bottom: 24px;
+  margin-bottom: 30px;
   display: inline-block;
+  text-align: center;
 }
 
 .edit-btn {
   background: var(--primary);
   color: white;
   border: none;
-  padding: 12px 24px;
+  padding: 14px 28px;
   border-radius: 8px;
   font-weight: 600;
   cursor: pointer;
   width: 100%;
-  margin-bottom: 32px;
+  margin-bottom: 35px;
   transition: background 0.2s ease;
 }
 
@@ -189,10 +206,12 @@ nav a:hover, nav a.active { color: var(--text); }
 .profile-info {
   width: 100%;
   text-align: left;
+  margin-top: 30px;
 }
 
 .info-section {
-  margin-bottom: 24px;
+  margin-bottom: 28px;
+  padding: 8px 0;
 }
 
 .info-label {
@@ -221,7 +240,7 @@ nav a:hover, nav a.active { color: var(--text); }
 .main-content {
   display: flex;
   flex-direction: column;
-  gap: 32px;
+  gap: 40px;
 }
 
 .overview-section, .jobs-section {
@@ -229,7 +248,8 @@ nav a:hover, nav a.active { color: var(--text); }
   border-radius: 16px;
   border: 1px solid;
   border-color: var(--borderr);
-  padding: 32px;
+  padding: 40px;
+  margin-bottom:20px
 }
 
 .section-title {

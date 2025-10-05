@@ -72,6 +72,184 @@
       background-color: #ccc;
     }
     
+    /* Skeleton Loading Styles */
+    .skeleton-container {
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background-color: #f8f9fa;
+        z-index: 9998;
+        overflow-y: auto;
+        display: none;
+    }
+    
+    .skeleton-container.visible {
+        display: block;
+    }
+    
+    .skeleton-header {
+        height: 60px;
+        background: linear-gradient(90deg, #e0e0e0 25%, #f0f0f0 50%, #e0e0e0 75%);
+        background-size: 200% 100%;
+        animation: skeleton-loading 1.5s infinite;
+        margin-bottom: 20px;
+    }
+    
+    .skeleton-content {
+        max-width: 1200px;
+        margin: 0 auto;
+        padding: 20px;
+        display: flex;
+        gap: 20px;
+    }
+    
+    .skeleton-profile-card {
+        width: 300px;
+        background: white;
+        border-radius: 12px;
+        padding: 24px;
+        box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+        height: fit-content;
+    }
+    
+    .skeleton-avatar {
+        width: 120px;
+        height: 120px;
+        border-radius: 50%;
+        background: linear-gradient(90deg, #e0e0e0 25%, #f0f0f0 50%, #e0e0e0 75%);
+        background-size: 200% 100%;
+        animation: skeleton-loading 1.5s infinite;
+        margin: 0 auto 20px;
+    }
+    
+    .skeleton-name {
+        height: 24px;
+        background: linear-gradient(90deg, #e0e0e0 25%, #f0f0f0 50%, #e0e0e0 75%);
+        background-size: 200% 100%;
+        animation: skeleton-loading 1.5s infinite;
+        border-radius: 4px;
+        margin-bottom: 10px;
+        width: 80%;
+        margin-left: auto;
+        margin-right: auto;
+    }
+    
+    .skeleton-type {
+        height: 18px;
+        background: linear-gradient(90deg, #e0e0e0 25%, #f0f0f0 50%, #e0e0e0 75%);
+        background-size: 200% 100%;
+        animation: skeleton-loading 1.5s infinite;
+        border-radius: 4px;
+        margin-bottom: 20px;
+        width: 60%;
+        margin-left: auto;
+        margin-right: auto;
+    }
+    
+    .skeleton-info-item {
+        margin-bottom: 20px;
+    }
+    
+    .skeleton-info-label {
+        height: 14px;
+        background: linear-gradient(90deg, #e0e0e0 25%, #f0f0f0 50%, #e0e0e0 75%);
+        background-size: 200% 100%;
+        animation: skeleton-loading 1.5s infinite;
+        border-radius: 4px;
+        margin-bottom: 8px;
+        width: 40%;
+    }
+    
+    .skeleton-info-value {
+        height: 16px;
+        background: linear-gradient(90deg, #e0e0e0 25%, #f0f0f0 50%, #e0e0e0 75%);
+        background-size: 200% 100%;
+        animation: skeleton-loading 1.5s infinite;
+        border-radius: 4px;
+        width: 90%;
+    }
+    
+    .skeleton-main-content {
+        flex: 1;
+    }
+    
+    .skeleton-section {
+        background: white;
+        border-radius: 12px;
+        padding: 24px;
+        margin-bottom: 20px;
+        box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+    }
+    
+    .skeleton-section-title {
+        height: 28px;
+        background: linear-gradient(90deg, #e0e0e0 25%, #f0f0f0 50%, #e0e0e0 75%);
+        background-size: 200% 100%;
+        animation: skeleton-loading 1.5s infinite;
+        border-radius: 4px;
+        margin-bottom: 20px;
+        width: 30%;
+    }
+    
+    .skeleton-text-line {
+        height: 16px;
+        background: linear-gradient(90deg, #e0e0e0 25%, #f0f0f0 50%, #e0e0e0 75%);
+        background-size: 200% 100%;
+        animation: skeleton-loading 1.5s infinite;
+        border-radius: 4px;
+        margin-bottom: 12px;
+    }
+    
+    .skeleton-text-line.short {
+        width: 60%;
+    }
+    
+    .skeleton-text-line.medium {
+        width: 80%;
+    }
+    
+    .skeleton-text-line.long {
+        width: 95%;
+    }
+    
+    .skeleton-job-item {
+        border: 1px solid #e0e0e0;
+        border-radius: 8px;
+        padding: 16px;
+        margin-bottom: 12px;
+    }
+    
+    .skeleton-job-title {
+        height: 20px;
+        background: linear-gradient(90deg, #e0e0e0 25%, #f0f0f0 50%, #e0e0e0 75%);
+        background-size: 200% 100%;
+        animation: skeleton-loading 1.5s infinite;
+        border-radius: 4px;
+        margin-bottom: 8px;
+        width: 70%;
+    }
+    
+    .skeleton-job-details {
+        height: 14px;
+        background: linear-gradient(90deg, #e0e0e0 25%, #f0f0f0 50%, #e0e0e0 75%);
+        background-size: 200% 100%;
+        animation: skeleton-loading 1.5s infinite;
+        border-radius: 4px;
+        margin-bottom: 6px;
+        width: 50%;
+    }
+    
+    @keyframes skeleton-loading {
+        0% {
+            background-position: -200% 0;
+        }
+        100% {
+            background-position: 200% 0;
+        }
+    }
+    
     /* Loading Overlay Styles */
     #loading-overlay {
         position: fixed;
@@ -410,6 +588,85 @@ console.log("Header script loaded");
 
   <div id="loading-overlay">
     <div class="loader"></div>
+  </div>
+
+  <!-- Skeleton Loading Screen -->
+  <div id="skeleton-container" class="skeleton-container">
+    <div class="skeleton-header"></div>
+    
+    <div class="skeleton-content">
+      <!-- Profile Card Skeleton -->
+      <div class="skeleton-profile-card">
+        <div class="skeleton-avatar"></div>
+        <div class="skeleton-name"></div>
+        <div class="skeleton-type"></div>
+        
+        <div class="skeleton-info-item">
+          <div class="skeleton-info-label"></div>
+          <div class="skeleton-info-value"></div>
+        </div>
+        
+        <div class="skeleton-info-item">
+          <div class="skeleton-info-label"></div>
+          <div class="skeleton-info-value"></div>
+        </div>
+        
+        <div class="skeleton-info-item">
+          <div class="skeleton-info-label"></div>
+          <div class="skeleton-info-value"></div>
+        </div>
+        
+        <div class="skeleton-info-item">
+          <div class="skeleton-info-label"></div>
+          <div class="skeleton-info-value"></div>
+        </div>
+        
+        <div class="skeleton-info-item">
+          <div class="skeleton-info-label"></div>
+          <div class="skeleton-info-value"></div>
+        </div>
+        
+        <div class="skeleton-info-item">
+          <div class="skeleton-info-label"></div>
+          <div class="skeleton-info-value"></div>
+        </div>
+      </div>
+      
+      <!-- Main Content Skeleton -->
+      <div class="skeleton-main-content">
+        <!-- Overview Section Skeleton -->
+        <div class="skeleton-section">
+          <div class="skeleton-section-title"></div>
+          <div class="skeleton-text-line long"></div>
+          <div class="skeleton-text-line medium"></div>
+          <div class="skeleton-text-line long"></div>
+          <div class="skeleton-text-line short"></div>
+        </div>
+        
+        <!-- Jobs Section Skeleton -->
+        <div class="skeleton-section">
+          <div class="skeleton-section-title"></div>
+          
+          <div class="skeleton-job-item">
+            <div class="skeleton-job-title"></div>
+            <div class="skeleton-job-details"></div>
+            <div class="skeleton-job-details"></div>
+          </div>
+          
+          <div class="skeleton-job-item">
+            <div class="skeleton-job-title"></div>
+            <div class="skeleton-job-details"></div>
+            <div class="skeleton-job-details"></div>
+          </div>
+          
+          <div class="skeleton-job-item">
+            <div class="skeleton-job-title"></div>
+            <div class="skeleton-job-details"></div>
+            <div class="skeleton-job-details"></div>
+          </div>
+        </div>
+      </div>
+    </div>
   </div>
 
     <script src="JS/company-script.js" defer></script>

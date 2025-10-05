@@ -1,3 +1,27 @@
+function showJobDetailsSkeleton() {
+    const skeletonContainer = document.getElementById('skeleton-container');
+    const contentContainer = document.getElementById('content-container');
+    
+    if (skeletonContainer) {
+        skeletonContainer.classList.add('active');
+    }
+    if (contentContainer) {
+        contentContainer.classList.add('loading');
+    }
+}
+
+function hideJobDetailsSkeleton() {
+    const skeletonContainer = document.getElementById('skeleton-container');
+    const contentContainer = document.getElementById('content-container');
+    
+    if (skeletonContainer) {
+        skeletonContainer.classList.remove('active');
+    }
+    if (contentContainer) {
+        contentContainer.classList.remove('loading');
+    }
+}
+
 document.addEventListener('DOMContentLoaded', () => {
     const params = new URLSearchParams(window.location.search);
     const jobId = params.get('job_id');
@@ -5,8 +29,11 @@ document.addEventListener('DOMContentLoaded', () => {
 
     if (!jobId) {
         console.error('Error: Job ID not found in URL. Please use a URL like http://localhost/details.html?job_id=1');
+        hideJobDetailsSkeleton();
         return;
     }
+    
+    // Skeleton is already showing by default, just start fetching data
 
     fetch(`PHP/job-details.php?job_id=${jobId}`)
         .then(response => {
@@ -18,7 +45,12 @@ document.addEventListener('DOMContentLoaded', () => {
         })
         .then(data => {
             console.log('Received data:', data);
-            if (data.success) {
+            
+            try {
+                // Hide skeleton loading
+                hideJobDetailsSkeleton();
+                
+                if (data.success) {
                 const job = data.job;
                 const company = data.company;
                 const cuserId = job.cuser_id;
@@ -97,11 +129,17 @@ document.addEventListener('DOMContentLoaded', () => {
                     });
                 });
 
-            } else {
-                console.error('Error from PHP:', data.message);
+                } else {
+                    console.error('Error from PHP:', data.message);
+                }
+            } catch (processingError) {
+                console.error('Error processing job details:', processingError);
+                hideJobDetailsSkeleton();
             }
         })
         .catch(error => {
             console.error('Failed to fetch job details:', error);
+            // Hide skeleton loading on error
+            hideJobDetailsSkeleton();
         });
 });

@@ -1,0 +1,23 @@
+﻿<!DOCTYPE html>
+<html>
+<head><title>Test</title></head>
+<body>
+<h1>Testing Fetch</h1>
+<div id='result'></div>
+<script>
+fetch('PHP/company-profile.php?cuser_id=1')
+  .then(r => {
+    console.log('Status:', r.status);
+    return r.json();
+  })
+  .then(d => {
+    console.log('Data:', d);
+    document.getElementById('result').innerHTML = '<pre>' + JSON.stringify(d, null, 2) + '</pre>';
+  })
+  .catch(e => {
+    console.error('Error:', e);
+    document.getElementById('result').innerHTML = 'Error: ' + e.message;
+  });
+</script>
+</body>
+</html>

@@ -47,6 +47,214 @@
             color: #000000;
             text-decoration: none;
         }
+        
+        /* Skeleton Loading Styles */
+        .skeleton {
+            background: linear-gradient(90deg, #f0f0f0 25%, #e0e0e0 50%, #f0f0f0 75%);
+            background-size: 200% 100%;
+            animation: skeleton-loading 1.5s infinite;
+            border-radius: 6px;
+        }
+        
+        @keyframes skeleton-loading {
+            0% { background-position: 200% 0; }
+            100% { background-position: -200% 0; }
+        }
+        
+        .skeleton-container {
+            display: none;
+        }
+        
+        .skeleton-container.active {
+            display: block;
+        }
+        
+        .content-container {
+            display: block;
+        }
+        
+        .content-container.loading {
+            display: none;
+        }
+        
+        .skeleton-header {
+            background: white;
+            padding: 2rem;
+            border-radius: 0.75rem;
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-bottom: 2.25rem;
+        }
+        
+        .skeleton-header-content {
+            display: flex;
+            align-items: center;
+            gap: 1.5rem;
+            flex-grow: 1;
+        }
+        
+        .skeleton-company-logo {
+            width: 80px;
+            height: 80px;
+            border-radius: 0.5rem;
+        }
+        
+        .skeleton-job-title {
+            height: 36px;
+            width: 300px;
+            margin-bottom: 12px;
+        }
+        
+        .skeleton-company-name {
+            height: 24px;
+            width: 200px;
+        }
+        
+        .skeleton-apply-btn {
+            height: 48px;
+            width: 120px;
+            border-radius: 0.75rem;
+        }
+        
+        .skeleton-main-content {
+            display: flex;
+            flex-direction: column;
+            gap: 1.5rem;
+        }
+        
+        .skeleton-section {
+            background: white;
+            padding: 2rem;
+            border-radius: 0.75rem;
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+        }
+        
+        .skeleton-section-title {
+            height: 28px;
+            width: 150px;
+            margin-bottom: 1rem;
+        }
+        
+        .skeleton-description {
+            height: 16px;
+            margin-bottom: 12px;
+        }
+        
+        .skeleton-description:nth-child(2) { width: 100%; }
+        .skeleton-description:nth-child(3) { width: 95%; }
+        .skeleton-description:nth-child(4) { width: 88%; }
+        .skeleton-description:nth-child(5) { width: 92%; }
+        .skeleton-description:nth-child(6) { width: 75%; }
+        
+        .skeleton-skills {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 12px;
+            margin-top: 2rem;
+        }
+        
+        .skeleton-skill {
+            height: 36px;
+            border-radius: 8px;
+        }
+        
+        .skeleton-skill:nth-child(1) { width: 80px; }
+        .skeleton-skill:nth-child(2) { width: 100px; }
+        .skeleton-skill:nth-child(3) { width: 70px; }
+        .skeleton-skill:nth-child(4) { width: 140px; }
+        .skeleton-skill:nth-child(5) { width: 90px; }
+        .skeleton-skill:nth-child(6) { width: 60px; }
+        
+        .skeleton-company-section {
+            display: flex;
+            align-items: start;
+            gap: 1.5rem;
+        }
+        
+        .skeleton-company-content {
+            flex-grow: 1;
+        }
+        
+        .skeleton-company-side {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            padding-top: 1rem;
+        }
+        
+        .skeleton-company-side-logo {
+            width: 80px;
+            height: 80px;
+            border-radius: 0.5rem;
+            margin-bottom: 12px;
+        }
+        
+        .skeleton-company-side-name {
+            height: 16px;
+            width: 120px;
+        }
+        
+        .skeleton-sidebar {
+            background: white;
+            padding: 1.75rem;
+            border-radius: 0.75rem;
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+            height: fit-content;
+        }
+        
+        .skeleton-salary {
+            height: 28px;
+            width: 200px;
+            margin-bottom: 8px;
+        }
+        
+        .skeleton-salary-label {
+            height: 16px;
+            width: 80px;
+            margin-bottom: 2.25rem;
+        }
+        
+        .skeleton-info-item {
+            display: flex;
+            align-items: start;
+            margin-bottom: 2.25rem;
+        }
+        
+        .skeleton-info-icon {
+            width: 45px;
+            height: 45px;
+            border-radius: 10px;
+            margin-right: 12px;
+            flex-shrink: 0;
+        }
+        
+        .skeleton-info-label {
+            height: 16px;
+            width: 100px;
+            margin-bottom: 8px;
+        }
+        
+        .skeleton-info-value {
+            height: 20px;
+            width: 180px;
+        }
+        
+        @media (min-width: 1024px) {
+            .skeleton-main-content {
+                flex-direction: row;
+                gap: 1.5rem;
+            }
+            
+            .skeleton-left-content {
+                flex: 1;
+            }
+            
+            .skeleton-right-content {
+                width: 33.333333%;
+            }
+        }
       
     </style>
 </head>
@@ -75,7 +283,107 @@
 </header>
 
 <script src="JS/header.js"></script>
-    <main class="container mx-auto px-6 py-8">
+    
+    <!-- Skeleton Loading Structure -->
+    <div id="skeleton-container" class="skeleton-container active">
+        <main class="container mx-auto px-6 py-8">
+            <!-- Header Skeleton -->
+            <div class="skeleton-header">
+                <div class="skeleton-header-content">
+                    <div class="skeleton skeleton-company-logo"></div>
+                    <div>
+                        <div class="skeleton skeleton-job-title"></div>
+                        <div class="skeleton skeleton-company-name"></div>
+                    </div>
+                </div>
+                <div class="skeleton skeleton-apply-btn"></div>
+            </div>
+            
+            <!-- Main Content Skeleton -->
+            <div class="skeleton-main-content">
+                <div class="skeleton-left-content">
+                    <!-- Job Description Skeleton -->
+                    <div class="skeleton-section">
+                        <div class="skeleton skeleton-section-title"></div>
+                        <div class="skeleton skeleton-description"></div>
+                        <div class="skeleton skeleton-description"></div>
+                        <div class="skeleton skeleton-description"></div>
+                        <div class="skeleton skeleton-description"></div>
+                        <div class="skeleton skeleton-description"></div>
+                        <div class="skeleton skeleton-description"></div>
+                        
+                        <div class="skeleton skeleton-section-title mt-8"></div>
+                        <div class="skeleton-skills">
+                            <div class="skeleton skeleton-skill"></div>
+                            <div class="skeleton skeleton-skill"></div>
+                            <div class="skeleton skeleton-skill"></div>
+                            <div class="skeleton skeleton-skill"></div>
+                            <div class="skeleton skeleton-skill"></div>
+                            <div class="skeleton skeleton-skill"></div>
+                        </div>
+                    </div>
+                    
+                    <!-- Company Section Skeleton -->
+                    <div class="skeleton-section skeleton-company-section">
+                        <div class="skeleton-company-content">
+                            <div class="skeleton skeleton-section-title"></div>
+                            <div class="skeleton skeleton-description"></div>
+                            <div class="skeleton skeleton-description"></div>
+                            <div class="skeleton skeleton-description"></div>
+                            <div class="skeleton skeleton-description"></div>
+                            <div class="skeleton skeleton-description"></div>
+                        </div>
+                        <div class="skeleton-company-side hidden md:flex">
+                            <div class="skeleton skeleton-company-side-logo"></div>
+                            <div class="skeleton skeleton-company-side-name"></div>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Sidebar Skeleton -->
+                <div class="skeleton-right-content">
+                    <div class="skeleton-sidebar">
+                        <div class="skeleton skeleton-salary"></div>
+                        <div class="skeleton skeleton-salary-label"></div>
+                        
+                        <div class="skeleton-info-item">
+                            <div class="skeleton skeleton-info-icon"></div>
+                            <div>
+                                <div class="skeleton skeleton-info-label"></div>
+                                <div class="skeleton skeleton-info-value"></div>
+                            </div>
+                        </div>
+                        
+                        <div class="skeleton-info-item">
+                            <div class="skeleton skeleton-info-icon"></div>
+                            <div>
+                                <div class="skeleton skeleton-info-label"></div>
+                                <div class="skeleton skeleton-info-value"></div>
+                            </div>
+                        </div>
+                        
+                        <div class="skeleton-info-item">
+                            <div class="skeleton skeleton-info-icon"></div>
+                            <div>
+                                <div class="skeleton skeleton-info-label"></div>
+                                <div class="skeleton skeleton-info-value"></div>
+                            </div>
+                        </div>
+                        
+                        <div class="skeleton-info-item">
+                            <div class="skeleton skeleton-info-icon"></div>
+                            <div>
+                                <div class="skeleton skeleton-info-label"></div>
+                                <div class="skeleton skeleton-info-value"></div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </main>
+    </div>
+    
+    <main id="content-container" class="content-container container mx-auto px-6 py-8 loading">
     <div class="bg-white p-8 rounded-xl shadow-md flex items-center justify-between w-full mb-9">
         <div class="flex items-center gap-6 flex-grow">
             <div class="pink-box w-20 h-20 flex-shrink-0 bg-pink-500"></div>

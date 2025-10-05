@@ -24,9 +24,24 @@ document.addEventListener('DOMContentLoaded', () => {
             loadingOverlay.classList.remove('visible');
         }
     };
+    
+    const showSkeletonLoading = () => {
+        const skeletonContainer = document.getElementById('skeleton-container');
+        if (skeletonContainer) {
+            skeletonContainer.classList.add('visible');
+        }
+    };
+    
+    const hideSkeletonLoading = () => {
+        const skeletonContainer = document.getElementById('skeleton-container');
+        if (skeletonContainer) {
+            skeletonContainer.classList.remove('visible');
+        }
+    };
 
     // --- Part 1: Fetch and display the logged-in user's data for the header ---
-    showLoading(); // Show the loader before the first fetch
+    showSkeletonLoading(); // Show skeleton loading screen
+    
     fetch('PHP/get_logged_in_user_data.php')
         .then(response => {
             if (!response.ok) {
@@ -49,12 +64,11 @@ document.addEventListener('DOMContentLoaded', () => {
             document.getElementById('navbarLocation').textContent = 'N/A';
         })
         .finally(() => {
-            hideLoading();
+            // Don't hide skeleton loading here, wait for profile data
         });
 
     // --- Part 2: Fetch and display the public profile data from the URL ---
     if (userId) {
-        showLoading(); // Also show the loader for the main profile data fetch
         fetch(`PHP/profile.php?user_id=${userId}`)
             .then(response => {
                 if (!response.ok) {
@@ -158,10 +172,11 @@ document.addEventListener('DOMContentLoaded', () => {
             })
             .catch(error => {
                 console.error('Error:', error);
+                hideSkeletonLoading();
                 document.body.innerHTML = `<div style="text-align: center; padding: 50px;"><h2>Error</h2><p>Could not load profile data.</p></div>`;
             })
             .finally(() => {
-                hideLoading();
+                hideSkeletonLoading();
             });
 
         // This is the code for the contact button. It is now correctly placed
@@ -175,6 +190,6 @@ document.addEventListener('DOMContentLoaded', () => {
         }
     } else {
         document.body.innerHTML = `<div style="text-align: center; padding: 50px;"><h2>Invalid Request</h2><p>Please specify a valid user ID in the URL, for example: profile.html?user_id=1</p></div>`;
-        hideLoading(); // Hide the loader if no user ID is found
+        hideSkeletonLoading(); // Hide the skeleton loader if no user ID is found
     }
 });

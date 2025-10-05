@@ -8,8 +8,173 @@
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <link rel="stylesheet" href="CSS/company-styles.css"/>
   <style>
-    /* New styles for the additional form fields to match existing design */
+    /* Clean Skeleton Loading System */
     
+    /* Base skeleton styles */
+    .skeleton-loader {
+        background: linear-gradient(90deg, #f0f0f0 25%, #e0e0e0 50%, #f0f0f0 75%);
+        background-size: 200% 100%;
+        animation: skeleton-shimmer 1.5s infinite;
+        border-radius: 6px;
+    }
+    
+    @keyframes skeleton-shimmer {
+        0% { background-position: -200% 0; }
+        100% { background-position: 200% 0; }
+    }
+    
+    /* Skeleton containers visibility */
+    .skeleton-profile-card,
+    .skeleton-main-content {
+        display: block;
+    }
+    
+    .skeleton-profile-card.hidden,
+    .skeleton-main-content.hidden {
+        display: none;
+    }
+    
+    /* Content containers visibility */
+    .actual-profile-card,
+    .actual-main-content {
+        display: none;
+    }
+    
+    .actual-profile-card.visible,
+    .actual-main-content.visible {
+        display: block;
+    }
+    
+    /* Profile Card Skeleton Elements */
+    .skeleton-company-avatar {
+        width: 120px;
+        height: 120px;
+        border-radius: 50%;
+        margin: 0 auto 30px;
+        position: relative;
+        left: 50%;
+        transform: translateX(-50%);
+    }
+    
+    .skeleton-company-name {
+        height: 28px;
+        width: 80%;
+        margin: 0 auto 10px;
+    }
+    
+    .skeleton-company-type {
+        height: 20px;
+        width: 60%;
+        margin: 0 auto 15px;
+    }
+    
+    .skeleton-edit-button {
+        height: 40px;
+        width: 120px;
+        margin: 20px auto;
+    }
+    
+    .skeleton-info-item {
+        margin-bottom: 20px;
+    }
+    
+    .skeleton-info-label {
+        height: 14px;
+        width: 90px;
+        margin-bottom: 8px;
+    }
+    
+    .skeleton-info-value {
+        height: 18px;
+        width: 160px;
+    }
+    
+    /* Main Content Skeleton Elements */
+    .skeleton-section-title {
+        height: 32px;
+        width: 120px;
+        margin-bottom: 20px;
+    }
+    
+    .skeleton-overview-text {
+        height: 120px;
+        width: 100%;
+        margin-bottom: 20px;
+    }
+    
+    .skeleton-jobs-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-bottom: 20px;
+    }
+    
+    .skeleton-jobs-title {
+        height: 32px;
+        width: 130px;
+    }
+    
+    .skeleton-add-button {
+        width: 40px;
+        height: 40px;
+        border-radius: 8px;
+    }
+    
+    .skeleton-job-card {
+        background: white;
+        border-radius: 12px;
+        padding: 20px;
+        margin-bottom: 20px;
+        box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+    }
+    
+    .skeleton-job-title {
+        height: 24px;
+        width: 75%;
+        margin-bottom: 12px;
+    }
+    
+    .skeleton-job-description {
+        height: 16px;
+        margin-bottom: 8px;
+    }
+    
+    .skeleton-job-meta {
+        height: 14px;
+        width: 45%;
+        margin-bottom: 6px;
+    }
+    
+    /* Spacing adjustments */
+    .skeleton-profile-info {
+        margin-top: 30px;
+    }
+    
+    .skeleton-overview-section {
+        margin-bottom: 40px;
+    }
+
+    /* Empty state styles */
+    .empty-jobs-state {
+        text-align: center;
+        padding: 40px;
+        color: var(--muted, #888);
+    }
+    
+    .empty-icon {
+        font-size: 48px;
+        margin-bottom: 16px;
+    }
+    
+    .empty-message {
+        font-size: 16px;
+        margin-bottom: 8px;
+    }
+    
+    .empty-subtitle {
+        font-size: 14px;
+        margin-top: 8px;
+    }
 
     /* Custom Modal styles */
     .custom-modal {
@@ -65,98 +230,7 @@
       background-color: #ccc;
     }
     
-    /* Loading Overlay Styles */
-    #loading-overlay {
-        position: fixed;
-        top: 0;
-        left: 0;
-        width: 100%;
-        height: 100%;
-        background-color: rgba(255, 255, 255, 1);
-        display: flex;
-        justify-content: center;
-        align-items: center;
-        z-index: 9999;
-        visibility: hidden;
-        opacity: 0;
-        transition: visibility 0s 0.5s, opacity 0.5s linear;
-    }
-    
-    #loading-overlay.visible {
-        visibility: visible;
-        opacity: 1;
-        transition-delay: 0s;
-    }
-    
-    .loader {
-        animation: rotate 1s infinite;
-        height: 50px;
-        width: 50px;
-    }
-    
-    .loader:before,
-    .loader:after {
-        border-radius: 50%;
-        content: '';
-        display: block;
-        height: 20px;
-        width: 20px;
-    }
-    
-    .loader:before {
-        animation: ball1 1s infinite;
-        background-color: #cb2025;
-        box-shadow: 30px 0 0 #f8b334;
-        margin-bottom: 10px;
-    }
-    
-    .loader:after {
-        animation: ball2 1s infinite;
-        background-color: #00a096;
-        box-shadow: 30px 0 0 #97bf0d;
-    }
-    
-    @keyframes rotate {
-        0% {
-            transform: rotate(0deg) scale(0.8);
-        }
-        50% {
-            transform: rotate(360deg) scale(1.2);
-        }
-        100% {
-            transform: rotate(720deg) scale(0.8);
-        }
-    }
-    
-    @keyframes ball1 {
-        0% {
-            box-shadow: 30px 0 0 #f8b334;
-        }
-        50% {
-            box-shadow: 0 0 0 #f8b334;
-            margin-bottom: 0;
-            transform: translate(15px, 15px);
-        }
-        100% {
-            box-shadow: 30px 0 0 #f8b334;
-            margin-bottom: 10px;
-        }
-    }
-    
-    @keyframes ball2 {
-        0% {
-            box-shadow: 30px 0 0 #97bf0d;
-        }
-        50% {
-            box-shadow: 0 0 0 #97bf0d;
-            margin-top: -20px;
-            transform: translate(15px, 15px);
-        }
-        100% {
-            box-shadow: 30px 0 0 #97bf0d;
-            margin-top: 0;
-        }
-    }
+
     li{
       list-style: none; 
     }
@@ -219,14 +293,51 @@
   
   <div class="container">
     <div class="card profile-card">
-      <div class="profile-avatar" id="avatar-container">
-        <div class="avatar-placeholder" id="avatar-placeholder">👤</div>
-        <img id="profile-image" style="display: none;" alt="Profile Picture">
-        <div class="upload-hint">📷</div>
+      <!-- Skeleton for Profile Card -->
+      <div class="skeleton-profile-card" id="skeletonProfileCard">
+        <div class="skeleton-loader skeleton-company-avatar"></div>
+        <div class="skeleton-loader skeleton-company-name"></div>
+        <div class="skeleton-loader skeleton-company-type"></div>
+        <div class="skeleton-loader skeleton-edit-button"></div>
+        
+        <div class="skeleton-profile-info">
+          <div class="skeleton-info-item">
+            <div class="skeleton-loader skeleton-info-label"></div>
+            <div class="skeleton-loader skeleton-info-value"></div>
+          </div>
+          <div class="skeleton-info-item">
+            <div class="skeleton-loader skeleton-info-label"></div>
+            <div class="skeleton-loader skeleton-info-value"></div>
+          </div>
+          <div class="skeleton-info-item">
+            <div class="skeleton-loader skeleton-info-label"></div>
+            <div class="skeleton-loader skeleton-info-value"></div>
+          </div>
+          <div class="skeleton-info-item">
+            <div class="skeleton-loader skeleton-info-label"></div>
+            <div class="skeleton-loader skeleton-info-value"></div>
+          </div>
+          <div class="skeleton-info-item">
+            <div class="skeleton-loader skeleton-info-label"></div>
+            <div class="skeleton-loader skeleton-info-value"></div>
+          </div>
+          <div class="skeleton-info-item">
+            <div class="skeleton-loader skeleton-info-label"></div>
+            <div class="skeleton-loader skeleton-info-value"></div>
+          </div>
+        </div>
       </div>
-      <input type="file" id="avatar-input" accept="image/*">
       
-      <div id="profile-display">
+      <!-- Actual Profile Card Content -->
+      <div class="actual-profile-card" id="actualProfileCard">
+        <div class="profile-avatar" id="avatar-container">
+          <div class="avatar-placeholder" id="avatar-placeholder">👤</div>
+          <img id="profile-image" style="display: none;" alt="Profile Picture">
+          <div class="upload-hint">📷</div>
+        </div>
+        <input type="file" id="avatar-input" accept="image/*">
+        
+        <div id="profile-display">
         <div class="company-name" id="display-name">Company Name</div>
         <div class="company-type" id="display-type">Industry Type</div>
         <div class="verified-badge">Verified</div>
@@ -308,41 +419,76 @@
         </div>
         
         <button class="save-btn" id="save-profile-btn">Save Changes</button>
+        </div>
       </div>
     </div>
     
+    <!-- Main Content Section -->
     <div class="main-content">
-      <div class="overview-section">
-        <h2 class="section-title">Overview</h2>
-        
-        <div id="overview-display">
-          <p class="overview-text" id="display-overview">
-            Add your company overview here. Describe your mission, values, culture, and what makes your organization unique. This is your opportunity to attract top talent by showcasing what makes your company a great place to work.
-          </p>
+      <!-- Skeleton for Main Content -->
+      <div class="skeleton-main-content" id="skeletonMainContent">
+        <div class="skeleton-overview-section">
+          <div class="skeleton-loader skeleton-section-title"></div>
+          <div class="skeleton-loader skeleton-overview-text"></div>
         </div>
         
-        <div id="overview-edit" class="edit-form">
-          <textarea id="edit-overview" placeholder="Describe your company's mission, values, culture, and what makes it unique...">Add your company overview here. Describe your mission, values, culture, and what makes your organization unique. This is your opportunity to attract top talent by showcasing what makes your company a great place to work.</textarea>
+        <div class="skeleton-jobs-section">
+          <div class="skeleton-jobs-header">
+            <div class="skeleton-loader skeleton-jobs-title"></div>
+            <div class="skeleton-loader skeleton-add-button"></div>
+          </div>
+          
+          <div class="skeleton-job-card">
+            <div class="skeleton-loader skeleton-job-title"></div>
+            <div class="skeleton-loader skeleton-job-description"></div>
+            <div class="skeleton-loader skeleton-job-description" style="width: 85%;"></div>
+            <div class="skeleton-loader skeleton-job-meta"></div>
+            <div class="skeleton-loader skeleton-job-meta" style="width: 35%;"></div>
+          </div>
+          
+          <div class="skeleton-job-card">
+            <div class="skeleton-loader skeleton-job-title" style="width: 65%;"></div>
+            <div class="skeleton-loader skeleton-job-description" style="width: 95%;"></div>
+            <div class="skeleton-loader skeleton-job-description" style="width: 80%;"></div>
+            <div class="skeleton-loader skeleton-job-meta" style="width: 40%;"></div>
+            <div class="skeleton-loader skeleton-job-meta" style="width: 30%;"></div>
+          </div>
         </div>
       </div>
       
-      <div class="jobs-section">
-        <div class="jobs-header">
-          <h2 class="section-title">Job Posts</h2>
-          <div class="header-actions">
-            <!-- Added Go to Posts button next to Add Job button -->
-            <div class="posts-btn-container">
-              <a href="my_photos.html" class="go-to-posts-btn" title="Go to Posts">📝</a>
-            </div>
-            <button class="add-job-btn" id="add-job-btn">+</button>
+      <!-- Actual Main Content -->
+      <div class="actual-main-content" id="actualMainContent">
+        <div class="overview-section">
+          <h2 class="section-title">Overview</h2>
+          
+          <div id="overview-display">
+            <p class="overview-text" id="display-overview">
+              Add your company overview here. Describe your mission, values, culture, and what makes your organization unique. This is your opportunity to attract top talent by showcasing what makes your company a great place to work.
+            </p>
+          </div>
+          
+          <div id="overview-edit" class="edit-form">
+            <textarea id="edit-overview" placeholder="Describe your company's mission, values, culture, and what makes it unique...">Add your company overview here. Describe your mission, values, culture, and what makes your organization unique. This is your opportunity to attract top talent by showcasing what makes your company a great place to work.</textarea>
           </div>
         </div>
         
-        <div id="jobs-list">
-          <div style="text-align: center; padding: 40px; color: var(--muted);">
-            <div style="font-size: 48px; margin-bottom: 16px;">💼</div>
-            <div>No job postings yet</div>
-            <div style="font-size: 14px; margin-top: 8px;">Click the + button to add your first job posting</div>
+        <div class="jobs-section">
+          <div class="jobs-header">
+            <h2 class="section-title">Job Posts</h2>
+            <div class="header-actions">
+              <div class="posts-btn-container">
+                <a href="my_photos.html" class="go-to-posts-btn" title="Go to Posts">📝</a>
+              </div>
+              <button class="add-job-btn" id="add-job-btn">+</button>
+            </div>
+          </div>
+          
+          <div id="jobs-list">
+            <div class="empty-jobs-state">
+              <div class="empty-icon">💼</div>
+              <div class="empty-message">No job postings yet</div>
+              <div class="empty-subtitle">Click the + button to add your first job posting</div>
+            </div>
           </div>
         </div>
       </div>
@@ -410,9 +556,7 @@
     </div>
   </div>
 
-  <div id="loading-overlay">
-    <div class="loader"></div>
-  </div>
+
 
     <script src="JS/company-script.js" defer></script>
 </body>
